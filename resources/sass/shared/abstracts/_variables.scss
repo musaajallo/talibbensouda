@@ -1,0 +1,36 @@
+// Design tokens shared by frontend + admin.
+// Override per-bundle by `@use 'shared/abstracts/variables' with (...)` at the top of frontend.scss / admin.scss.
+
+$color-navy:      #0d1b38 !default;
+$color-navy-dark: #080f20 !default;
+$color-gold:      #c9a227 !default;
+$color-gold-dark: #a8841d !default;
+
+$color-bg:        #ffffff !default;
+$color-fg:        #1a1a1a !default;
+$color-muted:     #6b7280 !default;
+$color-border:    #e5e7eb !default;
+$color-primary:   $color-navy !default;
+$color-accent:    $color-gold !default;
+$color-danger:    #dc2626 !default;
+$color-success:   #16a34a !default;
+
+$font-sans:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !default;
+$font-display: 'Montserrat', system-ui, sans-serif !default;
+$font-mono:  ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, monospace !default;
+
+$radius-sm: 4px !default;
+$radius-md: 8px !default;
+$radius-lg: 12px !default;
+
+$space-1: 4px  !default;
+$space-2: 8px  !default;
+$space-3: 12px !default;
+$space-4: 16px !default;
+$space-6: 24px !default;
+$space-8: 32px !default;
+
+$breakpoint-sm: 640px  !default;
+$breakpoint-md: 768px  !default;
+$breakpoint-lg: 1024px !default;
+$breakpoint-xl: 1280px !default;

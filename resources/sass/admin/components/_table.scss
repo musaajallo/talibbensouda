@@ -1,0 +1,21 @@
+@use '../../shared/abstracts' as *;
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+
+    th, td {
+        padding: $space-3 $space-4;
+        text-align: left;
+        border-bottom: 1px solid $color-border;
+    }
+
+    th {
+        font-weight: 600;
+        color: $color-muted;
+        background: #f8fafc;
+    }
+
+    tbody tr:hover { background: #f8fafc; }
+}

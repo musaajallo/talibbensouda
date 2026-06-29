@@ -1,0 +1,81 @@
+@use '../../shared/abstracts' as *;
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2;
+    padding: 14px 32px;
+    border-radius: $radius-sm;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+    white-space: nowrap;
+    text-decoration: none;
+
+    &:hover { text-decoration: none; opacity: 0.9; }
+
+    &--gold {
+        background: $color-gold;
+        color: $color-navy;
+        border-color: $color-gold;
+
+        &:hover { background: $color-gold-dark; border-color: $color-gold-dark; opacity: 1; }
+    }
+
+    &--navy {
+        background: $color-navy;
+        color: #fff;
+        border-color: $color-navy;
+    }
+
+    &--outline-white {
+        background: transparent;
+        color: #fff;
+        border-color: rgba(255,255,255,0.6);
+
+        &:hover { border-color: #fff; opacity: 1; }
+    }
+
+    // Adapts: navy outline in light mode, white outline in dark mode
+    &--outline-navy {
+        background: transparent;
+        color: var(--outline-btn-fg);
+        border-color: var(--outline-btn-fg);
+
+        &:hover {
+            background: var(--outline-btn-bg);
+            color: var(--bg);
+            opacity: 1;
+        }
+    }
+
+    &--ghost-light {
+        background: rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.7);
+        border-color: rgba(255,255,255,0.15);
+
+        &:hover { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.3); opacity: 1; }
+    }
+
+    &--ghost-navy {
+        background: rgba(0,0,0,0.08);
+        color: $color-navy-dark;
+        border-color: rgba(0,0,0,0.2);
+
+        &:hover { background: rgba(0,0,0,0.15); border-color: rgba(0,0,0,0.35); opacity: 1; }
+    }
+
+    &--sm {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+
+    &--lg {
+        padding: 16px 40px;
+        font-size: 1rem;
+    }
+}

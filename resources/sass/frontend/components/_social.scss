@@ -1,0 +1,23 @@
+@use '../../shared/abstracts' as *;
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fefde8;
+    color: $color-navy;
+    transition: background 0.15s, transform 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+        background: $color-gold;
+        color: $color-navy;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    svg { display: block; }
+}

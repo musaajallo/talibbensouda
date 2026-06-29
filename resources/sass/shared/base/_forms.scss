@@ -1,0 +1,77 @@
+@use 'sass:color';
+@use '../abstracts' as *;
+
+.form-group { margin-bottom: $space-4; }
+
+.form-label {
+    display: block;
+    margin-bottom: $space-1;
+    font-weight: 500;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    padding: $space-2 $space-3;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: $color-bg;
+    color: $color-fg;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+
+    &:focus {
+        outline: none;
+        border-color: $color-primary;
+        box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+    }
+}
+
+.form-error {
+    display: block;
+    margin-top: $space-1;
+    color: $color-danger;
+    font-size: 0.875rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2;
+    padding: $space-2 $space-4;
+    border: 1px solid transparent;
+    border-radius: $radius-md;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+
+    &--primary {
+        background: $color-primary;
+        color: #fff;
+        &:hover { background: color.adjust($color-primary, $lightness: -6%); text-decoration: none; }
+    }
+
+    &--secondary {
+        background: transparent;
+        border-color: $color-border;
+        &:hover { background: rgba(0, 0, 0, 0.03); text-decoration: none; }
+    }
+
+    &--danger {
+        background: $color-danger;
+        color: #fff;
+        &:hover { background: color.adjust($color-danger, $lightness: -6%); text-decoration: none; }
+    }
+}
+
+.alert {
+    padding: $space-3 $space-4;
+    border-radius: $radius-md;
+    margin-bottom: $space-4;
+
+    &--success { background: rgba($color-success, 0.1); color: $color-success; }
+    &--danger  { background: rgba($color-danger, 0.1);  color: $color-danger; }
+}

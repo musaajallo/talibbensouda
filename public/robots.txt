@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /email/
+
+Sitemap: https://talibbensouda.gm/sitemap.xml

@@ -1,0 +1,14 @@
+@use '../../shared/abstracts' as *;
+
+.card {
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $space-6;
+    margin-bottom: $space-4;
+
+    &__title {
+        margin: 0 0 $space-4;
+        font-size: 1.125rem;
+    }
+}

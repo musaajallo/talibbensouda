@@ -1,0 +1,352 @@
+@use 'sass:color';
+@use '../../shared/abstracts' as *;
+
+// ── Bio ───────────────────────────────────────────────────────────────────────
+
+.about-bio {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 72px;
+    align-items: start;
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+        gap: $space-8;
+    }
+
+    &__photo-wrap {
+        position: relative;
+
+        // Gold offset frame behind image
+        &::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: -16px;
+            bottom: -16px;
+            border: 2px solid $color-gold;
+            border-radius: $radius-lg;
+            opacity: 0.5;
+            z-index: 0;
+        }
+    }
+
+    &__photo {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        aspect-ratio: 3/4;
+        max-height: 520px;
+        background: var(--border);
+        border-radius: $radius-lg;
+        overflow: hidden;
+        transition: background 0.25s;
+
+        img { width: 100%; height: 100%; object-fit: cover; }
+    }
+
+    &__photo-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(160deg,
+            color.adjust($color-navy, $lightness: 16%),
+            color.adjust($color-navy, $lightness: 6%)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.15);
+    }
+
+    &__photo-icon {
+        width: 64px;
+        height: 64px;
+    }
+
+    &__eyebrow {
+        display: inline-block;
+        color: $color-gold;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: $space-3;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        font-weight: 800;
+        color: var(--fg);
+        line-height: 1.2;
+        margin-bottom: $space-6;
+        transition: color 0.25s;
+    }
+
+    &__text {
+        color: var(--muted);
+        line-height: 1.85;
+        margin-bottom: $space-4;
+        transition: color 0.25s;
+    }
+
+    &__quote {
+        border-left: 3px solid $color-gold;
+        padding: $space-3 $space-6;
+        margin: $space-6 0 0;
+        background: var(--bg-alt);
+        border-radius: 0 $radius-sm $radius-sm 0;
+        transition: background 0.25s;
+
+        p {
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--fg);
+            line-height: 1.7;
+            margin: 0;
+        }
+    }
+}
+
+// ── Timeline ──────────────────────────────────────────────────────────────────
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.tl-item {
+    display: grid;
+    grid-template-columns: 96px 32px 1fr;
+    gap: 0 $space-4;
+    align-items: start;
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 72px 28px 1fr;
+        gap: 0 $space-3;
+    }
+
+    &__year {
+        text-align: right;
+        font-family: $font-display;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: $color-gold;
+        padding-top: 3px;
+        line-height: 1.4;
+    }
+
+    &__connector {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: $color-gold;
+        border: 3px solid var(--bg);
+        flex-shrink: 0;
+        margin-top: 3px;
+        transition: border-color 0.25s;
+        box-shadow: 0 0 0 2px $color-gold;
+    }
+
+    &__line {
+        width: 2px;
+        flex: 1;
+        min-height: 32px;
+        background: var(--border);
+        margin-top: 4px;
+        transition: background 0.25s;
+    }
+
+    // Hide line on last item
+    &:last-child &__line { display: none; }
+
+    &__content {
+        padding-bottom: 36px;
+    }
+
+    &:last-child &__content { padding-bottom: 0; }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--fg);
+        margin-bottom: 4px;
+        line-height: 1.3;
+        transition: color 0.25s;
+    }
+
+    &__desc {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.65;
+        margin: 0;
+        transition: color 0.25s;
+    }
+}
+
+// ── Values ────────────────────────────────────────────────────────────────────
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $space-6;
+
+    @media (max-width: $breakpoint-lg)  { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: $breakpoint-sm)  { grid-template-columns: 1fr; }
+}
+
+.value-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-md;
+    padding: $space-8 $space-6;
+    text-align: center;
+    transition: background 0.25s, border-color 0.25s, transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-card);
+    }
+
+    &__icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba($color-gold, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto $space-4;
+
+        svg { width: 24px; height: 24px; color: $color-gold; }
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--fg);
+        margin-bottom: $space-2;
+        transition: color 0.25s;
+    }
+
+    &__desc {
+        font-size: 0.875rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 0;
+        transition: color 0.25s;
+    }
+}
+
+// ── Party section ─────────────────────────────────────────────────────────────
+
+.party-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+        gap: $space-8;
+    }
+
+    &__eyebrow {
+        display: inline-block;
+        color: $color-gold;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: $space-3;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: $space-4;
+        line-height: 1.2;
+    }
+
+    &__desc {
+        color: rgba(255,255,255,0.65);
+        line-height: 1.8;
+        margin-bottom: $space-6;
+    }
+
+    &__pillars {
+        display: flex;
+        flex-direction: column;
+        gap: $space-3;
+    }
+
+    &__pillar {
+        display: flex;
+        align-items: center;
+        gap: $space-3;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.9rem;
+
+        &::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: $color-gold;
+            flex-shrink: 0;
+        }
+    }
+
+    &__logo-wrap {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: $radius-lg;
+        padding: 56px $space-8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: $space-4;
+        text-align: center;
+        min-height: 280px;
+    }
+
+    &__logo-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba($color-gold, 0.1);
+        border: 2px solid rgba($color-gold, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg { width: 36px; height: 36px; color: $color-gold; }
+    }
+
+    &__logo-name {
+        font-family: $font-display;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    &__logo-caption {
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.35);
+        letter-spacing: 0.05em;
+    }
+}

@@ -1,0 +1,193 @@
+@use '../../shared/abstracts' as *;
+
+// ── Cookie policy page ─────────────────────────────────────────────────────────
+
+.policy-layout {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 64px;
+    align-items: start;
+    padding: 72px 0 96px;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: 1fr 180px;
+        gap: 40px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        padding: 48px 0 72px;
+    }
+}
+
+// ── Main content ───────────────────────────────────────────────────────────────
+
+.policy-content {
+    min-width: 0;
+
+    &__updated {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 48px;
+        transition: color 0.25s;
+    }
+}
+
+.policy-section {
+    margin-bottom: 56px;
+
+    &:last-child { margin-bottom: 0; }
+
+    &__heading {
+        font-family: $font-display;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--fg);
+        margin-bottom: 20px;
+        padding-top: 16px;
+        transition: color 0.25s;
+    }
+
+    &__subheading {
+        font-size: 1rem;
+        font-weight: 700;
+        color: $color-gold;
+        margin-bottom: 12px;
+        margin-top: 28px;
+    }
+
+    p {
+        font-size: 0.95rem;
+        color: var(--fg);
+        line-height: 1.8;
+        margin-bottom: 16px;
+        transition: color 0.25s;
+
+        &:last-child { margin-bottom: 0; }
+
+        strong { font-weight: 700; color: var(--fg); }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 16px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        li {
+            font-size: 0.9rem;
+            color: var(--fg);
+            line-height: 1.65;
+            padding-left: 20px;
+            position: relative;
+            transition: color 0.25s;
+
+            &::before {
+                content: '·';
+                position: absolute;
+                left: 6px;
+                color: $color-gold;
+                font-weight: 900;
+            }
+
+            strong { font-weight: 700; }
+        }
+    }
+
+    a {
+        color: $color-gold;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+
+        &:hover { color: $color-gold-dark; }
+    }
+}
+
+// Summary callout
+.policy-summary {
+    background: var(--bg-alt);
+    border-left: 3px solid $color-gold;
+    border-radius: 0 $radius-sm $radius-sm 0;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    color: var(--fg);
+    line-height: 1.7;
+    transition: background 0.25s, color 0.25s;
+
+    strong { color: var(--fg); font-weight: 700; }
+}
+
+// Reopen settings button
+.cookie-reopen-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    padding: 10px 18px;
+    background: rgba($color-gold, 0.1);
+    border: 1.5px solid rgba($color-gold, 0.3);
+    border-radius: $radius-sm;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $color-gold;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    margin-bottom: 20px;
+
+    svg { width: 14px; height: 14px; }
+
+    &:hover { background: rgba($color-gold, 0.18); border-color: $color-gold; }
+}
+
+// ── Sticky sidebar TOC ────────────────────────────────────────────────────────
+
+.policy-toc {
+    position: sticky;
+    top: 100px;
+
+    @media (max-width: $breakpoint-md) {
+        position: static;
+        order: -1;
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: $radius-md;
+        padding: $space-6;
+        transition: background 0.25s, border-color 0.25s;
+    }
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: $space-4;
+        transition: color 0.25s;
+    }
+
+    &__list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__link {
+        display: block;
+        font-size: 0.82rem;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: $radius-sm;
+        border-left: 2px solid transparent;
+        transition: color 0.15s, background 0.15s, border-color 0.15s;
+
+        &:hover { color: var(--fg); background: var(--bg-alt); }
+        &.is-active { color: $color-gold; border-left-color: $color-gold; background: rgba($color-gold, 0.06); font-weight: 600; }
+    }
+}

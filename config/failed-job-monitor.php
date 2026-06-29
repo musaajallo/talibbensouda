@@ -1,0 +1,42 @@
+<?php
+
+return [
+
+    /*
+     * Whether the failed job monitor is enabled. Set to false in your .env
+     * (FAILED_JOB_MONITOR_ENABLED=false) to disable notifications.
+     */
+    'enabled' => env('FAILED_JOB_MONITOR_ENABLED', true),
+
+    /*
+     * The notification that will be sent when a job fails.
+     */
+    'notification' => \Spatie\FailedJobMonitor\Notification::class,
+
+    /*
+     * The notifiable to which the notification will be sent. The default
+     * notifiable will use the mail and slack configuration specified
+     * in this config file.
+     */
+    'notifiable' => \Spatie\FailedJobMonitor\Notifiable::class,
+
+    /*
+     * By default notifications are sent for all failures. You can pass a callable to filter
+     * out certain notifications. The given callable will receive the notification. If the callable
+     * return false, the notification will not be sent.
+     */
+    'notificationFilter' => null,
+
+    /*
+     * The channels to which the notification will be sent.
+     */
+    'channels' =>  explode(',', env('FAILED_JOB_CHANNELS', 'mail')),
+
+    'mail' => [
+        'to' => explode(',', env('FAILED_JOB_EMAILS', env('ADMIN_NOTIFICATION_EMAIL', 'admin@example.com'))),
+    ],
+
+    'slack' => [
+        'webhook_url' => env('FAILED_JOB_SLACK_WEBHOOK_URL'),
+    ],
+];

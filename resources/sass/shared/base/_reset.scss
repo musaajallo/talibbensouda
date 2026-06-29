@@ -1,0 +1,20 @@
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+
+button { font: inherit; cursor: pointer; }
+
+input, textarea, select, button { font: inherit; color: inherit; }
+
+a { color: inherit; }

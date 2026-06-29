@@ -1,0 +1,14 @@
+// Admin panel bundle.
+// Override design tokens by changing the first @use line, e.g.:
+// @use '../shared/abstracts/variables' with ($color-primary: #6d28d9);
+
+@use '../shared/abstracts' as *;
+@use '../shared/base';
+
+@use 'layout/shell';
+@use 'layout/sidebar';
+
+@use 'components/card';
+@use 'components/table';
+
+@use 'pages/dashboard';

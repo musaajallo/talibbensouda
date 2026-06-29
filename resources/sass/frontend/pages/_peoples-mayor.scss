@@ -1,0 +1,267 @@
+@use 'sass:color';
+@use '../../shared/abstracts' as *;
+
+// ── Impact stats bar ──────────────────────────────────────────────────────────
+
+.impact-stats {
+    background: $color-navy;
+    padding: 56px 0;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+
+        @media (max-width: $breakpoint-md) { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: $breakpoint-sm) { grid-template-columns: 1fr 1fr; }
+    }
+
+    &__item {
+        text-align: center;
+        padding: $space-6 $space-4;
+        position: relative;
+
+        // Vertical dividers
+        &:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 25%;
+            height: 50%;
+            width: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: $breakpoint-md) {
+            &:nth-child(2)::after { display: none; }
+        }
+        @media (max-width: $breakpoint-sm) {
+            &:nth-child(2)::after { display: none; }
+        }
+    }
+
+    &__number {
+        font-family: $font-display;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        color: $color-gold;
+        line-height: 1;
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 2px;
+        margin-bottom: $space-2;
+    }
+
+    &__suffix {
+        font-size: 0.55em;
+        font-weight: 700;
+    }
+
+    &__label {
+        font-size: 0.78rem;
+        color: rgba(255,255,255,0.5);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+}
+
+// ── Project showcase (alternating 2-col layout) ────────────────────────────────
+
+.project-showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.project-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 480px;
+    transition: background 0.25s;
+
+    // Alternate: even items flip the order
+    &:nth-child(even) { direction: rtl; }
+    &:nth-child(even) > * { direction: ltr; }
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+        min-height: auto;
+
+        &:nth-child(even) { direction: ltr; }
+    }
+
+    &__image {
+        position: relative;
+        overflow: hidden;
+        background: color.adjust($color-navy, $lightness: 8%);
+        min-height: 300px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        &-placeholder {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            background: linear-gradient(145deg,
+                color.adjust($color-navy, $lightness: 12%),
+                color.adjust($color-navy, $lightness: 4%)
+            );
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: $space-3;
+            color: rgba(255,255,255,0.15);
+
+            svg { width: 48px; height: 48px; }
+        }
+
+        &-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+        }
+
+        // Number watermark
+        &-num {
+            position: absolute;
+            bottom: 16px;
+            right: 20px;
+            font-family: $font-display;
+            font-size: clamp(4rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 1;
+            color: rgba(255,255,255,0.04);
+            pointer-events: none;
+            user-select: none;
+        }
+    }
+
+    &__body {
+        padding: 56px 56px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: var(--bg);
+        transition: background 0.25s;
+
+        @media (max-width: $breakpoint-lg) { padding: 40px 32px; }
+        @media (max-width: $breakpoint-sm) { padding: 36px 20px; }
+    }
+
+    &__number {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: $color-gold;
+        margin-bottom: $space-3;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(1.5rem, 2.5vw, 2rem);
+        font-weight: 800;
+        color: var(--fg);
+        line-height: 1.2;
+        margin-bottom: $space-4;
+        transition: color 0.25s;
+    }
+
+    &__desc {
+        color: var(--muted);
+        line-height: 1.8;
+        margin-bottom: $space-6;
+        transition: color 0.25s;
+    }
+
+    &__metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-4 $space-6;
+        margin-bottom: $space-8;
+        padding: $space-4 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        transition: border-color 0.25s;
+    }
+
+    &__metric {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        &-value {
+            font-family: $font-display;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: $color-navy;
+            line-height: 1;
+            transition: color 0.25s;
+
+            [data-theme="dark"] & { color: $color-gold; }
+        }
+
+        &-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            transition: color 0.25s;
+        }
+    }
+
+    // Alternate section background
+    &:nth-child(even) &__body { background: var(--bg-alt); }
+}
+
+// ── Quote pull ────────────────────────────────────────────────────────────────
+
+.mayor-quote {
+    background: $color-navy;
+    padding: 72px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '"';
+        position: absolute;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: $font-display;
+        font-size: 280px;
+        line-height: 1;
+        color: rgba($color-gold, 0.04);
+        pointer-events: none;
+        user-select: none;
+    }
+
+    &__text {
+        position: relative;
+        font-family: $font-display;
+        font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+        font-weight: 700;
+        color: #fff;
+        max-width: 700px;
+        margin: 0 auto $space-6;
+        line-height: 1.5;
+        font-style: italic;
+    }
+
+    &__author {
+        font-size: 0.85rem;
+        color: $color-gold;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+}

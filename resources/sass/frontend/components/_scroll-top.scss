@@ -1,0 +1,30 @@
+@use '../../shared/abstracts' as *;
+
+[x-cloak] { display: none !important; }
+
+.scroll-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 90;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: $color-navy;
+    color: #fff;
+    border: 2px solid $color-gold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+
+    &:hover {
+        background: $color-gold;
+        color: $color-navy;
+        transform: translateY(-3px);
+    }
+
+    svg { display: block; }
+}

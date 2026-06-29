@@ -1,0 +1,898 @@
+@use 'sass:color';
+@use '../../shared/abstracts' as *;
+
+// ── Featured Diaspora Tour ─────────────────────────────────────────────────────
+
+.diaspora-tour {
+    background: $color-navy-dark;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+
+    // Dot grid texture (matches footer)
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+    }
+
+    // Gold glow
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 0%, rgba($color-gold, 0.07) 0%, transparent 65%);
+        pointer-events: none;
+    }
+
+    @media (max-width: $breakpoint-sm) { padding: 56px 0; }
+
+    &__header {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        margin-bottom: 56px;
+    }
+
+    &__eyebrow {
+        display: inline-block;
+        color: $color-gold;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: $space-3;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+        font-weight: 900;
+        color: #fff;
+        margin-bottom: $space-3;
+        line-height: 1.15;
+    }
+
+    &__subtitle {
+        color: rgba(255,255,255,0.5);
+        font-size: 1rem;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.65;
+    }
+
+    // Connecting route line between cards
+    &__route {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr 48px 1fr 48px 1fr;
+        align-items: center;
+        gap: 0;
+
+        @media (max-width: $breakpoint-md) {
+            grid-template-columns: 1fr;
+            gap: $space-4;
+
+            .diaspora-tour__connector { display: none; }
+        }
+    }
+
+    &__connector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba($color-gold, 0.4);
+        font-size: 1.2rem;
+
+        &::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, rgba($color-gold, 0.3), rgba($color-gold, 0.1));
+        }
+
+        svg { flex-shrink: 0; width: 16px; height: 16px; color: $color-gold; }
+    }
+}
+
+.tour-stop {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: $radius-lg;
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, background 0.2s;
+
+    &:hover {
+        border-color: rgba($color-gold, 0.4);
+        background: rgba(255,255,255,0.07);
+    }
+
+    &__flag {
+        font-size: 2rem;
+        line-height: 1;
+        margin-bottom: $space-4;
+    }
+
+    &__date {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: $color-gold;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: $space-2;
+    }
+
+    &__city {
+        font-family: $font-display;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.1;
+        margin-bottom: 4px;
+    }
+
+    &__country {
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.45);
+        margin-bottom: $space-4;
+    }
+
+    &__venue {
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.55);
+        padding: $space-3 0;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        margin-bottom: $space-4;
+        line-height: 1.5;
+    }
+
+    &__desc {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.45);
+        line-height: 1.65;
+        flex: 1;
+        margin-bottom: $space-4;
+    }
+}
+
+// ── Full events list ──────────────────────────────────────────────────────────
+
+.events-full {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+}
+
+.event-card {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: $space-6;
+    align-items: start;
+    padding: $space-6 $space-8;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-md;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.25s;
+
+    &:hover {
+        border-color: $color-gold;
+        box-shadow: 0 4px 24px rgba($color-gold, 0.08);
+    }
+
+    @media (max-width: $breakpoint-lg) {
+        padding: $space-6;
+        gap: $space-4;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 64px 1fr;
+        grid-template-rows: auto auto;
+
+        &__actions { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        padding: $space-4 $space-6;
+    }
+
+    &__date {
+        text-align: center;
+        flex-shrink: 0;
+        padding-top: 2px;
+    }
+
+    &__date-day {
+        font-family: $font-display;
+        font-size: 2rem;
+        font-weight: 900;
+        color: $color-gold;
+        line-height: 1;
+    }
+
+    &__date-month {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        transition: color 0.25s;
+    }
+
+    &__date-year {
+        font-size: 0.7rem;
+        color: var(--muted);
+        opacity: 0.6;
+        transition: color 0.25s;
+    }
+
+    &__body { min-width: 0; }
+
+    &__badge {
+        display: inline-block;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: $space-2;
+
+        &--diaspora { background: rgba($color-gold, 0.12); color: $color-gold; }
+        &--gambia   { background: rgba($color-navy, 0.08); color: $color-navy;
+            [data-theme="dark"] & { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+        }
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--fg);
+        margin-bottom: $space-2;
+        line-height: 1.3;
+        transition: color 0.25s;
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: $space-2;
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-bottom: $space-3;
+        transition: color 0.25s;
+
+        svg { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.6; }
+    }
+
+    &__desc {
+        font-size: 0.875rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 0;
+        transition: color 0.25s;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        gap: $space-2;
+        align-items: flex-end;
+        flex-shrink: 0;
+
+        @media (max-width: $breakpoint-md) {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+}
+
+// ── Past events ───────────────────────────────────────────────────────────────
+
+.past-events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $space-4;
+
+    @media (max-width: $breakpoint-md) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: $breakpoint-sm) { grid-template-columns: 1fr; }
+}
+
+.past-event {
+    padding: $space-4 $space-6;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-md;
+    transition: background 0.25s, border-color 0.25s;
+
+    &:hover { border-color: var(--muted); }
+
+    &__date {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: $color-gold;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: $space-2;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--fg);
+        margin-bottom: $space-1;
+        line-height: 1.3;
+        transition: color 0.25s;
+    }
+
+    &__location {
+        font-size: 0.8rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: $space-1;
+        transition: color 0.25s;
+
+        svg { width: 12px; height: 12px; opacity: 0.6; }
+    }
+}
+
+// ── View toggle ───────────────────────────────────────────────────────────────
+
+.view-toggle {
+    display: inline-flex;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 2px;
+    margin-bottom: $space-8;
+    transition: background 0.25s, border-color 0.25s;
+
+    @media (max-width: $breakpoint-sm) { margin-bottom: $space-6; }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: $space-2;
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s;
+
+        svg { width: 14px; height: 14px; }
+
+        &.is-active {
+            background: $color-navy;
+            color: #fff;
+
+            [data-theme="dark"] & { background: $color-gold; color: $color-navy; }
+        }
+
+        &:not(.is-active):hover { color: var(--fg); }
+    }
+}
+
+// ── Calendar ──────────────────────────────────────────────────────────────────
+
+.cal-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-lg;
+    padding: $space-6;
+    transition: background 0.25s, border-color 0.25s;
+
+    @media (max-width: $breakpoint-sm) { padding: $space-4; }
+}
+
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-4;
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--fg);
+        transition: color 0.25s;
+    }
+
+    &__controls { display: flex; gap: $space-2; }
+
+    &__nav {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        cursor: pointer;
+        color: var(--fg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.18s, background 0.18s, color 0.25s;
+
+        &:hover { border-color: $color-gold; background: rgba($color-gold, 0.06); }
+        svg { width: 15px; height: 15px; }
+    }
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    border-radius: $radius-sm;
+    overflow: hidden;
+    transition: border-color 0.25s;
+}
+
+.cal-weekday {
+    padding: $space-2 $space-1;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--bg-alt);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.cal-day {
+    min-height: 84px;
+    padding: $space-2 $space-2 $space-2;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.25s, border-color 0.25s;
+    vertical-align: top;
+
+    @media (max-width: $breakpoint-sm) { min-height: 52px; padding: $space-1; }
+
+    &--other { background: var(--bg-alt); }
+
+    &__num {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--fg);
+        margin-bottom: $space-1;
+        transition: color 0.25s;
+
+        .cal-day--other & { color: var(--muted); opacity: 0.5; }
+        .cal-day--today & {
+            background: $color-gold;
+            color: $color-navy;
+            font-weight: 700;
+        }
+    }
+}
+
+.cal-pill {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: $color-navy;
+    background: $color-gold;
+    border-radius: 3px;
+    padding: 2px 5px;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.8; }
+
+    @media (max-width: $breakpoint-md) {
+        // On smaller screens just show a dot
+        font-size: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        padding: 0;
+        margin: 2px auto;
+    }
+}
+
+// ── Event show page ───────────────────────────────────────────────────────────
+
+.event-show {
+    padding: 72px 0 96px;
+
+    @media (max-width: $breakpoint-sm) { padding: 48px 0 72px; }
+
+    &__layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 48px;
+        align-items: start;
+
+        @media (max-width: $breakpoint-lg) {
+            grid-template-columns: 1fr 300px;
+            gap: 32px;
+        }
+
+        @media (max-width: $breakpoint-md) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    // ── Main content col ──
+    &__content {}
+
+    &__flag {
+        font-size: 2.5rem;
+        line-height: 1;
+        margin-bottom: $space-4;
+    }
+
+    &__badge {
+        display: inline-block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 999px;
+        margin-bottom: $space-4;
+
+        &--diaspora { background: rgba($color-gold, 0.12); color: $color-gold; }
+        &--gambia   {
+            background: rgba($color-navy, 0.08);
+            color: $color-navy;
+            [data-theme="dark"] & { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+        }
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+        font-weight: 900;
+        color: var(--fg);
+        line-height: 1.15;
+        margin-bottom: $space-6;
+        transition: color 0.25s;
+    }
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-6;
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid var(--border);
+        transition: border-color 0.25s;
+    }
+
+    &__meta-item {
+        display: flex;
+        align-items: flex-start;
+        gap: $space-3;
+
+        svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            color: $color-gold;
+            margin-top: 2px;
+        }
+    }
+
+    &__meta-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 2px;
+        transition: color 0.25s;
+    }
+
+    &__meta-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--fg);
+        transition: color 0.25s;
+    }
+
+    &__body {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: var(--fg);
+        transition: color 0.25s;
+
+        p {
+            margin-bottom: 1.25em;
+            &:last-child { margin-bottom: 0; }
+        }
+    }
+
+    // ── Sidebar col ──
+    &__sidebar {
+        position: sticky;
+        top: 96px;
+
+        @media (max-width: $breakpoint-md) {
+            position: static;
+            order: -1;
+        }
+    }
+}
+
+.event-info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-lg;
+    overflow: hidden;
+    transition: background 0.25s, border-color 0.25s;
+
+    &__header {
+        background: $color-navy;
+        padding: 28px $space-6;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 0%, rgba($color-gold, 0.12) 0%, transparent 65%);
+            pointer-events: none;
+        }
+    }
+
+    &__date-day {
+        font-family: $font-display;
+        font-size: 3rem;
+        font-weight: 900;
+        color: $color-gold;
+        line-height: 1;
+    }
+
+    &__date-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.75);
+        margin-top: 4px;
+    }
+
+    &__body {
+        padding: $space-6;
+        display: flex;
+        flex-direction: column;
+        gap: $space-4;
+    }
+
+    &__row {
+        display: flex;
+        align-items: flex-start;
+        gap: $space-3;
+        font-size: 0.875rem;
+
+        svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            color: $color-gold;
+            margin-top: 2px;
+        }
+    }
+
+    &__row-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 2px;
+        transition: color 0.25s;
+    }
+
+    &__row-value {
+        color: var(--fg);
+        font-weight: 500;
+        line-height: 1.4;
+        transition: color 0.25s;
+    }
+
+    &__actions {
+        padding: 0 $space-6 $space-6;
+        display: flex;
+        flex-direction: column;
+        gap: $space-2;
+    }
+
+    &__cal-section {
+        padding: $space-4 $space-6;
+        border-top: 1px solid var(--border);
+        transition: border-color 0.25s;
+    }
+
+    &__cal-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: $space-3;
+        transition: color 0.25s;
+    }
+
+    &__cal-links {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__cal-link {
+        display: flex;
+        align-items: center;
+        gap: $space-3;
+        padding: $space-2 $space-3;
+        border-radius: $radius-sm;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--fg);
+        text-decoration: none;
+        transition: background 0.15s, color 0.25s;
+
+        &:hover { background: var(--bg-alt); text-decoration: none; }
+        svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.6; }
+    }
+}
+
+// ── Related events ────────────────────────────────────────────────────────────
+
+.related-events {
+    margin-top: 80px;
+    padding-top: 64px;
+    border-top: 1px solid var(--border);
+    transition: border-color 0.25s;
+
+    &__header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        gap: $space-4;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--fg);
+        transition: color 0.25s;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: $space-4;
+
+        @media (max-width: $breakpoint-md) { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: $breakpoint-sm) { grid-template-columns: 1fr; }
+    }
+}
+
+.related-event-card {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    padding: $space-6;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-md;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.25s;
+
+    &:hover {
+        border-color: $color-gold;
+        box-shadow: 0 4px 20px rgba($color-gold, 0.08);
+        text-decoration: none;
+    }
+
+    &__date {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $color-gold;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--fg);
+        line-height: 1.3;
+        transition: color 0.25s;
+    }
+
+    &__loc {
+        display: flex;
+        align-items: center;
+        gap: $space-1;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: auto;
+        transition: color 0.25s;
+
+        svg { width: 12px; height: 12px; opacity: 0.6; }
+    }
+}
+
+// ── Add to Calendar dropdown ───────────────────────────────────────────────────
+
+.cal-drop {
+    position: relative;
+
+    &__menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 6px);
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: $radius-md;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
+        min-width: 190px;
+        z-index: 200;
+        overflow: hidden;
+        transition: background 0.25s, border-color 0.25s;
+    }
+
+    &__label {
+        padding: $space-2 $space-4;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+        transition: color 0.25s, border-color 0.25s;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: $space-3;
+        padding: $space-3 $space-4;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--fg);
+        text-decoration: none;
+        transition: background 0.15s, color 0.25s;
+        cursor: pointer;
+
+        &:hover { background: var(--bg-alt); text-decoration: none; }
+
+        svg { width: 16px; height: 16px; flex-shrink: 0; }
+    }
+}
