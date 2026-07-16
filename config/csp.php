@@ -1,7 +1,7 @@
 <?php
 
-// use Spatie\Csp\Directive;
-// use Spatie\Csp\Keyword;
+use Spatie\Csp\Directive;
+use Spatie\Csp\Keyword;
 
 return [
 
@@ -18,7 +18,13 @@ return [
      * Register additional global CSP directives here.
      */
     'directives' => [
-        // [Directive::SCRIPT, [Keyword::UNSAFE_EVAL, Keyword::UNSAFE_INLINE]],
+        // Alpine.js evaluates directive expressions (x-show, @click, ...) via
+        // `new Function()`, which requires 'unsafe-eval'. Nonces don't cover this.
+        [Directive::SCRIPT, [Keyword::UNSAFE_EVAL]],
+        // Alpine sets inline `style` attributes directly (x-show, x-transition) with
+        // dynamic values, so hashes/nonces aren't feasible — scope 'unsafe-inline' to
+        // style-src-attr only, so style-src itself keeps its stricter nonce policy.
+        [Directive::STYLE_ATTR, [Keyword::UNSAFE_INLINE]],
     ],
 
     /*

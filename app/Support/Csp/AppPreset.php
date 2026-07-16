@@ -28,13 +28,13 @@ class AppPreset implements Preset
             ->add(Directive::OBJECT, Keyword::NONE)
 
             // Force the browser to upgrade http:// asset URLs to https:// in production.
-            ->add(Directive::UPGRADE_INSECURE_REQUESTS, []);
+            ->add(Directive::UPGRADE_INSECURE_REQUESTS, [])
+
+            // Google Fonts, loaded in resources/views/layouts/app.blade.php.
+            ->add(Directive::STYLE, 'https://fonts.googleapis.com')
+            ->add(Directive::FONT, 'https://fonts.gstatic.com');
 
         // Examples — uncomment as you add integrations:
-        //
-        // Google Fonts
-        // $policy->add(Directive::STYLE, 'https://fonts.googleapis.com');
-        // $policy->add(Directive::FONT,  'https://fonts.gstatic.com');
         //
         // Bunny Fonts (privacy-friendly Google Fonts mirror)
         // $policy->add(Directive::STYLE, 'https://fonts.bunny.net');

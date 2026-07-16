@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
+    <script @cspNonce>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
     @vite(['resources/sass/frontend/frontend.scss', 'resources/js/frontend.js'])
 </head>
 <body>
