@@ -28,11 +28,11 @@
                 <li><a href="{{ url('/peoples-mayor') }}" class="site-nav__link {{ request()->is('peoples-mayor') ? 'is-active' : '' }}">The People's Mayor</a></li>
                 <li><a href="{{ url('/gallery') }}"       class="site-nav__link {{ request()->is('gallery') ? 'is-active' : '' }}">Gallery</a></li>
                 <li><a href="{{ url('/events') }}"        class="site-nav__link {{ request()->is('events') ? 'is-active' : '' }}">Events</a></li>
-                <li><a href="{{ url('/giving-back') }}"   class="site-nav__link {{ request()->is('giving-back') ? 'is-active' : '' }}">Community Support</a></li>
+                <li><a href="{{ url('/giving-back') }}"   class="site-nav__link {{ request()->is('giving-back') ? 'is-active' : '' }}">Giving Back</a></li>
                 <li><a href="{{ url('/contact') }}"       class="site-nav__link {{ request()->is('contact') ? 'is-active' : '' }}">Get in Touch</a></li>
             </ul>
 
-            <a href="{{ url('/peoples-mayor') }}" class="btn btn--gold nav-cta">See the Record</a>
+            <a href="https://unitemovementgambia.com/join" target="_blank" rel="noopener" class="btn btn--gold nav-cta">Join Party</a>
 
             <button class="theme-toggle" @click="dark = !dark" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
                 <svg x-show="!dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -159,7 +159,7 @@
                 <li><a href="{{ url('/peoples-mayor') }}">The People's Mayor</a></li>
                 <li><a href="{{ url('/gallery') }}">Gallery</a></li>
                 <li><a href="{{ url('/events') }}">Events</a></li>
-                <li><a href="{{ url('/giving-back') }}">Community Support</a></li>
+                <li><a href="{{ url('/giving-back') }}">Giving Back</a></li>
                 <li><a href="{{ url('/contact') }}">Get in Touch</a></li>
             </ul>
 
