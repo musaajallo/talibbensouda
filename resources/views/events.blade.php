@@ -10,95 +10,32 @@
                     <span>/</span>
                     <span style="color:rgba(255,255,255,0.65)">Events</span>
                 </nav>
-                <span class="page-hero__eyebrow">Events 2026</span>
-                <h1 class="page-hero__title">Join Talib in Person</h1>
+                <span class="page-hero__eyebrow">Events &amp; Milestones</span>
+                <h1 class="page-hero__title">Events &amp; Milestones</h1>
                 <p class="page-hero__subtitle">
-                    Meet the Mayor at community events across The Gambia
-                    and connect with him on the 2026 Diaspora Tour.
+                    A record of the launches, openings and gatherings that have marked
+                    Talib Bensouda's work as Lord Mayor of Kanifing.
                 </p>
             </div>
         </div>
     </section>
 
-    {{-- ── Featured: Diaspora Tour 2026 ───────────────────────────────────── --}}
-    <section class="diaspora-tour">
+    {{-- ── Intro ──────────────────────────────────────────────────────────── --}}
+    <section class="section section--tight">
         <div class="container">
-
-            <div class="diaspora-tour__header" data-reveal>
-                <span class="diaspora-tour__eyebrow">Diaspora Tour 2026</span>
-                <h2 class="diaspora-tour__title">Bringing the Movement<br>to the World</h2>
-                <p class="diaspora-tour__subtitle">
-                    Talib Bensouda is coming to you. Three cities. Three chances
-                    to connect, share, and be part of The Gambia's future.
+            <div class="section-header" data-reveal>
+                <span class="section-header__eyebrow">2018 – 2026</span>
+                <h2 class="section-header__title">Delivered, Opened, Launched</h2>
+                <p class="section-header__lead">
+                    The dates below are drawn from Kanifing Municipal Council records and
+                    public reporting. Where only the month is known, events are shown on
+                    the first of that month.
                 </p>
-            </div>
-
-            <div class="diaspora-tour__route">
-
-                {{-- London --}}
-                <div class="tour-stop" data-reveal data-reveal-delay="0">
-                    <div class="tour-stop__flag">🇬🇧</div>
-                    <div class="tour-stop__date">14 July 2026</div>
-                    <div class="tour-stop__city">London</div>
-                    <div class="tour-stop__country">United Kingdom</div>
-                    <div class="tour-stop__venue">Venue TBC — Greater London</div>
-                    <p class="tour-stop__desc">
-                        Join Talib and the UK Gambian community for an evening of dialogue,
-                        music, and connection. Hear directly from the Mayor about his vision
-                        for The Gambia and how the diaspora can be part of it.
-                    </p>
-                    <a href="{{ route('events.register') }}" class="btn btn--gold btn--sm">Register Interest</a>
-                </div>
-
-                {{-- Connector → --}}
-                <div class="diaspora-tour__connector">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </div>
-
-                {{-- New York --}}
-                <div class="tour-stop" data-reveal data-reveal-delay="100">
-                    <div class="tour-stop__flag">🇺🇸</div>
-                    <div class="tour-stop__date">22 July 2026</div>
-                    <div class="tour-stop__city">New York</div>
-                    <div class="tour-stop__country">United States of America</div>
-                    <div class="tour-stop__venue">Venue TBC — New York City</div>
-                    <p class="tour-stop__desc">
-                        New York is home to one of the largest Gambian communities in North America.
-                        Talib will meet with community leaders, youth groups, and supporters
-                        ahead of the national campaign.
-                    </p>
-                    <a href="{{ route('events.register') }}" class="btn btn--gold btn--sm">Register Interest</a>
-                </div>
-
-                {{-- Connector → --}}
-                <div class="diaspora-tour__connector">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </div>
-
-                {{-- Madrid --}}
-                <div class="tour-stop" data-reveal data-reveal-delay="200">
-                    <div class="tour-stop__flag">🇪🇸</div>
-                    <div class="tour-stop__date">05 August 2026</div>
-                    <div class="tour-stop__city">Madrid</div>
-                    <div class="tour-stop__country">Spain</div>
-                    <div class="tour-stop__venue">Venue TBC — Madrid</div>
-                    <p class="tour-stop__desc">
-                        Spain hosts a significant and growing Gambian community.
-                        The Madrid stop will focus on economic opportunity, diaspora remittances,
-                        and how Gambians in Europe can shape their homeland's future.
-                    </p>
-                    <a href="{{ route('events.register') }}" class="btn btn--gold btn--sm">Register Interest</a>
-                </div>
-
             </div>
         </div>
     </section>
 
-    {{-- ── All Upcoming Events ──────────────────────────────────────────────── --}}
+    {{-- ── Milestones list / calendar ──────────────────────────────────────── --}}
     {{-- $upcoming and $calEvents are passed from EventController@index --}}
 
     <section
@@ -106,7 +43,7 @@
         x-data="{
             view: 'list',
             currentYear: 2026,
-            currentMonth: 6,
+            currentMonth: 5,
             calEvents: {{ Js::from($calEvents) }},
 
             get monthLabel() {
@@ -159,11 +96,11 @@
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">Save the Date</span>
-                <h2 class="section-header__title">All Upcoming Events</h2>
+                <span class="section-header__eyebrow">The Record</span>
+                <h2 class="section-header__title">Milestones</h2>
                 <p class="section-header__lead">
-                    From diaspora town halls to national party conventions —
-                    find an event near you and come join the movement.
+                    Browse as a list, or switch to the calendar to see when each
+                    milestone landed.
                 </p>
             </div>
 
@@ -196,7 +133,7 @@
 
             {{-- ── List view ──────────────────────────────────────────────────── --}}
             <div class="events-full" x-show="view === 'list'" x-transition>
-                @foreach($upcoming as $i => $event)
+                @forelse($upcoming as $i => $event)
                 <div class="event-card" id="event-{{ $i }}" data-reveal data-reveal-delay="{{ $i * 80 }}">
 
                     <div class="event-card__date">
@@ -225,7 +162,6 @@
 
                     <div class="event-card__actions">
                         <a href="{{ route('events.show', $event) }}" class="btn btn--outline-navy btn--sm">Details</a>
-                        <a href="{{ route('events.register') }}?event={{ urlencode($event->title) }}" class="btn btn--gold btn--sm">Register</a>
 
                         {{-- Add to Calendar dropdown --}}
                         <div class="cal-drop" x-data="{ open: false }" @click.outside="open = false">
@@ -264,7 +200,11 @@
                     </div>
 
                 </div>
-                @endforeach
+                @empty
+                <p style="text-align:center; color:var(--muted); padding:48px 0;">
+                    No events are listed yet. Check back soon.
+                </p>
+                @endforelse
             </div>
 
             {{-- ── Calendar view ──────────────────────────────────────────────── --}}
@@ -321,34 +261,34 @@
                 {{-- Legend --}}
                 <div style="display:flex; align-items:center; gap:8px; margin-top:16px; font-size:0.78rem; color:var(--muted);">
                     <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#c9a227;"></span>
-                    Event on this date — click to jump to details
+                    Milestone on this date — click to jump to details
                 </div>
             </div>
 
         </div>
     </section>
 
-    {{-- ── Past Events ──────────────────────────────────────────────────────── --}}
+    {{-- ── Earlier milestones ───────────────────────────────────────────────── --}}
     <section class="section section--grey">
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">Recent History</span>
-                <h2 class="section-header__title">Past Events</h2>
+                <span class="section-header__eyebrow">Earlier</span>
+                <h2 class="section-header__title">2018 – 2023</h2>
                 <p class="section-header__lead">
-                    A record of the gatherings, launches, and milestones
-                    that have shaped the movement so far.
+                    The elections, launches and groundworks that set the term in motion.
                 </p>
             </div>
 
             @php
             $past = [
-                ['Mar 2026', 'Party Town Hall',                'Banjul, The Gambia'],
-                ['Jan 2026', 'Youth Manifesto Forum',          'Serrekunda, The Gambia'],
-                ['Oct 2025', 'Independence Day Rally',         'Banjul, The Gambia'],
-                ['Aug 2025', 'Women\'s Empowerment Summit',   'Kanifing, The Gambia'],
-                ['May 2025', 'Youth Employment Graduation',    'Banjul, The Gambia'],
-                ['Sep 2024', 'Annual Party Convention 2024',   'Banjul, The Gambia'],
+                ['May 2018', 'Elected Lord Mayor of Kanifing',            'Kanifing Municipal Council'],
+                ['2019',     'Mbalit Project Launched',                   'Kanifing Municipality'],
+                ['2021',     'Kanifing Environmental Transformation Programme Begins', 'KMC & Peterborough City Council'],
+                ['Jul 2021', 'WasteAid Composting Pilot Launched',        'Bakau & Abuko'],
+                ['Aug 2022', 'Municipal Library Foundation Stone Laid',   'Kanifing Municipality'],
+                ['Dec 2022', 'End-of-Term Awards Night',                  'Kanifing Municipal Council'],
+                ['May 2023', 'Re-elected Lord Mayor of Kanifing',         'Kanifing Municipal Council'],
             ];
             @endphp
 
@@ -375,12 +315,12 @@
         <div class="container">
             <h2 class="cta-banner__title" data-reveal>Stay in the Loop</h2>
             <p class="cta-banner__lead" data-reveal data-reveal-delay="100">
-                New events are added regularly. Get in touch and we'll make sure
-                you hear about events in your area first.
+                New milestones and public events are added as they happen.
+                Get in touch and we'll keep you posted.
             </p>
             <div class="cta-banner__actions" data-reveal data-reveal-delay="200">
                 <a href="{{ url('/contact') }}" class="btn btn--navy btn--lg">Get in Touch</a>
-                <a href="{{ route('events.register') }}" class="btn btn--outline-navy btn--lg">Register for an Event</a>
+                <a href="{{ url('/peoples-mayor') }}" class="btn btn--outline-navy btn--lg">See the Record</a>
             </div>
         </div>
     </section>

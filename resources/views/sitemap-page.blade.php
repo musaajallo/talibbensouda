@@ -40,7 +40,7 @@
                     <li><a href="{{ url('/') }}"            class="sitemap-card__link">Home</a></li>
                     <li><a href="{{ url('/about') }}"       class="sitemap-card__link">About</a></li>
                     <li><a href="{{ url('/gallery') }}"     class="sitemap-card__link">Gallery</a></li>
-                    <li><a href="{{ url('/giving-back') }}" class="sitemap-card__link">Giving Back</a></li>
+                    <li><a href="{{ url('/giving-back') }}" class="sitemap-card__link">Community Support</a></li>
                     <li><a href="{{ url('/contact') }}"     class="sitemap-card__link">Get in Touch</a></li>
                 </ul>
             </div>
@@ -68,7 +68,7 @@
                 </div>
                 <ul class="sitemap-card__list">
                     <li><a href="{{ url('/events') }}" class="sitemap-card__link">All Events</a></li>
-                    <li><a href="{{ url('/events/register') }}" class="sitemap-card__link">Register for an Event</a></li>
+                    <li><a href="{{ url('/events/register') }}" class="sitemap-card__link">Register Your Interest</a></li>
                     @foreach($events as $event)
                         <li><a href="{{ route('events.show', $event) }}" class="sitemap-card__link">{{ $event->title }}</a></li>
                     @endforeach
@@ -81,11 +81,11 @@
                     <span class="sitemap-card__icon sitemap-card__icon--purple">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </span>
-                    <h2 class="sitemap-card__title">Campaign</h2>
+                    <h2 class="sitemap-card__title">More</h2>
                 </div>
                 <ul class="sitemap-card__list">
-                    <li><a href="https://unitemovementgambia.com/join" target="_blank" rel="noopener" class="sitemap-card__link">Join the Party</a></li>
-                    <li><a href="{{ url('/giving-back') }}" class="sitemap-card__link">Giving Back</a></li>
+                    <li><a href="{{ url('/peoples-mayor') }}" class="sitemap-card__link">The People's Mayor</a></li>
+                    <li><a href="{{ url('/giving-back') }}" class="sitemap-card__link">Community Support</a></li>
                 </ul>
             </div>
 

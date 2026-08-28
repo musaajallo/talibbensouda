@@ -66,6 +66,6 @@ class Event extends Model
 
     public function badgeLabel(): string
     {
-        return $this->badge === 'diaspora' ? 'Diaspora Tour' : 'The Gambia';
+        return $this->badge === 'diaspora' ? 'Campaign' : 'Kanifing';
     }
 }

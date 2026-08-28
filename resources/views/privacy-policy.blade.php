@@ -44,8 +44,8 @@
                 <section class="policy-section" id="who-we-are">
                     <h2 class="policy-section__heading">Who we are</h2>
                     <div class="policy-summary">
-                        <strong>In short.</strong> This website is operated by the campaign team of Talib Bensouda,
-                        Mayor of the Kanifing Municipal Council and Party Leader. We are the data controller
+                        <strong>In short.</strong> This website is operated by the team of Talib Bensouda,
+                        Lord Mayor of the Kanifing Municipal Council. We are the data controller
                         for any personal information you submit through this site.
                     </div>
                     <p>

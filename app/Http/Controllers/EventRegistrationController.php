@@ -20,13 +20,16 @@ class EventRegistrationController extends Controller
             'name'         => ['required', 'string', 'max:150'],
             'email'        => ['required', 'email', 'max:200'],
             'phone'        => ['nullable', 'string', 'max:30'],
-            'event'        => ['required', 'string', 'max:200'],
-            'guests'       => ['required', 'integer', 'min:1', 'max:10'],
+            'event'        => ['nullable', 'string', 'max:200'],
+            'guests'       => ['nullable', 'integer', 'min:1', 'max:10'],
             'requirements' => ['nullable', 'string', 'max:1000'],
             'message'      => ['nullable', 'string', 'max:1000'],
         ]);
 
-        EventRegistration::create($validated);
+        EventRegistration::create(array_merge($validated, [
+            'event'  => $validated['event'] ?? 'General interest — future events',
+            'guests' => $validated['guests'] ?? 1,
+        ]));
 
         return redirect()
             ->route('events.register')

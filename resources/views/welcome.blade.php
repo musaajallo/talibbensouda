@@ -4,10 +4,11 @@
     <section class="hero"
         x-data="{
             slides: [
-                { bg: '#0d1b38' },
-                { bg: '#0a1525' },
-                { bg: '#112044' },
-                { bg: '#091422' },
+                { img: '/images/hero-talib-desk.webp', bg: '#0d1b38', pos: 'center' },
+                { img: '/images/hero-masquerade.webp', bg: '#0a1525', pos: 'center' },
+                { img: '/images/hero-supporters.webp', bg: '#112044', pos: 'center right' },
+                { img: '/images/hero-hall.webp',       bg: '#091422', pos: 'center' },
+                { img: '/images/hero-victory.webp',    bg: '#0d1b38', pos: 'center right' },
             ],
             current: 0,
             timer: null,
@@ -19,23 +20,27 @@
     >
         <div class="hero__slides">
             <template x-for="(slide, i) in slides" :key="i">
-                <div class="hero__slide" :class="{ 'is-active': i === current }" :style="`background-color: ${slide.bg}`"></div>
+                <div class="hero__slide" :class="{ 'is-active': i === current }"
+                     :style="slide.img
+                         ? `background-color: ${slide.bg}; background-image: url('${slide.img}'); background-position: ${slide.pos || 'center'}`
+                         : `background-color: ${slide.bg}`"></div>
             </template>
         </div>
 
         <div class="hero__inner container">
             <div class="hero__content">
-                <span class="hero__eyebrow">Be part of the change makers</span>
+                <span class="hero__eyebrow">Lord Mayor of Kanifing</span>
                 <h1 class="hero__title">
-                    Let's <em>UNITE</em> to<br>transform The Gambia
+                    A record of <em>delivery</em><br>for The Gambia
                 </h1>
                 <p class="hero__lead">
-                    Every Gambian has a role to play in bringing change to our beloved nation.
-                    Join us to play your part and build the future we deserve together.
+                    Since 2018, Kanifing Municipal Council under Talib Bensouda has built
+                    a municipality-wide waste system, dozens of kilometres of new roads,
+                    markets, clinics and a public library. This is the record.
                 </p>
                 <div class="hero__actions">
-                    <a href="{{ url('/contact') }}#join" class="btn btn--gold btn--lg">Join Party</a>
-                    <a href="{{ url('/contact') }}#volunteer" class="btn btn--outline-white btn--lg">Become a volunteer</a>
+                    <a href="{{ url('/peoples-mayor') }}" class="btn btn--gold btn--lg">See the Record</a>
+                    <a href="{{ url('/about') }}" class="btn btn--outline-white btn--lg">About Talib</a>
                 </div>
             </div>
         </div>
@@ -52,10 +57,10 @@
         <div class="container">
             <div class="stats-bar__grid">
                 @foreach([
-                    ['50', 'K+',  'Lives Impacted',          50000],
-                    ['12', '+',   'Projects Delivered',      12],
-                    ['15', '+',   'Years in Public Service', 15],
-                    ['100','K+',  'Party Members',           100000],
+                    ['24',  '',   'Compactor Trucks Procured',   24],
+                    ['38',  'km', 'New Municipal Roads',         38],
+                    ['9',   '',   'Ambulances to Clinics',        9],
+                    ['200', '%',  'Revenue Growth, 2017–22',    200],
                 ] as [$num, $suffix, $label, $count])
                 <div class="stats-bar__item">
                     <div class="stats-bar__number">
@@ -80,12 +85,13 @@
 
                 <div class="about-teaser__body" data-reveal="fade-left" data-reveal-delay="150">
                     <span class="about-teaser__eyebrow">About Talib</span>
-                    <h2 class="about-teaser__title">Mayor. Party Leader.<br>Champion of The Gambia.</h2>
+                    <h2 class="about-teaser__title">Elected at 31.<br>The youngest mayor<br>in Gambian history.</h2>
                     <p class="about-teaser__text">
-                        Talib Bensouda is a visionary leader and dedicated public servant who has committed
-                        his life to the advancement of The Gambia. As Mayor and party leader, he has transformed
-                        communities through decisive action, inclusive governance, and an unwavering commitment
-                        to the people he serves.
+                        Talib Ahmed Bensouda was born in Bakau in 1986 and studied Economics
+                        and Communication Technology at the University of Toronto. He worked
+                        in business before entering local government, and in May 2018 was
+                        elected Mayor of Kanifing Municipal Council, defeating the APRC
+                        candidate with 29,325 votes. He was re-elected in 2023.
                     </p>
                     <a href="{{ url('/about') }}" class="btn btn--outline-navy">Read Full Bio</a>
                 </div>
@@ -100,16 +106,17 @@
             <div class="video-section__inner">
 
                 <div data-reveal="fade-right">
-                    <span class="video-section__eyebrow">Hear From Talib</span>
-                    <h2 class="video-section__title">A Message to Every Gambian</h2>
+                    <span class="video-section__eyebrow">In Focus</span>
+                    <h2 class="video-section__title">"Together for a Better KM"</h2>
                     <p class="video-section__desc">
-                        In his own words, Talib Bensouda shares his vision for a united,
-                        prosperous Gambia — and why every citizen has a role to play
-                        in shaping the nation's future.
+                        Both of Talib Bensouda's mayoral campaigns were run on a
+                        development-first manifesto and were noted for avoiding partisan
+                        attacks. The slogan became the framework for two terms of work
+                        across Kanifing's 19 wards.
                     </p>
                     <blockquote class="video-section__quote">
-                        "The Gambia does not belong to politicians. It belongs to every man,
-                        woman, and child who calls it home."
+                        Kanifing's first structured, municipality-wide waste collection
+                        system — and the first of its kind in the sub-region.
                     </blockquote>
                 </div>
 
@@ -136,27 +143,27 @@
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">Community Impact</span>
+                <span class="section-header__eyebrow">The Record</span>
                 <h2 class="section-header__title">The People's Mayor</h2>
                 <p class="section-header__lead">
-                    Six landmark projects that have changed lives and transformed communities
-                    across The Gambia.
+                    Six areas where Kanifing Municipal Council's work under Talib Bensouda
+                    is most visible.
                 </p>
             </div>
 
             <div class="projects-grid">
                 @foreach([
-                    ['Clean Water Initiative',       'Bringing piped clean water to underserved communities across the municipality.'],
-                    ['Youth Employment Programme',   'Creating sustainable job opportunities for thousands of young Gambians.'],
-                    ['Education Infrastructure',     'Building and renovating schools to give every child access to quality education.'],
-                    ['Road & Infrastructure',        'Upgrading roads, drainage, and public spaces for safer, connected communities.'],
-                    ["Women's Economic Empowerment", 'Microfinance schemes and skills training to unlock economic independence for women.'],
-                    ['Healthcare Access',            'Improving and expanding primary healthcare facilities so no one is left behind.'],
+                    ['The Mbalit Project',            'Kanifing\'s first municipality-wide waste collection system — a fully funded D130 million partnership with 24 new compactor trucks and 172 youth jobs.'],
+                    ['Environmental Transformation',  'A €3 million EU-funded programme covering waste, education and tree planting — including the plan to plant 190,000 trees across 19 wards.'],
+                    ['Road Network Project',          'More than D300 million of Council funding for 38 kilometres of new roads, 11 feeder roads and two bridges connecting all 19 wards.'],
+                    ['Markets Rebuilt',               'Latrikunda Sabiji rebuilt with 100 shops; Serrekunda Market upgraded with a women\'s shed, CCTV, boreholes and security lighting.'],
+                    ['Healthcare Access',             'Nine ambulances for nine community clinics, a D15 million expansion of the Bundung Maternity Ward, and support for local clinics.'],
+                    ['Jobs, Skills & Enterprise',     'A D20 million youth revolving fund, the "Tekki Fii" innovation challenge, skills centres and 155 sewing machines for community centres.'],
                 ] as $i => $project)
                 <div class="project-card" data-reveal data-reveal-delay="{{ $i * 80 }}">
                     <div class="project-card__image">Photo {{ $i + 1 }}</div>
                     <div class="project-card__body">
-                        <div class="project-card__number">Project {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
+                        <div class="project-card__number">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
                         <h3 class="project-card__title">{{ $project[0] }}</h3>
                         <p class="project-card__desc">{{ $project[1] }}</p>
                     </div>
@@ -171,27 +178,27 @@
         </div>
     </section>
 
-    {{-- ── Mayor in the Community ─────────────────────────────────────────── --}}
+    {{-- ── In the Community ──────────────────────────────────────────────────── --}}
     <section class="section">
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">Mayor in Action</span>
-                <h2 class="section-header__title">With The People</h2>
+                <span class="section-header__eyebrow">On the Ground</span>
+                <h2 class="section-header__title">Across the Municipality</h2>
                 <p class="section-header__lead">
-                    Talib Bensouda leads from the ground up — standing shoulder-to-shoulder
-                    with communities across The Gambia to deliver real, lasting change.
+                    Openings, launches and community work across Kanifing's 19 wards —
+                    from Bakau and Bakoteh to Latrikunda, Tallinding and Serrekunda.
                 </p>
             </div>
 
             @php
             $communityPhotos = [
-                ['Community',      'Town Hall Meeting — Banjul'],
-                ['Infrastructure', 'Water Project Launch'],
-                ['Youth',          'Youth Forum 2026'],
-                ['Education',      'School Renovation — Serrekunda'],
-                ['Health',         'Community Health Drive'],
-                ['Empowerment',    "Women's Workshop — Bakau"],
+                ['Library',     'Municipal Library & Innovation Hub — opened 2024'],
+                ['Waste',       'Mbalit household collection rollout'],
+                ['Youth',       'Bakoteh Production & Innovation Centre'],
+                ['Markets',     'Serrekunda Market upgrade'],
+                ['Environment', 'Bakoteh dumpsite fencing & remediation'],
+                ['Community',   'Ward development across 19 wards'],
             ];
             @endphp
 
@@ -216,16 +223,16 @@
         </div>
     </section>
 
-    {{-- ── Testimonials ────────────────────────────────────────────────────── --}}
+    {{-- ── Recognition ─────────────────────────────────────────────────────── --}}
     <section class="section section--grey">
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">Community Voices</span>
-                <h2 class="section-header__title">What People Are Saying</h2>
+                <span class="section-header__eyebrow">Recognition</span>
+                <h2 class="section-header__title">Noted Beyond The Gambia</h2>
                 <p class="section-header__lead">
-                    From Banjul to the diaspora, Gambians across the world are rallying
-                    behind Talib Bensouda's vision for their nation.
+                    Kanifing's work has drawn recognition and partnerships from cities
+                    and institutions around the world.
                 </p>
             </div>
 
@@ -234,17 +241,17 @@
                 <div class="testimonial-card testimonial-card--featured" data-reveal data-reveal-delay="0">
                     <span class="testimonial-card__mark">"</span>
                     <p class="testimonial-card__text">
-                        Talib is not just a mayor — he is the embodiment of what servant leadership
-                        looks like. He shows up for us, listens to us, and delivers. Our community
-                        has water, better roads, and hope because of him.
+                        New Castle County, Delaware declared 8 July "Kanifing Municipal
+                        Council Day," and later marked 19 May 2022 as "Lord Mayor Bensouda
+                        Day" — recognition announced during a visit by the County Executive.
                     </p>
                     <div class="testimonial-card__author">
                         <div class="testimonial-card__avatar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
                         </div>
                         <div>
-                            <div class="testimonial-card__name">Fatou Ceesay</div>
-                            <div class="testimonial-card__role">Community Leader, Banjul</div>
+                            <div class="testimonial-card__name">New Castle County, Delaware</div>
+                            <div class="testimonial-card__role">United States · 2022</div>
                         </div>
                     </div>
                 </div>
@@ -252,17 +259,17 @@
                 <div class="testimonial-card" data-reveal data-reveal-delay="100">
                     <span class="testimonial-card__mark">"</span>
                     <p class="testimonial-card__text">
-                        As a Gambian living abroad, I've watched Talib work tirelessly from a distance.
-                        He is the rare leader who remembers the diaspora. He picks up the phone,
-                        he listens, and he acts. I am proud to support him.
+                        KMC holds full membership of the Global Parliament of Mayors and
+                        United Cities and Local Governments of Africa, and sits on the
+                        Mayors Migration Council via the Africa–Europe Mayors' Dialogue.
                     </p>
                     <div class="testimonial-card__author">
                         <div class="testimonial-card__avatar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
                         </div>
                         <div>
-                            <div class="testimonial-card__name">Lamin Jallow</div>
-                            <div class="testimonial-card__role">Gambian Diaspora, London</div>
+                            <div class="testimonial-card__name">Global Parliament of Mayors</div>
+                            <div class="testimonial-card__role">International membership</div>
                         </div>
                     </div>
                 </div>
@@ -270,17 +277,17 @@
                 <div class="testimonial-card" data-reveal data-reveal-delay="200">
                     <span class="testimonial-card__mark">"</span>
                     <p class="testimonial-card__text">
-                        The youth employment programme changed my life. I went from having no prospects
-                        to running my own business within a year. Talib invested in us when nobody
-                        else would. That is the kind of leadership The Gambia needs.
+                        A Dubawa fact-check in December 2025 independently verified several
+                        of Kanifing Municipal Council's market, road and library projects
+                        against public records.
                     </p>
                     <div class="testimonial-card__author">
                         <div class="testimonial-card__avatar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
                         </div>
                         <div>
-                            <div class="testimonial-card__name">Ousman Drammeh</div>
-                            <div class="testimonial-card__role">Youth Entrepreneur, Serrekunda</div>
+                            <div class="testimonial-card__name">Dubawa Fact-Check</div>
+                            <div class="testimonial-card__role">December 2025</div>
                         </div>
                     </div>
                 </div>
@@ -289,29 +296,29 @@
         </div>
     </section>
 
-    {{-- ── Upcoming Events ──────────────────────────────────────────────────── --}}
+    {{-- ── Recent Milestones ────────────────────────────────────────────────── --}}
     <section class="section section--navy">
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">What's Coming</span>
-                <h2 class="section-header__title section-header__title--light">Upcoming Events</h2>
+                <span class="section-header__eyebrow">Recently</span>
+                <h2 class="section-header__title section-header__title--light">Recent Milestones</h2>
                 <p class="section-header__lead section-header__lead--light">
-                    Join Talib in person at events across The Gambia and the global diaspora.
+                    The latest openings and launches across the municipality.
                 </p>
             </div>
 
             <div class="events-list">
                 @foreach([
-                    ['14', 'Jul', 'Diaspora Tour — London',   'Engage the Gambian community in the UK'],
-                    ['22', 'Jul', 'Diaspora Tour — New York', 'Meeting the Gambian diaspora on the East Coast'],
-                    ['05', 'Aug', 'Diaspora Tour — Madrid',   'Connecting with Gambians across Europe'],
-                    ['20', 'Sep', 'Annual Party Convention',  'Banjul, The Gambia — Party manifesto and elections'],
-                ] as $i => [$day, $month, $title, $desc])
+                    ['01', 'Jun', '2026', 'Digital Addresses for Policymaking', 'Research partnership with Paris Dauphine, Sciences Po and UTG, building on 31,867 digital property addresses'],
+                    ['01', 'Jul', '2025', 'UN Deputy Secretary-General Visit',  'Amina J. Mohammed visits the Bakoteh Youth Skills Acquisition Centre'],
+                    ['01', 'Jun', '2025', 'Bakau Multipurpose Facility',        'A D10 million-plus community facility launched, serving around 520 beneficiaries, most of them women'],
+                    ['01', 'Dec', '2024', 'Municipal Library & Innovation Hub',  'The D45 million KETP-funded public library, career centre and innovation hub inaugurated'],
+                ] as $i => [$day, $month, $year, $title, $desc])
                 <div class="event-row" data-reveal data-reveal-delay="{{ $i * 100 }}">
                     <div class="event-row__date">
                         <div class="event-row__date-day">{{ $day }}</div>
-                        <div class="event-row__date-month">{{ $month }} 2026</div>
+                        <div class="event-row__date-month">{{ $month }} {{ $year }}</div>
                     </div>
                     <div class="event-row__info">
                         <div class="event-row__title">{{ $title }}</div>
@@ -325,7 +332,7 @@
             </div>
 
             <div style="text-align:center; margin-top:48px;" data-reveal data-reveal-delay="350">
-                <a href="{{ url('/events') }}" class="btn btn--outline-white">View All Events</a>
+                <a href="{{ url('/events') }}" class="btn btn--outline-white">Events &amp; Milestones</a>
             </div>
 
         </div>
@@ -334,14 +341,14 @@
     {{-- ── CTA Banner ───────────────────────────────────────────────────────── --}}
     <section class="cta-banner">
         <div class="container">
-            <h2 class="cta-banner__title" data-reveal>Ready to make a difference?</h2>
+            <h2 class="cta-banner__title" data-reveal>Follow the Work</h2>
             <p class="cta-banner__lead" data-reveal data-reveal-delay="100">
-                The Gambia's future is in our hands. Join the movement and help shape the nation
-                we want for ourselves and our children.
+                Explore the full record from two terms in Kanifing, or get in touch
+                with the team directly.
             </p>
             <div class="cta-banner__actions" data-reveal data-reveal-delay="200">
-                <a href="{{ url('/contact') }}#join" class="btn btn--navy btn--lg">Join the Party</a>
-                <a href="{{ url('/contact') }}#volunteer" class="btn btn--outline-navy btn--lg">Volunteer with Us</a>
+                <a href="{{ url('/peoples-mayor') }}" class="btn btn--navy btn--lg">See the Record</a>
+                <a href="{{ url('/contact') }}" class="btn btn--outline-navy btn--lg">Get in Touch</a>
             </div>
         </div>
     </section>

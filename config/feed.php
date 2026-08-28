@@ -15,8 +15,8 @@ return [
              */
             'url' => '/feed',
 
-            'title' => env('APP_NAME', 'Laravel'),
-            'description' => 'The description of the feed.',
+            'title' => env('APP_NAME', 'Talib Bensouda'),
+            'description' => 'News, milestones and events from Talib Bensouda, Lord Mayor of Kanifing.',
             'language' => 'en-US',
 
             /*
