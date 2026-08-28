@@ -11,7 +11,7 @@
                     <span>/</span>
                     <a href="{{ route('events.index') }}">Events</a>
                     <span>/</span>
-                    <span>{{ $event->title }}</span>
+                    <span class="page-hero__crumb-current">{{ $event->title }}</span>
                 </nav>
 
                 @if($event->flag)

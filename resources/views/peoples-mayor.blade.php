@@ -8,7 +8,7 @@
                 <nav class="page-hero__breadcrumb" aria-label="Breadcrumb">
                     <a href="{{ url('/') }}">Home</a>
                     <span>/</span>
-                    <span style="color:rgba(255,255,255,0.65)">The People's Mayor</span>
+                    <span class="page-hero__crumb-current">The People's Mayor</span>
                 </nav>
                 <span class="page-hero__eyebrow">The Record · 2018 – 2026</span>
                 <h1 class="page-hero__title">The People's Mayor</h1>

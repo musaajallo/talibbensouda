@@ -1,5 +1,6 @@
 // Runtime theme tokens — light (default) and dark.
-// Navbar and footer are always navy; only body content switches.
+// The header and the page banner follow the theme (white in light, navy in
+// dark); the footer stays navy in both.
 
 :root {
     --bg:              #ffffff;
@@ -12,6 +13,23 @@
     --shadow-card:     0 12px 32px rgba(0,0,0,0.08);
     --outline-btn-fg:  #0d1b38;
     --outline-btn-bg:  #0d1b38;
+
+    // Header — light chrome
+    --header-bg:        rgba(255, 255, 255, 0.9);
+    --header-border:    #e8eaef;
+    --header-fg:        #0d1b38;
+    --header-fg-muted:  rgba(13, 27, 56, 0.62);
+    --header-menu-bg:   #ffffff;
+    --header-ctl-bg:    rgba(13, 27, 56, 0.06);
+    --header-ctl-border: rgba(13, 27, 56, 0.12);
+
+    // Page banner (inner-page hero)
+    --banner-bg:         #f4f5f8;
+    --banner-border:     #e5e7eb;
+    --banner-fg:         #0d1b38;
+    --banner-fg-muted:   rgba(13, 27, 56, 0.62);
+    --banner-crumb:      rgba(13, 27, 56, 0.45);
+    --banner-crumb-sep:  rgba(13, 27, 56, 0.25);
 }
 
 [data-theme="dark"] {
@@ -25,6 +43,21 @@
     --shadow-card:     0 12px 32px rgba(0,0,0,0.35);
     --outline-btn-fg:  #f1f5f9;
     --outline-btn-bg:  #f1f5f9;
+
+    --header-bg:        rgba(13, 27, 56, 0.9);
+    --header-border:    rgba(255, 255, 255, 0.08);
+    --header-fg:        #f1f5f9;
+    --header-fg-muted:  rgba(255, 255, 255, 0.7);
+    --header-menu-bg:   #080f20;
+    --header-ctl-bg:    rgba(255, 255, 255, 0.08);
+    --header-ctl-border: rgba(255, 255, 255, 0.12);
+
+    --banner-bg:         #0d1b38;
+    --banner-border:     rgba(255, 255, 255, 0.06);
+    --banner-fg:         #ffffff;
+    --banner-fg-muted:   rgba(255, 255, 255, 0.62);
+    --banner-crumb:      rgba(255, 255, 255, 0.4);
+    --banner-crumb-sep:  rgba(255, 255, 255, 0.2);
 }
 
 body {

@@ -8,9 +8,9 @@
                 <nav class="page-hero__breadcrumb" aria-label="Breadcrumb">
                     <a href="{{ url('/') }}">Home</a>
                     <span>/</span>
-                    <a href="{{ url('/events') }}" style="color:rgba(255,255,255,0.4); transition:color 0.15s;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Events</a>
+                    <a href="{{ url('/events') }}">Events</a>
                     <span>/</span>
-                    <span style="color:rgba(255,255,255,0.65)">Register Interest</span>
+                    <span class="page-hero__crumb-current">Register Interest</span>
                 </nav>
                 <span class="page-hero__eyebrow">Stay Informed</span>
                 <h1 class="page-hero__title">Register Your Interest</h1>

@@ -8,7 +8,7 @@
                 <nav class="page-hero__breadcrumb" aria-label="Breadcrumb">
                     <a href="{{ url('/') }}">Home</a>
                     <span>/</span>
-                    <span style="color:rgba(255,255,255,0.65)">About</span>
+                    <span class="page-hero__crumb-current">About</span>
                 </nav>
                 <span class="page-hero__eyebrow">About Talib</span>
                 <h1 class="page-hero__title">Talib Ahmed Bensouda</h1>

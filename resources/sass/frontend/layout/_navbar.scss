@@ -4,8 +4,10 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: $color-navy;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--header-border);
+    backdrop-filter: saturate(1.4) blur(8px);
+    transition: background 0.25s, border-color 0.25s;
 }
 
 .site-nav {
@@ -19,7 +21,7 @@
         font-family: $font-display;
         font-weight: 800;
         font-size: 1.1rem;
-        color: #fff;
+        color: var(--header-fg);
         letter-spacing: 0.02em;
         white-space: nowrap;
         flex-shrink: 0;
@@ -43,18 +45,18 @@
             right: 0;
             flex-direction: column;
             align-items: stretch;
-            background: $color-navy-dark;
+            background: var(--header-menu-bg);
             padding: $space-3 0;
             gap: 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border-top: 1px solid var(--header-border);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 
             &.is-open { display: flex; }
 
             .site-nav__link {
                 display: block;
                 padding: 14px $space-6;
-                border-bottom: 1px solid rgba(255,255,255,0.05);
+                border-bottom: 1px solid var(--header-border);
                 font-size: 1rem;
 
                 &:last-child { border-bottom: none; }
@@ -63,7 +65,7 @@
     }
 
     &__link {
-        color: rgba(255,255,255,0.75);
+        color: var(--header-fg-muted);
         font-size: 0.9rem;
         font-weight: 500;
         transition: color 0.15s;
@@ -90,7 +92,7 @@
     span {
         display: block;
         height: 2px;
-        background: #fff;
+        background: var(--header-fg);
         border-radius: 2px;
         transition: 0.2s;
     }
@@ -111,15 +113,15 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.75);
+    background: var(--header-ctl-bg);
+    border: 1px solid var(--header-ctl-border);
+    color: var(--header-fg-muted);
     padding: 0;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
 
     &:hover {
-        background: rgba(255,255,255,0.15);
-        color: #fff;
+        background: var(--header-ctl-border);
+        color: var(--header-fg);
     }
 }
