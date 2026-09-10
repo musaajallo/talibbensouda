@@ -158,7 +158,7 @@
                 <section class="policy-section" id="contact">
                     <h2 class="policy-section__heading">Contact</h2>
                     <p>Questions about this policy or about how we handle your personal data? Write to our privacy inbox:</p>
-                    <p><a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a></p>
+                    <p><a href="mailto:info@talibahmedbensouda.com">info@talibahmedbensouda.com</a></p>
                     <p>For general enquiries, use the <a href="{{ url('/contact') }}">contact page</a>.</p>
                 </section>
 

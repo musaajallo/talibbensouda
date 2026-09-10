@@ -60,7 +60,7 @@ All public pages were rewritten from placeholder copy to sourced content from
 ### Still needs real input (not in the source doc)
 
 - Photos for every page (placeholders remain), and the featured video
-- Real contact email (currently placeholder `info@talibbensouda.gm`), phone, office address
+- Real contact email (currently placeholder `info@talibahmedbensouda.com`), phone, office address
 - Real social media URLs (only Facebook `/MayorBensouda` is wired; X, Instagram,
   YouTube, WhatsApp still `#`)
 - Any genuine upcoming events / calendar

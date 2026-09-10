@@ -50,7 +50,7 @@
                     </div>
                     <p>
                         If you have any questions about this policy or about how we handle your data,
-                        contact us at <a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a>.
+                        contact us at <a href="mailto:info@talibahmedbensouda.com">info@talibahmedbensouda.com</a>.
                     </p>
                 </section>
 
@@ -151,7 +151,7 @@
                         <li><strong>Withdraw consent</strong> at any time where processing is consent-based, without affecting the lawfulness of prior processing.</li>
                     </ul>
                     <p>
-                        To exercise any of these rights, email <a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a>.
+                        To exercise any of these rights, email <a href="mailto:info@talibahmedbensouda.com">info@talibahmedbensouda.com</a>.
                         We will respond within 30 days. If you believe we have mishandled your data
                         you have the right to lodge a complaint with the relevant data-protection authority in The Gambia.
                     </p>
@@ -169,7 +169,7 @@
                     <p>
                         No method of transmission over the internet is 100% secure. If you discover a
                         security vulnerability, please report it responsibly to
-                        <a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a>.
+                        <a href="mailto:info@talibahmedbensouda.com">info@talibahmedbensouda.com</a>.
                     </p>
                 </section>
 
@@ -187,7 +187,7 @@
                 <section class="policy-section" id="contact">
                     <h2 class="policy-section__heading">Contact</h2>
                     <p>Questions or requests about this policy:</p>
-                    <p><a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a></p>
+                    <p><a href="mailto:info@talibahmedbensouda.com">info@talibahmedbensouda.com</a></p>
                     <p>For general enquiries, use the <a href="{{ url('/contact') }}">contact page</a>.</p>
                 </section>
 

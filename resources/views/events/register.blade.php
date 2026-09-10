@@ -92,7 +92,7 @@
 
                     <p class="reg-contact">
                         Questions? Email
-                        <a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a>
+                        <a href="mailto:info@talibahmedbensouda.com">info@talibahmedbensouda.com</a>
                         or <a href="{{ url('/contact') }}">get in touch</a>.
                     </p>
 

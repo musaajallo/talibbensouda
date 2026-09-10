@@ -22,7 +22,7 @@ Route::get('/events/ics', function (Request $request) {
     $end = preg_replace('/[^0-9TZ]/', '', (string) $request->query('end', ''));
     $loc = (string) $request->string('location')->limit(300);
     $desc = (string) $request->string('description')->limit(1000);
-    $uid = md5($title.$start).'@talibbensouda.gm';
+    $uid = md5($title.$start).'@talibahmedbensouda.com';
 
     $esc = fn (string $s) => str_replace(["\r", "\n", ',', ';'], [' ', ' ', '\\,', '\\;'], $s);
     $escDesc = fn (string $s) => str_replace(["\r", "\n", ',', ';'], [' ', '\\n', '\\,', '\\;'], $s);

@@ -14,7 +14,7 @@ return new class extends SettingsMigration
         // Backfill the values that were previously hardcoded in the Blade views.
         $this->migrator->update('general.site_name', fn ($current) => $current === 'Laravel' ? 'Talib Bensouda' : $current);
         $this->migrator->update('general.site_tagline', fn ($current) => filled($current) ? $current : "The People's Mayor.");
-        $this->migrator->update('general.contact_email', fn ($current) => str_contains((string) $current, 'example.com') ? 'info@talibbensouda.gm' : $current);
+        $this->migrator->update('general.contact_email', fn ($current) => str_contains((string) $current, 'example.com') ? 'info@talibahmedbensouda.com' : $current);
     }
 
     public function down(): void
