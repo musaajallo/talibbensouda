@@ -18,9 +18,6 @@ class GeneralSettings extends Settings
     /** "Based in" line on the contact page. */
     public string $based_in = 'Banjul, The Gambia';
 
-    /** "Response time" line on the contact page. */
-    public string $response_time = 'Within 48 hours';
-
     /** Path on the `public` disk to the site logo, or null to use the bundled asset. */
     public ?string $site_logo = null;
 
