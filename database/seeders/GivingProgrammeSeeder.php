@@ -49,7 +49,7 @@ class GivingProgrammeSeeder extends Seeder
         ];
 
         foreach ($programmes as $i => $data) {
-            GivingProgramme::updateOrCreate(
+            GivingProgramme::firstOrCreate(
                 ['key' => $data['key']],
                 array_merge($data, ['published' => true, 'sort_order' => $i + 1]),
             );

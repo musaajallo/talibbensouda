@@ -7,8 +7,9 @@ use Illuminate\Database\Seeder;
 
 /**
  * The six flagship projects. `summary` drives the home page card; the full
- * `description` + `metrics` drive the People's Mayor showcase. Keyed on `key`
- * so the visible titles can change without creating duplicates.
+ * `description` + `metrics` drive the People's Mayor showcase. `firstOrCreate`
+ * on `key`: creates missing rows on deploy, never touches rows that already
+ * exist, so edits made in the admin panel are preserved.
  */
 class ProjectSeeder extends Seeder
 {
@@ -90,7 +91,7 @@ class ProjectSeeder extends Seeder
         ];
 
         foreach ($projects as $i => $data) {
-            Project::updateOrCreate(
+            Project::firstOrCreate(
                 ['key' => $data['key']],
                 array_merge($data, ['published' => true, 'sort_order' => $i + 1]),
             );

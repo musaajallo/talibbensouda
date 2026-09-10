@@ -38,15 +38,19 @@ $FORGE_PHP artisan filament:assets
 # Runs both database/migrations and database/settings.
 $FORGE_PHP artisan migrate --force --graceful
 
-# --- Roles, permissions & the admin account ---------------------------------
+# --- Roles, permissions, the admin account & site content ------------------
 # shield:generate refreshes permissions/policies for any new resources;
 # RolesAndPermissionsSeeder re-syncs the admin roles to the full set;
 # AdminUserSeeder creates the admin login on the first deploy (idempotent —
 # it only re-asserts roles once an admin exists, so a panel password change
 # is never overwritten). Set ADMIN_EMAIL / ADMIN_PASSWORD in the Forge env.
+# ContentSeeder fills in projects, events, gallery, community photos,
+# testimonials, giving-back programmes and the hero slider — create-if-missing
+# only, so rows edited in the panel are never overwritten.
 $FORGE_PHP artisan shield:generate --all --panel=admin --no-interaction || true
 $FORGE_PHP artisan db:seed --class=Database\\Seeders\\RolesAndPermissionsSeeder --force
 $FORGE_PHP artisan db:seed --class=Database\\Seeders\\AdminUserSeeder --force
+$FORGE_PHP artisan db:seed --class=Database\\Seeders\\ContentSeeder --force
 
 # --- Cache rebuild ---------------------------------------------------------
 $FORGE_PHP artisan optimize:clear

@@ -34,7 +34,7 @@ class TestimonialSeeder extends Seeder
         ];
 
         foreach ($testimonials as $i => $data) {
-            Testimonial::updateOrCreate(
+            Testimonial::firstOrCreate(
                 ['key' => $data['key']],
                 array_merge($data, ['published' => true, 'sort_order' => $i + 1]),
             );
