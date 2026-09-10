@@ -32,7 +32,12 @@ class AppPreset implements Preset
 
             // Google Fonts, loaded in resources/views/layouts/app.blade.php.
             ->add(Directive::STYLE, 'https://fonts.googleapis.com')
-            ->add(Directive::FONT, 'https://fonts.gstatic.com');
+            ->add(Directive::FONT, 'https://fonts.gstatic.com')
+
+            // YouTube embed on the home page's "featured video" section
+            // (only rendered when an editor sets a video ID).
+            ->add(Directive::FRAME, 'https://www.youtube-nocookie.com')
+            ->add(Directive::FRAME, 'https://www.youtube.com');
 
         // Examples — uncomment as you add integrations:
         //

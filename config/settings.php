@@ -1,6 +1,7 @@
 <?php
 
 use App\Settings\GeneralSettings;
+use App\Settings\HomePageSettings;
 use App\Settings\SiteChromeSettings;
 use App\Settings\SocialSettings;
 use Spatie\LaravelData\Data;
@@ -20,6 +21,7 @@ return [
         GeneralSettings::class,
         SocialSettings::class,
         SiteChromeSettings::class,
+        HomePageSettings::class,
     ],
 
     /*
