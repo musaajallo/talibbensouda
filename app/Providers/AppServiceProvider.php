@@ -12,6 +12,7 @@ use App\Models\Testimonial;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Resend\Laravel\Events\EmailBounced;
@@ -62,10 +63,19 @@ class AppServiceProvider extends ServiceProvider
      * App\Support\ResponseCache\CachePublicPages). Flush it whenever the
      * content that feeds those pages changes — a model edited in the panel,
      * an image added, or any settings page saved.
+     *
+     * A cache-backend hiccup here must never bubble up and fail the save (or
+     * the admin page load that triggered it), so the flush is best-effort.
      */
     protected function flushResponseCacheOnContentChange(): void
     {
-        $flush = fn () => ResponseCache::clear();
+        $flush = function (): void {
+            try {
+                ResponseCache::clear();
+            } catch (\Throwable $e) {
+                Log::warning('Response cache flush failed: '.$e->getMessage());
+            }
+        };
 
         $models = [
             EventModel::class,

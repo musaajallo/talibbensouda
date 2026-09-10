@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\PeoplesMayorPageSettings;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
@@ -15,6 +16,8 @@ use UnitEnum;
 
 class ManagePeoplesMayorPage extends SettingsPage
 {
+    use NormalisesSettingsData;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
 
     protected static string $settings = PeoplesMayorPageSettings::class;

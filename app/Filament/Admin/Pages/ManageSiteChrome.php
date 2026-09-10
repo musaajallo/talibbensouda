@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\SiteChromeSettings;
 use BackedEnum;
 use Filament\Forms\Components\TextInput;
@@ -13,6 +14,8 @@ use UnitEnum;
 
 class ManageSiteChrome extends SettingsPage
 {
+    use NormalisesSettingsData;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleGroup;
 
     protected static string $settings = SiteChromeSettings::class;

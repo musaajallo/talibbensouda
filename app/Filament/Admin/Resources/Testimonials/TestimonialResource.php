@@ -23,7 +23,7 @@ class TestimonialResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
-    protected static ?string $navigationLabel = 'Recognition';
+    protected static ?string $navigationLabel = 'Testimonials';
 
     protected static ?int $navigationSort = 40;
 

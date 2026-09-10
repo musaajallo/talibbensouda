@@ -53,6 +53,16 @@ return [
             'lock_path' => storage_path('framework/cache/data'),
         ],
 
+        // Isolated store for spatie/laravel-responsecache. It lives in its own
+        // directory so ResponseCache::clear() (fired on every content edit —
+        // see AppServiceProvider) only ever wipes cached page HTML, never the
+        // application cache, the permission cache, or anything else.
+        'responsecache' => [
+            'driver' => 'file',
+            'path' => storage_path('framework/cache/responsecache'),
+            'lock_path' => storage_path('framework/cache/responsecache'),
+        ],
+
         'memcached' => [
             'driver' => 'memcached',
             'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
