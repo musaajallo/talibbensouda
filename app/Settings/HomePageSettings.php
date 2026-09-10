@@ -154,17 +154,28 @@ class HomePageSettings extends Settings
      * Configured hero slides with resolved image URLs, or a default set built
      * from the bundled hero images when none are configured.
      *
-     * @return array<int, array{img: string, bg: string, pos: string}>
+     * Each slide carries both a full image (`img`, ≤1600w) and a 768w variant
+     * (`img_sm`) that the front end serves to phones.
+     *
+     * @return array<int, array{img: string, img_sm: string, bg: string, pos: string}>
      */
     public function heroSlides(): array
     {
         $configured = collect($this->hero_slides)
             ->filter(fn ($slide) => filled($slide['image'] ?? null))
-            ->map(fn ($slide) => [
-                'img' => Storage::disk('public')->url($slide['image']),
-                'bg' => $slide['bg'] ?? '#0d1b38',
-                'pos' => $slide['position'] ?? 'center top',
-            ])
+            ->map(function ($slide) {
+                $full = Storage::disk('public')->url($slide['image']);
+                $small = filled($slide['image_sm'] ?? null) && Storage::disk('public')->exists($slide['image_sm'])
+                    ? Storage::disk('public')->url($slide['image_sm'])
+                    : $full;
+
+                return [
+                    'img' => $full,
+                    'img_sm' => $small,
+                    'bg' => $slide['bg'] ?? '#0d1b38',
+                    'pos' => $slide['position'] ?? 'center top',
+                ];
+            })
             ->values()
             ->all();
 
@@ -174,13 +185,20 @@ class HomePageSettings extends Settings
 
         // Slides are anchored to the top so faces/heads aren't cropped as the
         // hero height varies across viewports.
-        return [
-            ['img' => asset('images/hero-rally.webp'), 'bg' => '#0d1b38', 'pos' => 'center top'],
-            ['img' => asset('images/hero-talib-desk.webp'), 'bg' => '#0d1b38', 'pos' => 'center top'],
-            ['img' => asset('images/hero-masquerade.webp'), 'bg' => '#0a1525', 'pos' => 'center top'],
-            ['img' => asset('images/hero-supporters.webp'), 'bg' => '#112044', 'pos' => 'center top'],
-            ['img' => asset('images/hero-hall.webp'), 'bg' => '#091422', 'pos' => 'center top'],
-            ['img' => asset('images/hero-victory.webp'), 'bg' => '#0d1b38', 'pos' => 'center top'],
+        $defaults = [
+            ['file' => 'hero-rally', 'bg' => '#0d1b38'],
+            ['file' => 'hero-talib-desk', 'bg' => '#0d1b38'],
+            ['file' => 'hero-masquerade', 'bg' => '#0a1525'],
+            ['file' => 'hero-supporters', 'bg' => '#112044'],
+            ['file' => 'hero-hall', 'bg' => '#091422'],
+            ['file' => 'hero-victory', 'bg' => '#0d1b38'],
         ];
+
+        return array_map(fn ($slide) => [
+            'img' => asset("images/{$slide['file']}.webp"),
+            'img_sm' => asset("images/{$slide['file']}-sm.webp"),
+            'bg' => $slide['bg'],
+            'pos' => 'center top',
+        ], $defaults);
     }
 }

@@ -8,6 +8,7 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+use Spatie\ResponseCache\Middlewares\CacheResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -34,8 +35,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // out of this policy — they are auth-gated and serve only same-origin
         // assets, and Filament's inline styles/scripts are incompatible with
         // the site's nonce policy.
+        // Order matters. CacheResponse sits *outside* AddCspHeaders: on a cache
+        // hit it returns before AddCspHeaders runs, so the CSP nonce baked into
+        // the cached HTML is replayed with its matching header instead of a
+        // fresh, mismatched one. On a miss the response is stored with both in
+        // sync. See App\Support\ResponseCache\CachePublicPages for what's cached.
         $middleware->web(append: [
             ProtectAgainstSpam::class,
+            CacheResponse::class,
             AddCspHeaders::class,
         ]);
     })

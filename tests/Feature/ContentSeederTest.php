@@ -55,20 +55,39 @@ it('seeds the hero slider as editable rows backed by copied images', function ()
     $slides = app(HomePageSettings::class)->hero_slides;
 
     expect($slides)->toHaveCount(6)
-        ->and($slides[0])->toHaveKeys(['image', 'bg', 'position'])
+        ->and($slides[0])->toHaveKeys(['image', 'image_sm', 'bg', 'position'])
         ->and($slides[0]['position'])->toBe('center top');
 
     Storage::disk('public')->assertExists($slides[0]['image']);
+    Storage::disk('public')->assertExists($slides[0]['image_sm']);
 });
 
 it('leaves a configured hero slider untouched', function (): void {
     $settings = app(HomePageSettings::class);
-    $settings->hero_slides = [['image' => 'hero/custom.webp', 'bg' => '#000000', 'position' => 'center']];
+    $settings->hero_slides = [['image' => 'hero/custom.webp', 'image_sm' => 'hero/custom-sm.webp', 'bg' => '#000000', 'position' => 'center']];
     $settings->save();
 
     seed(HeroSlidesSeeder::class);
 
     expect(app(HomePageSettings::class)->hero_slides)->toHaveCount(1);
+});
+
+it('backfills the 768w variant onto slides seeded before responsive hero images', function (): void {
+    Storage::fake('public');
+
+    $settings = app(HomePageSettings::class);
+    $settings->hero_slides = [
+        ['image' => 'hero/hero-rally.webp', 'bg' => '#0d1b38', 'position' => 'center top'],
+        ['image' => 'hero/custom-upload.webp', 'bg' => '#000000', 'position' => 'center'],
+    ];
+    $settings->save();
+
+    seed(HeroSlidesSeeder::class);
+
+    $slides = app(HomePageSettings::class)->hero_slides;
+
+    expect($slides[0]['image_sm'])->toBe('hero/hero-rally-sm.webp')
+        ->and($slides[1])->not->toHaveKey('image_sm'); // admin upload left alone
 });
 
 it('deploy seeds content without wiping the admin login', function (): void {

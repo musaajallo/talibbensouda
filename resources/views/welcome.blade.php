@@ -18,10 +18,13 @@
     ];
 @endphp
 
-    {{-- Preload only the first slide's image — it's the LCP element on mobile. --}}
+    {{-- Preload the first slide's image — it's the LCP element. Phones get the
+         768w variant, everything else the full one; the media queries mirror the
+         `mobile` check in the hero's x-data so nothing is fetched twice. --}}
     @if (! empty($slides[0]['img']))
         @push('head')
-            <link rel="preload" as="image" href="{{ $slides[0]['img'] }}" fetchpriority="high">
+            <link rel="preload" as="image" href="{{ $slides[0]['img_sm'] }}" media="(max-width: 700px)" fetchpriority="high">
+            <link rel="preload" as="image" href="{{ $slides[0]['img'] }}" media="(min-width: 701px)" fetchpriority="high">
         @endpush
     @endif
 
@@ -32,19 +35,25 @@
             current: 0,
             loaded: [0],
             timer: null,
-            start() { if (this.slides.length > 1) this.timer = setInterval(() => this.go((this.current + 1) % this.slides.length), 5000) },
+            mobile: window.matchMedia('(max-width: 700px)').matches,
+            src(slide) { return this.mobile && slide.img_sm ? slide.img_sm : slide.img },
+            start() {
+                if (this.slides.length < 2) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                this.timer = setInterval(() => this.go((this.current + 1) % this.slides.length), 7000);
+            },
             go(i) { this.current = i; if (! this.loaded.includes(i)) this.loaded.push(i); },
             goTo(i) { this.go(i); clearInterval(this.timer); this.start() }
         }"
-        x-init="start()"
+        x-init="setTimeout(() => start(), 3000)"
     >
         <div class="hero__slides">
             <template x-for="(slide, i) in slides" :key="i">
                 {{-- Slides beyond the first only get their image once cycled to,
-                     so 5 large photos don't compete for bandwidth on load. --}}
+                     so the other photos don't compete for bandwidth on load. --}}
                 <div class="hero__slide" :class="{ 'is-active': i === current }"
-                     :style="(slide.img && loaded.includes(i))
-                         ? `background-color: ${slide.bg}; background-image: url('${slide.img}'); background-position: ${slide.pos || 'center top'}`
+                     :style="loaded.includes(i)
+                         ? `background-color: ${slide.bg}; background-image: url('${src(slide)}'); background-position: ${slide.pos || 'center top'}`
                          : `background-color: ${slide.bg}`"></div>
             </template>
         </div>

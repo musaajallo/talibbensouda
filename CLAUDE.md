@@ -147,13 +147,39 @@ TBT 4.7 s. Optimisation log:
 | 2 | Lazy-load hero slides 2–6 (only the active one gets `background-image`); `<link rel=preload as=image fetchpriority=high>` for slide 1 | `welcome.blade.php` | ✅ done |
 | 3 | Homepage feature video `preload="none"` (was `metadata`) | `welcome.blade.php` | ✅ done |
 | 4 | Drop `backdrop-filter: blur()` on the sticky header below `lg` (repaints every scroll frame); near-opaque `--header-bg-solid` instead | `_navbar.scss`, `_themes.scss` | ✅ done |
-| 5 | **nginx: long cache headers** for `/build/*` (1y immutable) + images/fonts/mp4 (30d) — no `Cache-Control` on anything today | Forge → site → nginx config | ⏳ Forge |
-| 6 | **Forge deploy script**: paste `.forge/deploy.sh` into the Forge UI field so `artisan migrate` / `optimize` / `db:seed ContentSeeder` actually run — this is why TTFB is ~2 s and content is missing | Forge → site → Deploy Script | ⏳ Forge |
-| 7 | Responsive hero-image variants (640/960/1440) + `image-set()` | app + `HeroSlidesSeeder` | ⬜ todo |
+| 5 | nginx: long cache headers for `/build/*` (1y immutable) + images/fonts/mp4 (30d) | Forge → site → nginx config | ✅ done |
+| 6 | Forge deploy script rewritten for the zero-downtime macro format; runs `artisan migrate` / `optimize` / the seeders — this is why TTFB was ~2 s and content was missing | `.forge/deploy.sh` + Forge UI | ✅ done |
+| 7 | Responsive hero-image variants — 768w `-sm.webp` served to phones (`≤700px`), full ≤1600w above; media-scoped `<link rel=preload>` mirrors the JS pick so nothing double-loads | `public/images/hero-*`, `HeroSlidesSeeder`, `HomePageSettings::heroSlides`, `welcome.blade.php` | ✅ done |
 | 8 | Route-split CSS (frontend.scss bundles every page's styles — ~123 KiB unused on `/`) | Vite config + per-page inputs | ⬜ todo |
-| 9 | Wire `spatie/laravel-responsecache` middleware + invalidation on content/settings save + `responsecache:clear` in deploy (mind the CSRF token in cached HTML) | app | ⬜ todo |
+| 9 | `spatie/laravel-responsecache` — full-page cache for the public site (see **Caching** below) | `CachePublicPages`, `bootstrap/app.php`, `AppServiceProvider` | ✅ done |
+| 10 | Hero auto-advance: first change delayed to ~10 s, interval 7 s (was 5 s), skipped entirely under `prefers-reduced-motion` | `welcome.blade.php` | ✅ done |
 
-After #1–4 (local, unthrottled): 42/100, TBT 730 ms, LCP 6.6 s.
+Progress: baseline 25 → after #1–4 (local, unthrottled) 42 → after #5–7,9,10 (prod, Lighthouse mobile) **~64 median** (51–75; TTFB and hero-rotation variance), TBT ~140–690 ms, LCP 3.7 s.
+
+## Caching
+
+The public marketing site is served from a **full-page response cache**
+(`spatie/laravel-responsecache`, `file` store). `App\Support\ResponseCache\CachePublicPages`
+is the profile: it caches anonymous GET requests to the marketing pages and
+skips `/admin` + Livewire, the two form pages (`/contact`, `/events/register` —
+a cached page would freeze the honeypot's encrypted timestamp and hide flash
+messages), the health/sitemap/feed endpoints, and anything requested by a
+signed-in user.
+
+- **Middleware order matters.** `CacheResponse` is appended to the `web` group
+  *before* `AddCspHeaders` (`bootstrap/app.php`), so a cache hit returns before
+  the CSP middleware runs and the nonce baked into the cached HTML is replayed
+  with its matching `Content-Security-Policy` header. `CsrfTokenReplacer`
+  (registered by default) swaps the per-session token on every serve.
+- **Invalidation** is automatic: `AppServiceProvider::flushResponseCacheOnContentChange()`
+  calls `ResponseCache::clear()` on any content-model `saved`/`deleted`, any
+  `SettingsSaved`, and media add/clear events. `.forge/deploy.sh` also runs
+  `responsecache:clear` so template changes ship immediately.
+- **Tests**: disabled globally via `RESPONSE_CACHE_ENABLED=false` in `phpunit.xml`;
+  `tests/Feature/ResponseCacheTest.php` re-enables it against an `array` store.
+- **Toggle/inspect**: `RESPONSE_CACHE_ENABLED`, `RESPONSE_CACHE_LIFETIME` (default
+  86400 s); `php artisan responsecache:clear`. Debug headers (`X-Cache-Status`)
+  show when `APP_DEBUG` is on.
 
 ## Release
 
