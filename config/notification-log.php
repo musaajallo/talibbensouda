@@ -1,10 +1,14 @@
 <?php
 
+use Spatie\NotificationLog\Actions\ConvertNotificationSendingEventToLogItemAction;
+use Spatie\NotificationLog\Models\NotificationLogItem;
+use Spatie\NotificationLog\NotificationEventSubscriber;
+
 return [
     /*
      * This model will be used to log all sent notifications
      */
-    'model' => Spatie\NotificationLog\Models\NotificationLogItem::class,
+    'model' => NotificationLogItem::class,
 
     /*
      * Log items older than this number of days will be automatically be removed.
@@ -26,7 +30,7 @@ return [
      *
      */
     'actions' => [
-        'convertEventToModel' => Spatie\NotificationLog\Actions\ConvertNotificationSendingEventToLogItemAction::class,
+        'convertEventToModel' => ConvertNotificationSendingEventToLogItemAction::class,
     ],
 
     /*
@@ -34,5 +38,5 @@ return [
      * In most cases, you don't need to touch this. You could replace this by
      * a class of your own that extends the original.
      */
-    'event_subscriber' => Spatie\NotificationLog\NotificationEventSubscriber::class,
+    'event_subscriber' => NotificationEventSubscriber::class,
 ];

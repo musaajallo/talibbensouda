@@ -145,6 +145,7 @@
 
                         <form action="{{ route('events.register.store') }}" method="POST" novalidate>
                             @csrf
+                            <x-honeypot />
 
                             {{-- Name + Email --}}
                             <div class="form-row">
