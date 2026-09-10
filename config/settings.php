@@ -1,7 +1,10 @@
 <?php
 
+use App\Settings\AboutPageSettings;
 use App\Settings\GeneralSettings;
+use App\Settings\GivingBackPageSettings;
 use App\Settings\HomePageSettings;
+use App\Settings\PeoplesMayorPageSettings;
 use App\Settings\SiteChromeSettings;
 use App\Settings\SocialSettings;
 use Spatie\LaravelData\Data;
@@ -22,6 +25,9 @@ return [
         SocialSettings::class,
         SiteChromeSettings::class,
         HomePageSettings::class,
+        PeoplesMayorPageSettings::class,
+        GivingBackPageSettings::class,
+        AboutPageSettings::class,
     ],
 
     /*

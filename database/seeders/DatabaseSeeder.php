@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             TestimonialSeeder::class,
             CommunityPhotoSeeder::class,
+            GivingProgrammeSeeder::class,
         ]);
     }
 }

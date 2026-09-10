@@ -337,6 +337,13 @@
         svg { width: 36px; height: 36px; color: $color-gold; }
     }
 
+    &__logo-img {
+        max-width: 200px;
+        max-height: 120px;
+        width: auto;
+        object-fit: contain;
+    }
+
     &__logo-name {
         font-family: $font-display;
         font-size: 1.1rem;

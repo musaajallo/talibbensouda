@@ -10,14 +10,19 @@ disk. Modelled on the sibling `umc` project.
 
 - Panel provider: `app/Providers/Filament/AdminPanelProvider.php`, mounted at `/admin`.
 - Resources: `app/Filament/Admin/Resources/<Name>/…` (Resource + `Schemas/<Name>Form.php` +
-  `Tables/<Name>Table.php` + `Pages/*`). Content models so far: `Event`, `GalleryPhoto`,
-  `Project` (metrics repeater + image; home + People's Mayor), `Testimonial` (home
-  recognition), `CommunityPhoto` (home + People's Mayor + Giving Back), plus the
-  `ContactMessage` / `EventRegistration` inboxes.
+  `Tables/<Name>Table.php` + `Pages/*`). Content models: `Event`, `GalleryPhoto`,
+  `Project` (`summary` for the home card, full `description` + `metrics` for People's Mayor),
+  `Testimonial`, `CommunityPhoto` (`group`: `municipality` = home + People's Mayor,
+  `community-support` = Giving Back), `GivingProgramme`, plus the `ContactMessage` /
+  `EventRegistration` inboxes. Seed-managed rows carry a stable `key` — seeders
+  `updateOrCreate` on it so titles can change without duplicating.
 - Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
-  `HomePageSettings`. Each public view reads its models + settings in a top `@php` block and
-  degrades gracefully (a section hides when its collection is empty; images fall back to a
-  placeholder tile).
+  `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`.
+  Multi-paragraph fields are stored blank-line-separated and split with the
+  `App\Settings\Concerns\SplitsParagraphs` trait (`$page->paragraphs('bio_body')`).
+- Each public view reads its models + settings in a top `@php` block and degrades gracefully
+  (a section hides when its collection is empty; images fall back to a placeholder tile;
+  decorative SVG icons are cycled by index, not stored).
 - Settings pages: `app/Filament/Admin/Pages/Manage*.php` extending `Filament\Pages\SettingsPage`,
   each bound to a class in `app/Settings/`. Nav group **System** for now; page-body settings
   will land under **Page content**.

@@ -4,7 +4,9 @@
     $slides = $home->heroSlides();
 
     $projects = \App\Models\Project::published()->with('media')->orderBy('sort_order')->take(6)->get();
-    $communityPhotos = \App\Models\CommunityPhoto::published()->with('media')->orderBy('sort_order')->take(6)->get();
+    $communityPhotos = \App\Models\CommunityPhoto::published()
+        ->group(\App\Models\CommunityPhoto::GROUP_MUNICIPALITY)
+        ->with('media')->orderBy('sort_order')->take(6)->get();
     $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->get();
     $milestones = \App\Models\Event::where('is_upcoming', true)->orderBy('sort_order')->take(4)->get();
 
@@ -162,7 +164,7 @@
                     <div class="project-card__body">
                         <div class="project-card__number">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
                         <h3 class="project-card__title">{{ $project->title }}</h3>
-                        <p class="project-card__desc">{{ $project->description }}</p>
+                        <p class="project-card__desc">{{ $project->cardText() }}</p>
                     </div>
                 </div>
                 @endforeach

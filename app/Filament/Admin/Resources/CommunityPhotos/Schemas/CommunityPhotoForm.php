@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\CommunityPhotos\Schemas;
 
+use App\Models\CommunityPhoto;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -27,8 +29,13 @@ class CommunityPhotoForm
             Section::make('Details')
                 ->columns(2)
                 ->components([
+                    Select::make('group')
+                        ->options(CommunityPhoto::GROUPS)
+                        ->default(CommunityPhoto::GROUP_MUNICIPALITY)
+                        ->required()
+                        ->helperText('Which pages this tile appears on.'),
                     TextInput::make('tag')->maxLength(40)->helperText('Overlay label, e.g. "Library".'),
-                    TextInput::make('caption')->required()->maxLength(200),
+                    TextInput::make('caption')->required()->maxLength(200)->columnSpanFull(),
                     Toggle::make('published')->default(true),
                     TextInput::make('sort_order')->numeric()->default(0)->required(),
                 ]),

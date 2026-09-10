@@ -6,9 +6,9 @@ use App\Models\Project;
 use Illuminate\Database\Seeder;
 
 /**
- * The six project cards that previously lived as a hardcoded array in
- * welcome.blade.php (and, in expanded form, peoples-mayor.blade.php).
- * Metrics are backfilled from the People's Mayor page.
+ * The six flagship projects. `summary` drives the home page card; the full
+ * `description` + `metrics` drive the People's Mayor showcase. Keyed on `key`
+ * so the visible titles can change without creating duplicates.
  */
 class ProjectSeeder extends Seeder
 {
@@ -16,67 +16,82 @@ class ProjectSeeder extends Seeder
     {
         $projects = [
             [
-                'tag' => 'Waste',
+                'key' => 'mbalit',
+                'tag' => 'Waste Management',
                 'title' => 'The Mbalit Project',
-                'description' => "Kanifing's first municipality-wide waste collection system — a fully funded D130 million partnership with 24 new compactor trucks and 172 youth jobs.",
+                'summary' => "Kanifing's first municipality-wide waste collection system — a fully funded D130 million partnership with 24 new compactor trucks and 172 youth jobs.",
+                'description' => "Kanifing's first structured, municipality-wide waste collection system — and the first of its kind in the sub-region. Delivered as a three-year, fully funded D130 million partnership with QGroup, the project introduced organised household waste collection with 24 new compactor trucks, skip trucks, septic emptiers and tipper trucks. The Council paid off the facility in full and secured ownership of all vehicles, and employed 172 young people as janitors, drivers, ticket agents and secretaries.",
                 'metrics' => [
-                    ['value' => 'D130M', 'label' => 'Project value'],
-                    ['value' => '24', 'label' => 'Compactor trucks'],
-                    ['value' => '172', 'label' => 'Youth employed'],
+                    ['value' => 'D130M', 'label' => 'Fully Funded'],
+                    ['value' => '24', 'label' => 'Compactor Trucks'],
+                    ['value' => '172', 'label' => 'Youth Jobs'],
                 ],
             ],
             [
+                'key' => 'ketp',
                 'tag' => 'Environment',
-                'title' => 'Environmental Transformation',
-                'description' => 'A €3 million EU-funded programme covering waste, education and tree planting — including the plan to plant 190,000 trees across 19 wards.',
+                'title' => 'Kanifing Environmental Transformation Programme',
+                'summary' => 'A €3 million EU-funded programme covering waste, education and tree planting — including the plan to plant 190,000 trees across 19 wards.',
+                'description' => "KMC's flagship environmental programme, funded by a €3 million European Union grant and delivered in partnership with Peterborough City Council in the UK. KETP covers waste management, environmental education and tree planting. It funded the Kanifing Municipal Library and Innovation Hub, the \"one garbage can per household\" rollout of 10,000 bins, community transfer stations for waste sorting, recycling infrastructure at Bakoteh, and a plan to plant 190,000 trees across the municipality's 19 wards.",
                 'metrics' => [
-                    ['value' => '€3M', 'label' => 'EU grant'],
-                    ['value' => '190,000', 'label' => 'Trees planned'],
-                    ['value' => '19', 'label' => 'Wards covered'],
+                    ['value' => '€3M', 'label' => 'EU Grant'],
+                    ['value' => '10,000', 'label' => 'Bins Distributed'],
+                    ['value' => '190,000', 'label' => 'Trees Planned'],
                 ],
             ],
             [
-                'tag' => 'Roads',
-                'title' => 'Road Network Project',
-                'description' => 'More than D300 million of Council funding for 38 kilometres of new roads, 11 feeder roads and two bridges connecting all 19 wards.',
+                'key' => 'roads',
+                'tag' => 'Roads & Drainage',
+                'title' => 'Kanifing Municipal Road Network Project',
+                'summary' => 'More than D300 million of Council funding for 38 kilometres of new roads, 11 feeder roads and two bridges connecting all 19 wards.',
+                'description' => "A Council-funded programme of more than D300 million to build 38 kilometres of new roads connecting KMC's 19 wards — including 11 feeder roads, two bridges and 5.9 kilometres of new drainage. It builds on earlier Council road works on Lat Kumba Road, Bakau Marina Road, and the Latrikunda–Wellingara and Kololi–Manjai roads, and complements national road efforts by the OIC and NRA.",
                 'metrics' => [
-                    ['value' => '38km', 'label' => 'New roads'],
-                    ['value' => '11', 'label' => 'Feeder roads'],
-                    ['value' => 'D300M+', 'label' => 'Council funding'],
+                    ['value' => 'D300M+', 'label' => 'Council-Funded'],
+                    ['value' => '38km', 'label' => 'New Roads'],
+                    ['value' => '19', 'label' => 'Wards Connected'],
                 ],
             ],
             [
+                'key' => 'markets',
                 'tag' => 'Markets',
-                'title' => 'Markets Rebuilt',
-                'description' => "Latrikunda Sabiji rebuilt with 100 shops; Serrekunda Market upgraded with a women's shed, CCTV, boreholes and security lighting.",
+                'title' => 'Market Construction & Rehabilitation',
+                'summary' => "Latrikunda Sabiji rebuilt with 100 shops; Serrekunda Market upgraded with a women's shed, CCTV, boreholes and security lighting.",
+                'description' => "New and rehabilitated markets to give vendors — particularly women traders — safe, dignified space to earn a living. Latrikunda Sabiji Market was rebuilt as a storey building with 100 shops. Serrekunda Market received a major upgrade with a 30-kiosk women's shed, rehabilitated drains, CCTV, boreholes and 60 security lights. Markets at Tallinding, Old Bakau and Latrikunda Yiriganya were rehabilitated, and a Council-owned company, Kanifing Municipal Markets Ltd, is expanding the network further.",
                 'metrics' => [
-                    ['value' => '100', 'label' => 'New shops, Latrikunda'],
-                    ['value' => '2', 'label' => 'Markets rebuilt / upgraded'],
+                    ['value' => '100', 'label' => 'Shops at Latrikunda Sabiji'],
+                    ['value' => '19 → 26', 'label' => 'Markets Planned'],
+                    ['value' => '30', 'label' => "Women's Kiosks — Serrekunda"],
                 ],
             ],
             [
+                'key' => 'health',
                 'tag' => 'Health',
                 'title' => 'Healthcare Access',
-                'description' => 'Nine ambulances for nine community clinics, a D15 million expansion of the Bundung Maternity Ward, and support for local clinics.',
+                'summary' => 'Nine ambulances for nine community clinics, a D15 million expansion of the Bundung Maternity Ward, and support for local clinics.',
+                'description' => "KMC expanded the Bundung Maternity Ward in a D15 million partnership with Gamworks, rehabilitated the Council's maternity ward at Serekunda Hospital, and provided support to community clinics in Ebo Town and Tallinding. Nine ambulances were provided to nine community clinics across Kanifing Municipality so that emergencies could be reached faster.",
                 'metrics' => [
-                    ['value' => '9', 'label' => 'Ambulances'],
-                    ['value' => 'D15M', 'label' => 'Maternity ward expansion'],
+                    ['value' => '9', 'label' => 'Ambulances to 9 Clinics'],
+                    ['value' => 'D15M', 'label' => 'Bundung Maternity Ward'],
+                    ['value' => '3', 'label' => 'Community Clinics Supported'],
                 ],
             ],
             [
-                'tag' => 'Jobs',
-                'title' => 'Jobs, Skills & Enterprise',
-                'description' => 'A D20 million youth revolving fund, the "Tekki Fii" innovation challenge, skills centres and 155 sewing machines for community centres.',
+                'key' => 'jobs',
+                'tag' => 'Youth & Women',
+                'title' => 'Jobs, Skills and Enterprise',
+                'summary' => 'A D20 million youth revolving fund, the "Tekki Fii" innovation challenge, skills centres and 155 sewing machines for community centres.',
+                'description' => "A D20 million Youth Revolving Fund provides soft loans to young entrepreneurs. The Mayor's \"Tekki Fii\" Innovative Challenge, run with the EU and the Youth Empowerment Project, has awarded startup grants to Gambian innovators. The Bakoteh Production and Innovation Centre, opened in December 2022, supports training and production in textiles and hand-woven goods, and 155 sewing machines were distributed to skills and community centres — alongside financing and cold-storage facilities aimed at women-led enterprise.",
                 'metrics' => [
-                    ['value' => 'D20M', 'label' => 'Youth revolving fund'],
-                    ['value' => '155', 'label' => 'Sewing machines'],
+                    ['value' => 'D20M', 'label' => 'Youth Revolving Fund'],
+                    ['value' => '155', 'label' => 'Sewing Machines'],
+                    ['value' => 'D100M', 'label' => "Toward Women's Enterprise"],
                 ],
             ],
         ];
 
         foreach ($projects as $i => $data) {
             Project::updateOrCreate(
-                ['title' => $data['title']],
+                ['key' => $data['key']],
                 array_merge($data, ['published' => true, 'sort_order' => $i + 1]),
             );
         }
