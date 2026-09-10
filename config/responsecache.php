@@ -1,6 +1,6 @@
 <?php
 
-use Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests;
+use App\Support\ResponseCache\CachePublicPages;
 use Spatie\ResponseCache\Hasher\DefaultHasher;
 use Spatie\ResponseCache\Replacers\CsrfTokenReplacer;
 use Spatie\ResponseCache\Serializers\JsonSerializer;
@@ -23,7 +23,7 @@ return [
          * The default number of seconds responses will be cached
          * when using the default CacheProfile settings.
          */
-        'lifetime_in_seconds' => (int) env('RESPONSE_CACHE_LIFETIME', 60 * 60 * 24 * 7),
+        'lifetime_in_seconds' => (int) env('RESPONSE_CACHE_LIFETIME', 60 * 60 * 24),
 
         /*
          * If your cache driver supports tags, you may specify a tag
@@ -101,7 +101,7 @@ return [
      * By default all successful GET-requests will be cached.
      * You can provide your own by using the CacheProfile.
      */
-    'cache_profile' => CacheAllSuccessfulGetRequests::class,
+    'cache_profile' => CachePublicPages::class,
 
     /*
      * This class is responsible for generating a hash for

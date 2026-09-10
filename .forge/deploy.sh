@@ -58,6 +58,10 @@ $FORGE_PHP artisan optimize:clear
 $FORGE_PHP artisan optimize
 $FORGE_PHP artisan filament:cache-components || true
 
+# Blade/content may have changed — drop the full-page response cache so the
+# new markup is served immediately rather than after the 24h TTL.
+$FORGE_PHP artisan responsecache:clear
+
 $ACTIVATE_RELEASE()
 
 $RESTART_QUEUES()
