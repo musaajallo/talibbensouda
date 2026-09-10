@@ -1,5 +1,4 @@
-<x-app-layout>
-@php $title = 'Privacy Policy' @endphp
+<x-app-layout title="Privacy Policy">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

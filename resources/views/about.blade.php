@@ -1,6 +1,5 @@
-<x-app-layout>
+<x-app-layout title="About">
 @php
-    $title = 'About';
     $page = app(\App\Settings\AboutPageSettings::class);
 
     $valueIcons = [

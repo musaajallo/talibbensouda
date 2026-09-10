@@ -20,43 +20,56 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ isset($title) ? $title . ' — ' : '' }}{{ $brandName }}</title>
-    <link rel="icon" href="{{ $general->faviconUrl() }}">
+    <title>{{ $brandName }}{{ filled($title ?? null) && $title !== $brandName ? ' — ' . $title : '' }}</title>
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0d1b38" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ $general->faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-    <script @cspNonce>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
+    <script @cspNonce>document.documentElement.classList.add('js');document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
     @vite(['resources/sass/frontend/frontend.scss', 'resources/js/frontend.js'])
 </head>
 <body>
 
-    <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })">
+    <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })" :class="{ 'is-menu-open': open }" @keydown.escape.window="open = false" x-effect="document.body.classList.toggle('has-menu-open', open)">
         <div class="site-nav container">
 
-            <a href="{{ url('/') }}" class="site-nav__brand">{{ $brandName }}</a>
+            <a href="{{ url('/') }}" class="site-nav__brand" @click="open = false">{{ $brandName }}</a>
 
-            <button class="nav-toggle" @click="open = !open" :aria-expanded="open.toString()" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
+            <nav class="site-nav__menu" :class="{ 'is-open': open }" aria-label="Primary">
+                <ul class="site-nav__links">
+                    <li><a href="{{ url('/') }}"              class="site-nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
+                    <li><a href="{{ url('/about') }}"         class="site-nav__link {{ request()->is('about') ? 'is-active' : '' }}">About</a></li>
+                    <li><a href="{{ url('/peoples-mayor') }}" class="site-nav__link {{ request()->is('peoples-mayor') ? 'is-active' : '' }}">The People's Mayor</a></li>
+                    <li><a href="{{ url('/gallery') }}"       class="site-nav__link {{ request()->is('gallery') ? 'is-active' : '' }}">Gallery</a></li>
+                    <li><a href="{{ url('/events') }}"        class="site-nav__link {{ request()->is('events') ? 'is-active' : '' }}">Events</a></li>
+                    <li><a href="{{ url('/giving-back') }}"   class="site-nav__link {{ request()->is('giving-back') ? 'is-active' : '' }}">Giving Back</a></li>
+                    <li><a href="{{ url('/contact') }}"       class="site-nav__link {{ request()->is('contact') ? 'is-active' : '' }}">Get in Touch</a></li>
+                </ul>
 
-            <ul class="site-nav__links" :class="{ 'is-open': open }">
-                <li><a href="{{ url('/') }}"              class="site-nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
-                <li><a href="{{ url('/about') }}"         class="site-nav__link {{ request()->is('about') ? 'is-active' : '' }}">About</a></li>
-                <li><a href="{{ url('/peoples-mayor') }}" class="site-nav__link {{ request()->is('peoples-mayor') ? 'is-active' : '' }}">The People's Mayor</a></li>
-                <li><a href="{{ url('/gallery') }}"       class="site-nav__link {{ request()->is('gallery') ? 'is-active' : '' }}">Gallery</a></li>
-                <li><a href="{{ url('/events') }}"        class="site-nav__link {{ request()->is('events') ? 'is-active' : '' }}">Events</a></li>
-                <li><a href="{{ url('/giving-back') }}"   class="site-nav__link {{ request()->is('giving-back') ? 'is-active' : '' }}">Giving Back</a></li>
-                <li><a href="{{ url('/contact') }}"       class="site-nav__link {{ request()->is('contact') ? 'is-active' : '' }}">Get in Touch</a></li>
-            </ul>
+                @if ($chrome->join_party_url)
+                    <a href="{{ $chrome->join_party_url }}" target="_blank" rel="noopener" class="btn btn--gold site-nav__menu-cta">{{ $chrome->join_party_label }}</a>
+                @endif
+            </nav>
 
-            @if ($chrome->join_party_url)
-                <a href="{{ $chrome->join_party_url }}" target="_blank" rel="noopener" class="btn btn--gold nav-cta">{{ $chrome->join_party_label }}</a>
-            @endif
+            <div class="site-nav__controls">
+                @if ($chrome->join_party_url)
+                    <a href="{{ $chrome->join_party_url }}" target="_blank" rel="noopener" class="btn btn--gold nav-cta">{{ $chrome->join_party_label }}</a>
+                @endif
 
-            <button class="theme-toggle" @click="dark = !dark" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
-                <svg x-show="!dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                <svg x-show="dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            </button>
+                <button class="theme-toggle" @click="dark = !dark" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <svg x-show="!dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg x-show="dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+
+                <button class="nav-toggle" @click="open = !open" :aria-expanded="open.toString()" aria-label="Toggle navigation">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
 
         </div>
     </header>

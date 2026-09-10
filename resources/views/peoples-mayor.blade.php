@@ -1,6 +1,5 @@
-<x-app-layout>
+<x-app-layout title="The People's Mayor">
 @php
-    $title = "The People's Mayor";
     $page = app(\App\Settings\PeoplesMayorPageSettings::class);
 
     $projects = \App\Models\Project::published()->with('media')->orderBy('sort_order')->get();

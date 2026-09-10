@@ -1,5 +1,4 @@
-<x-app-layout>
-@php $title = 'Gallery' @endphp
+<x-app-layout title="Gallery">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

@@ -1,5 +1,4 @@
-<x-app-layout>
-@php $title = 'Register Your Interest' @endphp
+<x-app-layout title="Register Your Interest">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

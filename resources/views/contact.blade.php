@@ -1,6 +1,5 @@
-<x-app-layout>
+<x-app-layout title="Get in Touch">
 @php
-    $title = 'Get in Touch';
     $general = app(\App\Settings\GeneralSettings::class);
     $social = app(\App\Settings\SocialSettings::class);
     $socialIcons = [
