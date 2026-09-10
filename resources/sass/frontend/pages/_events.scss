@@ -197,7 +197,8 @@
         grid-template-columns: 64px 1fr;
         grid-template-rows: auto auto;
 
-        &__actions { grid-column: 1 / -1; }
+        // Actions drop to their own row, aligned with the body (not the date).
+        &__actions { grid-column: 2 / -1; }
     }
 
     @media (max-width: $breakpoint-sm) {
