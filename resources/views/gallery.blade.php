@@ -8,7 +8,7 @@
                 <nav class="page-hero__breadcrumb" aria-label="Breadcrumb">
                     <a href="{{ url('/') }}">Home</a>
                     <span>/</span>
-                    <span style="color:rgba(255,255,255,0.65)">Gallery</span>
+                    <span class="page-hero__crumb-current">Gallery</span>
                 </nav>
                 <span class="page-hero__eyebrow">Photo Gallery</span>
                 <h1 class="page-hero__title">Moments That Matter</h1>
@@ -22,39 +22,40 @@
 
     {{-- ── Gallery ──────────────────────────────────────────────────────────── --}}
     @php
+    // Placeholder set — swap captions and add real image files as photos are chosen.
     $photos = [
-        // Community
-        ['category' => 'Community', 'caption' => 'Town Hall Meeting — Banjul',            'wide' => true,  'bg' => '#0d1b38'],
-        ['category' => 'Community', 'caption' => 'Meeting Residents — Serrekunda',         'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Community', 'caption' => 'Community Forum — Kanifing',             'wide' => false, 'bg' => '#0f2040'],
-        ['category' => 'Community', 'caption' => 'Youth Dialogue — Brikama',               'wide' => false, 'bg' => '#0d1b38'],
-        ['category' => 'Community', 'caption' => 'Listening to Elders — Banjul South',    'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Community', 'caption' => 'Neighbourhood Visit — Bakau',            'wide' => false, 'bg' => '#0f2040'],
-
         // Projects
-        ['category' => 'Projects',  'caption' => 'Clean Water Launch — Banjul North',     'wide' => true,  'bg' => '#112044'],
-        ['category' => 'Projects',  'caption' => 'School Renovation — Serrekunda',         'wide' => false, 'bg' => '#0d1b38'],
-        ['category' => 'Projects',  'caption' => "Women's Business Hub Opening",           'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Projects',  'caption' => 'Road Upgrade — Kanifing',                'wide' => false, 'bg' => '#0f2040'],
-        ['category' => 'Projects',  'caption' => 'Mobile Clinic Launch — Rural Gambia',   'wide' => false, 'bg' => '#112044'],
+        ['category' => 'Projects',  'caption' => 'Mbalit Project — new compactor fleet',        'wide' => true,  'bg' => '#0d1b38'],
+        ['category' => 'Projects',  'caption' => 'Kanifing Municipal Library & Innovation Hub', 'wide' => false, 'bg' => '#0a1931'],
+        ['category' => 'Projects',  'caption' => 'Road Network Project — Latrikunda',           'wide' => false, 'bg' => '#0f2040'],
+        ['category' => 'Projects',  'caption' => 'Serrekunda Market upgrade',                   'wide' => false, 'bg' => '#112044'],
+        ['category' => 'Projects',  'caption' => 'Bakoteh dumpsite fencing & remediation',      'wide' => false, 'bg' => '#0d1b38'],
+        ['category' => 'Projects',  'caption' => 'Bundung Maternity Ward expansion',            'wide' => false, 'bg' => '#0a1931'],
+
+        // Community
+        ['category' => 'Community', 'caption' => 'Ward Development Committee office',            'wide' => true,  'bg' => '#112044'],
+        ['category' => 'Community', 'caption' => "Bakau Women's Garden",                        'wide' => false, 'bg' => '#0d1b38'],
+        ['category' => 'Community', 'caption' => "Mayor's Trophy football tournament",          'wide' => false, 'bg' => '#0a1931'],
+        ['category' => 'Community', 'caption' => 'Set settal community clean-up',               'wide' => false, 'bg' => '#0f2040'],
+        ['category' => 'Community', 'caption' => 'Sewing machines for community centres',       'wide' => false, 'bg' => '#112044'],
 
         // Events
-        ['category' => 'Events',    'caption' => 'Annual Party Convention 2024',           'wide' => true,  'bg' => '#091422'],
-        ['category' => 'Events',    'caption' => 'Youth Employment Graduation Ceremony',   'wide' => false, 'bg' => '#0d1b38'],
-        ['category' => 'Events',    'caption' => 'Independence Day Celebrations 2025',     'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Events',    'caption' => 'Party Rally — Banjul Stadium',           'wide' => false, 'bg' => '#0f2040'],
+        ['category' => 'Events',    'caption' => 'Municipal Library inauguration, 2024',        'wide' => true,  'bg' => '#091422'],
+        ['category' => 'Events',    'caption' => 'UN Deputy Secretary-General visit, 2025',     'wide' => false, 'bg' => '#0d1b38'],
+        ['category' => 'Events',    'caption' => 'Bakau Multipurpose Facility launch, 2025',    'wide' => false, 'bg' => '#0a1931'],
+        ['category' => 'Events',    'caption' => 'End-of-term awards night, 2022',              'wide' => false, 'bg' => '#0f2040'],
 
-        // Diaspora
-        ['category' => 'Diaspora',  'caption' => 'Diaspora Tour — London 2026',            'wide' => true,  'bg' => '#0d1b38'],
-        ['category' => 'Diaspora',  'caption' => 'Gambian Community — New York',           'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Diaspora',  'caption' => 'Meeting the Diaspora — Madrid',          'wide' => false, 'bg' => '#112044'],
+        // Partners
+        ['category' => 'Partners',  'caption' => 'Peterborough City Council — KETP partnership','wide' => true,  'bg' => '#0d1b38'],
+        ['category' => 'Partners',  'caption' => 'Sister-city ties — Freetown & Madison',       'wide' => false, 'bg' => '#0a1931'],
+        ['category' => 'Partners',  'caption' => 'Global Parliament of Mayors',                 'wide' => false, 'bg' => '#112044'],
     ];
     @endphp
 
     <section
         class="section"
         x-data="{
-            categories: ['All', 'Community', 'Projects', 'Events', 'Diaspora'],
+            categories: ['All', 'Projects', 'Community', 'Events', 'Partners'],
             active: 'All',
             lightboxOpen: false,
             current: 0,
@@ -207,14 +208,14 @@
     {{-- ── CTA ──────────────────────────────────────────────────────────────── --}}
     <section class="cta-banner">
         <div class="container">
-            <h2 class="cta-banner__title" data-reveal>Be Part of the Story</h2>
+            <h2 class="cta-banner__title" data-reveal>See the Work Behind the Photos</h2>
             <p class="cta-banner__lead" data-reveal data-reveal-delay="100">
-                These photos represent real change — and there's more to come.
-                Join the movement and help write the next chapter.
+                Every image here points to a project, a partnership or a milestone
+                in Kanifing. Explore the full record.
             </p>
             <div class="cta-banner__actions" data-reveal data-reveal-delay="200">
-                <a href="{{ url('/contact') }}#join" class="btn btn--navy btn--lg">Join the Party</a>
-                <a href="{{ url('/events') }}" class="btn btn--outline-navy btn--lg">See Upcoming Events</a>
+                <a href="{{ url('/peoples-mayor') }}" class="btn btn--navy btn--lg">The People's Mayor</a>
+                <a href="{{ url('/events') }}" class="btn btn--outline-navy btn--lg">Events &amp; Milestones</a>
             </div>
         </div>
     </section>

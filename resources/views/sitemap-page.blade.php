@@ -68,7 +68,7 @@
                 </div>
                 <ul class="sitemap-card__list">
                     <li><a href="{{ url('/events') }}" class="sitemap-card__link">All Events</a></li>
-                    <li><a href="{{ url('/events/register') }}" class="sitemap-card__link">Register for an Event</a></li>
+                    <li><a href="{{ url('/events/register') }}" class="sitemap-card__link">Register Your Interest</a></li>
                     @foreach($events as $event)
                         <li><a href="{{ route('events.show', $event) }}" class="sitemap-card__link">{{ $event->title }}</a></li>
                     @endforeach

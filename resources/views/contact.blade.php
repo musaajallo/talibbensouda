@@ -8,13 +8,13 @@
                 <nav class="page-hero__breadcrumb" aria-label="Breadcrumb">
                     <a href="{{ url('/') }}">Home</a>
                     <span>/</span>
-                    <span style="color:rgba(255,255,255,0.65)">Get in Touch</span>
+                    <span class="page-hero__crumb-current">Get in Touch</span>
                 </nav>
                 <span class="page-hero__eyebrow">Contact</span>
                 <h1 class="page-hero__title">Get in Touch</h1>
                 <p class="page-hero__subtitle">
-                    Questions, press enquiries, partnership requests — we want to hear from you.
-                    Reach out and the team will respond within 48 hours.
+                    Questions, press enquiries, partnership requests, or an offer to
+                    volunteer — reach out and the team will get back to you.
                 </p>
             </div>
         </div>
@@ -72,9 +72,9 @@
 
                     </div>
 
-                    <div class="contact-info__social-label">Follow the Campaign</div>
+                    <div class="contact-info__social-label">Follow Talib</div>
                     <div class="contact-info__social">
-                        <a href="#" class="social-btn" aria-label="Facebook">
+                        <a href="https://www.facebook.com/MayorBensouda" target="_blank" rel="noopener" class="social-btn" aria-label="Facebook">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                         </a>
                         <a href="#" class="social-btn" aria-label="X (Twitter)">
@@ -181,32 +181,27 @@
         </div>
     </section>
 
-    {{-- ── Join the Movement CTA ──────────────────────────────────────────────── --}}
+    {{-- ── Volunteer CTA ──────────────────────────────────────────────────────── --}}
     <section class="join-cta" id="join">
         <div class="join-cta__inner container" data-reveal>
 
-            <span class="join-cta__eyebrow">Unite Movement Gambia</span>
-            <h2 class="join-cta__title">Ready to Join<br>the Movement?</h2>
+            <span class="join-cta__eyebrow" id="volunteer">Lend a Hand</span>
+            <h2 class="join-cta__title">Want to<br>Volunteer?</h2>
             <p class="join-cta__desc">
-                This campaign belongs to every Gambian — at home and across the diaspora.
-                Register as a party member at Unite Movement Gambia and be part
-                of the change you want to see.
+                Community events, clean-ups, school drives and youth programmes across
+                Kanifing always need people. Send a message with a little about
+                yourself and where you're based, and the team will be in touch.
             </p>
 
             <div class="join-cta__actions">
-                <a
-                    href="https://unitemovementgambia.com/join"
-                    target="_blank"
-                    rel="noopener"
-                    class="btn btn--navy join-cta__btn"
-                >
-                    Join the Party
+                <a href="#contact-form" class="btn btn--navy join-cta__btn">
+                    Send a Message
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                     </svg>
                 </a>
-                <a href="https://unitemovementgambia.com" target="_blank" rel="noopener" class="btn btn--ghost-navy">
-                    unitemovementgambia.com
+                <a href="{{ url('/events') }}" class="btn btn--ghost-navy">
+                    See upcoming events
                 </a>
             </div>
 

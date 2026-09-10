@@ -3,13 +3,15 @@
 // ── Mini header ───────────────────────────────────────────────────────────────
 
 .sitemap-header {
-    background: $color-navy;
+    background: var(--banner-bg);
+    border-bottom: 1px solid var(--banner-border);
     padding: 40px 0 48px;
     position: relative;
+    transition: background 0.25s, border-color 0.25s;
 
     .page-hero__breadcrumb {
-        a, span { color: rgba(255,255,255,0.5); font-size: 0.82rem; }
-        a:hover  { color: rgba(255,255,255,0.85); }
+        a, span { color: var(--banner-crumb); font-size: 0.82rem; }
+        a:hover  { color: $color-gold; }
         span + span { margin-left: 6px; }
     }
 
@@ -22,28 +24,28 @@
     &__icon {
         width: 52px;
         height: 52px;
-        background: rgba(255,255,255,0.1);
+        background: var(--header-ctl-bg);
         border-radius: $radius-md;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
 
-        svg { width: 22px; height: 22px; stroke: rgba(255,255,255,0.85); }
+        svg { width: 22px; height: 22px; stroke: var(--banner-fg-muted); }
     }
 
     &__title {
         font-family: $font-display;
         font-size: 2rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--banner-fg);
         line-height: 1.1;
         margin-bottom: 4px;
     }
 
     &__subtitle {
         font-size: 0.9rem;
-        color: rgba(255,255,255,0.55);
+        color: var(--banner-fg-muted);
     }
 }
 

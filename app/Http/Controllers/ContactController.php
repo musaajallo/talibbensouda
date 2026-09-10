@@ -42,6 +42,6 @@ class ContactController extends Controller
 
         return redirect()
             ->to(route('contact') . '#join')
-            ->with('join_success', 'Welcome to the movement. We\'ll be in touch with next steps soon.');
+            ->with('join_success', 'Thank you — we\'ve received your details and will be in touch soon.');
     }
 }

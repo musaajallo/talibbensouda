@@ -11,7 +11,7 @@
                     <span>/</span>
                     <a href="{{ route('events.index') }}">Events</a>
                     <span>/</span>
-                    <span>{{ $event->title }}</span>
+                    <span class="page-hero__crumb-current">{{ $event->title }}</span>
                 </nav>
 
                 @if($event->flag)
@@ -132,32 +132,12 @@
                             </div>
                             @endif
 
-                            <div class="event-info-card__row">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                                <div>
-                                    <div class="event-info-card__row-label">Time</div>
-                                    <div class="event-info-card__row-value">6:00 PM — Doors 5:30 PM</div>
-                                </div>
-                            </div>
-
-                            <div class="event-info-card__row">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                                </svg>
-                                <div>
-                                    <div class="event-info-card__row-label">Admission</div>
-                                    <div class="event-info-card__row-value">Free — Registration Required</div>
-                                </div>
-                            </div>
-
                         </div>
 
                         {{-- CTA buttons --}}
                         <div class="event-info-card__actions">
-                            <a href="{{ route('events.register') }}?event={{ urlencode($event->title) }}" class="btn btn--gold" style="text-align:center;">
-                                Register Now
+                            <a href="{{ route('events.register') }}" class="btn btn--gold" style="text-align:center;">
+                                Register Your Interest
                             </a>
                         </div>
 
@@ -208,7 +188,7 @@
             <div class="related-events" data-reveal>
 
                 <div class="related-events__header">
-                    <h2 class="related-events__title">Other Upcoming Events</h2>
+                    <h2 class="related-events__title">More Milestones</h2>
                     <a href="{{ route('events.index') }}" class="btn btn--outline-navy btn--sm">View All</a>
                 </div>
 

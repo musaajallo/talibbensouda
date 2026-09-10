@@ -8,7 +8,7 @@
                 <nav class="page-hero__breadcrumb" aria-label="Breadcrumb">
                     <a href="{{ url('/') }}">Home</a>
                     <span>/</span>
-                    <span style="color:rgba(255,255,255,0.65)">Privacy Policy</span>
+                    <span class="page-hero__crumb-current">Privacy Policy</span>
                 </nav>
                 <span class="page-hero__eyebrow">Privacy Policy</span>
                 <h1 class="page-hero__title">Your data, <span style="color:#c9a227; font-style:italic;">handled honestly.</span></h1>
@@ -44,8 +44,8 @@
                 <section class="policy-section" id="who-we-are">
                     <h2 class="policy-section__heading">Who we are</h2>
                     <div class="policy-summary">
-                        <strong>In short.</strong> This website is operated by the campaign team of Talib Bensouda,
-                        Mayor of the Kanifing Municipal Council and Party Leader. We are the data controller
+                        <strong>In short.</strong> This website is operated by the team of Talib Bensouda,
+                        Lord Mayor of the Kanifing Municipal Council. We are the data controller
                         for any personal information you submit through this site.
                     </div>
                     <p>

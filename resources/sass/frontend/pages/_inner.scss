@@ -3,17 +3,19 @@
 // ── Page hero (shared across all inner pages) ─────────────────────────────────
 
 .page-hero {
-    background: $color-navy;
+    background: var(--banner-bg);
+    border-bottom: 1px solid var(--banner-border);
     position: relative;
     overflow: hidden;
     padding: 96px 0 80px;
+    transition: background 0.25s, border-color 0.25s;
 
     // Radial gold glow behind content
     &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(ellipse at 20% 60%, rgba($color-gold, 0.06) 0%, transparent 55%);
+        background: radial-gradient(ellipse at 20% 60%, rgba($color-gold, 0.08) 0%, transparent 55%);
         pointer-events: none;
     }
 
@@ -29,16 +31,19 @@
         gap: $space-2;
         margin-bottom: $space-6;
         font-size: 0.8rem;
-        color: rgba(255,255,255,0.4);
+        color: var(--banner-crumb);
 
         a {
-            color: rgba(255,255,255,0.4);
+            color: var(--banner-crumb);
             transition: color 0.15s;
             &:hover { color: $color-gold; text-decoration: none; }
         }
 
-        span { color: rgba(255,255,255,0.2); }
+        span { color: var(--banner-crumb-sep); }
     }
+
+    // Current-page crumb (last item) — brighter than the separators/links.
+    &__crumb-current { color: var(--banner-fg-muted) !important; }
 
     &__eyebrow {
         display: inline-block;
@@ -54,13 +59,13 @@
         font-family: $font-display;
         font-size: clamp(2.25rem, 5vw, 3.75rem);
         font-weight: 900;
-        color: #fff;
+        color: var(--banner-fg);
         line-height: 1.1;
         margin-bottom: $space-4;
     }
 
     &__subtitle {
-        color: rgba(255,255,255,0.6);
+        color: var(--banner-fg-muted);
         font-size: 1.15rem;
         line-height: 1.6;
         max-width: 560px;
