@@ -18,22 +18,32 @@
     ];
 @endphp
 
+    {{-- Preload only the first slide's image — it's the LCP element on mobile. --}}
+    @if (! empty($slides[0]['img']))
+        @push('head')
+            <link rel="preload" as="image" href="{{ $slides[0]['img'] }}" fetchpriority="high">
+        @endpush
+    @endif
+
     {{-- ── Hero ─────────────────────────────────────────────────────────────── --}}
     <section class="hero"
         x-data="{
             slides: {{ Js::from($slides) }},
             current: 0,
+            loaded: [0],
             timer: null,
-            start() { if (this.slides.length > 1) this.timer = setInterval(() => this.next(), 5000) },
-            next() { this.current = (this.current + 1) % this.slides.length },
-            goTo(i) { this.current = i; clearInterval(this.timer); this.start() }
+            start() { if (this.slides.length > 1) this.timer = setInterval(() => this.go((this.current + 1) % this.slides.length), 5000) },
+            go(i) { this.current = i; if (! this.loaded.includes(i)) this.loaded.push(i); },
+            goTo(i) { this.go(i); clearInterval(this.timer); this.start() }
         }"
         x-init="start()"
     >
         <div class="hero__slides">
             <template x-for="(slide, i) in slides" :key="i">
+                {{-- Slides beyond the first only get their image once cycled to,
+                     so 5 large photos don't compete for bandwidth on load. --}}
                 <div class="hero__slide" :class="{ 'is-active': i === current }"
-                     :style="slide.img
+                     :style="(slide.img && loaded.includes(i))
                          ? `background-color: ${slide.bg}; background-image: url('${slide.img}'); background-position: ${slide.pos || 'center top'}`
                          : `background-color: ${slide.bg}`"></div>
             </template>
@@ -123,7 +133,7 @@
                         <video
                             src="{{ $videoUrl }}"
                             controls
-                            preload="metadata"
+                            preload="none"
                             playsinline
                             poster="{{ asset('images/video-poster.webp') }}"></video>
                     @else

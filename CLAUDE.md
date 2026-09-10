@@ -136,6 +136,25 @@ complaints / failures. Actual send paths: Filament password reset + spatie backu
 failed-job ops notifications. The contact + event-registration forms only write to the DB
 inbox — they don't email anyone.
 
+## Performance
+
+Baseline (2026-09-10, prod, Lighthouse mobile): **25/100** — TTFB ~2 s, LCP 10.4 s,
+TBT 4.7 s. Optimisation log:
+
+| # | Change | Where | Status |
+|---|--------|-------|--------|
+| 1 | Self-host Inter + Montserrat (latin woff2) — kill the render-blocking Google Fonts `<link>`, preload the two files, drop the font origins from CSP | `public/fonts/`, `shared/base/_fonts.scss`, `layouts/app.blade.php`, `AppPreset.php` | ✅ done |
+| 2 | Lazy-load hero slides 2–6 (only the active one gets `background-image`); `<link rel=preload as=image fetchpriority=high>` for slide 1 | `welcome.blade.php` | ✅ done |
+| 3 | Homepage feature video `preload="none"` (was `metadata`) | `welcome.blade.php` | ✅ done |
+| 4 | Drop `backdrop-filter: blur()` on the sticky header below `lg` (repaints every scroll frame); near-opaque `--header-bg-solid` instead | `_navbar.scss`, `_themes.scss` | ✅ done |
+| 5 | **nginx: long cache headers** for `/build/*` (1y immutable) + images/fonts/mp4 (30d) — no `Cache-Control` on anything today | Forge → site → nginx config | ⏳ Forge |
+| 6 | **Forge deploy script**: paste `.forge/deploy.sh` into the Forge UI field so `artisan migrate` / `optimize` / `db:seed ContentSeeder` actually run — this is why TTFB is ~2 s and content is missing | Forge → site → Deploy Script | ⏳ Forge |
+| 7 | Responsive hero-image variants (640/960/1440) + `image-set()` | app + `HeroSlidesSeeder` | ⬜ todo |
+| 8 | Route-split CSS (frontend.scss bundles every page's styles — ~123 KiB unused on `/`) | Vite config + per-page inputs | ⬜ todo |
+| 9 | Wire `spatie/laravel-responsecache` middleware + invalidation on content/settings save + `responsecache:clear` in deploy (mind the CSRF token in cached HTML) | app | ⬜ todo |
+
+After #1–4 (local, unthrottled): 42/100, TBT 730 ms, LCP 6.6 s.
+
 ## Release
 
 `main` is the deploy target; Forge auto-deploys on push. Open a PR into `main`, merge,
