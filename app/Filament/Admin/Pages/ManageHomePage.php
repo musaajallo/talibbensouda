@@ -88,6 +88,12 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('about_cta_label')->maxLength(60),
                     Textarea::make('about_headline')->rows(3)->maxLength(255)->columnSpanFull(),
                     Textarea::make('about_body')->rows(5)->maxLength(1200)->columnSpanFull(),
+                    FileUpload::make('about_image')
+                        ->label('Portrait')
+                        ->helperText('Shown beside the about copy. Leave empty to use the bundled photo.')
+                        ->image()->imageEditor()
+                        ->disk('public')->directory('home')->visibility('public')->maxSize(6144)
+                        ->columnSpanFull(),
                 ]),
 
             Section::make('Featured video')
@@ -96,11 +102,17 @@ class ManageHomePage extends SettingsPage
                 ->components([
                     TextInput::make('video_eyebrow')->maxLength(120),
                     TextInput::make('video_youtube_id')->label('YouTube video ID')
-                        ->helperText('The id after v= in the URL. Empty = "coming soon" placeholder.')
+                        ->helperText('Used only when no video file is uploaded below.')
                         ->maxLength(20),
                     TextInput::make('video_headline')->maxLength(160)->columnSpanFull(),
                     Textarea::make('video_body')->rows(4)->maxLength(800)->columnSpanFull(),
                     Textarea::make('video_quote')->rows(3)->maxLength(400)->columnSpanFull(),
+                    FileUpload::make('video_file')
+                        ->label('Video file')
+                        ->helperText('MP4, up to 128 MB. Takes priority over the YouTube ID. Leave empty to use the bundled clip.')
+                        ->disk('public')->directory('home')->visibility('public')
+                        ->acceptedFileTypes(['video/mp4'])->maxSize(131072)
+                        ->columnSpanFull(),
                 ]),
 
             Section::make('Section headers')

@@ -88,7 +88,7 @@
             <div class="about-teaser">
 
                 <div class="about-teaser__image" data-reveal="fade-right">
-                    <div class="about-teaser__img-placeholder">Photo</div>
+                    <img src="{{ $home->aboutImageUrl() }}" alt="Talib Ahmed Bensouda" loading="lazy">
                 </div>
 
                 <div class="about-teaser__body" data-reveal="fade-left" data-reveal-delay="150">
@@ -119,20 +119,20 @@
                 </div>
 
                 <div class="video-section__player" data-reveal="fade-left" data-reveal-delay="150">
-                    @if ($home->video_youtube_id)
+                    @if ($videoUrl = $home->videoUrl())
+                        <video
+                            src="{{ $videoUrl }}"
+                            controls
+                            preload="metadata"
+                            playsinline
+                            poster="{{ asset('images/hero-victory.webp') }}"></video>
+                    @else
                         <iframe
                             src="https://www.youtube-nocookie.com/embed/{{ $home->video_youtube_id }}"
                             title="{{ $home->video_headline }}"
                             loading="lazy"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen></iframe>
-                    @else
-                        <div class="video-section__placeholder">
-                            <button class="video-section__play-btn" aria-label="Play video">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="#0d1b38"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            </button>
-                            <span class="video-section__placeholder-label">Video coming soon</span>
-                        </div>
                     @endif
                 </div>
 

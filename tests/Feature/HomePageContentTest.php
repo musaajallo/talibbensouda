@@ -5,6 +5,7 @@ use App\Models\Event;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Settings\HomePageSettings;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\get;
 
@@ -47,4 +48,40 @@ it('pulls recent milestones from upcoming events', function (): void {
 
 it('renders with every content model empty', function (): void {
     get('/')->assertOk();
+});
+
+it('shows the bundled about portrait and feature video by default', function (): void {
+    get('/')
+        ->assertOk()
+        ->assertSee('images/about-talib.webp', escape: false)
+        ->assertSee('<video', escape: false)
+        ->assertSee('videos/market-event.mp4', escape: false)
+        ->assertDontSee('youtube-nocookie');
+});
+
+it('prefers an uploaded about image and video file over the bundled defaults', function (): void {
+    $home = app(HomePageSettings::class);
+    $home->about_image = 'home/portrait.jpg';
+    $home->video_file = 'home/clip.mp4';
+    $home->save();
+
+    Storage::fake('public');
+    Storage::disk('public')->put('home/portrait.jpg', 'x');
+    Storage::disk('public')->put('home/clip.mp4', 'x');
+
+    get('/')
+        ->assertOk()
+        ->assertSee('home/portrait.jpg', escape: false)
+        ->assertSee('home/clip.mp4', escape: false);
+});
+
+it('falls back to a YouTube embed when an id is set and no file is uploaded', function (): void {
+    $home = app(HomePageSettings::class);
+    $home->video_youtube_id = 'abc123';
+    $home->save();
+
+    get('/')
+        ->assertOk()
+        ->assertSee('youtube-nocookie.com/embed/abc123', escape: false)
+        ->assertDontSee('videos/market-event.mp4');
 });

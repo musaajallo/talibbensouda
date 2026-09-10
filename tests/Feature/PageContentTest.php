@@ -68,3 +68,10 @@ it('renders the About page with body paragraphs, timeline and pillars', function
 it('renders every wired page with all content empty', function (string $path): void {
     get($path)->assertOk();
 })->with(['/peoples-mayor', '/giving-back', '/about']);
+
+it('uses the real domain, not the old placeholder, on the policy pages', function (string $path): void {
+    get($path)
+        ->assertOk()
+        ->assertSee('info@talibahmedbensouda.com')
+        ->assertDontSee('talibbensouda.gm');
+})->with(['/privacy', '/cookies']);

@@ -45,6 +45,9 @@ class HomePageSettings extends Settings
 
     public string $about_cta_label = '';
 
+    /** Path on the `public` disk to the about-teaser portrait, or null for the bundled photo. */
+    public ?string $about_image = null;
+
     // Featured video
     public string $video_eyebrow = '';
 
@@ -54,8 +57,11 @@ class HomePageSettings extends Settings
 
     public string $video_quote = '';
 
-    /** YouTube video id (the part after v=). Empty shows the "coming soon" placeholder. */
+    /** YouTube video id (the part after v=). Used only when no video file is uploaded. */
     public string $video_youtube_id = '';
+
+    /** Path on the `public` disk to a self-hosted feature video, or null for the bundled clip. */
+    public ?string $video_file = null;
 
     // Section headers
     public string $projects_eyebrow = '';
@@ -104,6 +110,32 @@ class HomePageSettings extends Settings
         return 'home_page';
     }
 
+    /** Absolute URL for the about-teaser portrait, falling back to the bundled photo. */
+    public function aboutImageUrl(): string
+    {
+        return $this->about_image && Storage::disk('public')->exists($this->about_image)
+            ? Storage::disk('public')->url($this->about_image)
+            : asset('images/about-talib.webp');
+    }
+
+    /**
+     * Absolute URL for the feature video: an uploaded file if present, otherwise
+     * the bundled campaign clip. Returns null only when a YouTube id is set and
+     * should take over instead.
+     */
+    public function videoUrl(): ?string
+    {
+        if ($this->video_file && Storage::disk('public')->exists($this->video_file)) {
+            return Storage::disk('public')->url($this->video_file);
+        }
+
+        if ($this->video_youtube_id !== '') {
+            return null;
+        }
+
+        return asset('videos/market-event.mp4');
+    }
+
     /**
      * Hero headline as HTML: newline → <br>, the emphasis substring wrapped in <em>.
      */
@@ -141,6 +173,7 @@ class HomePageSettings extends Settings
         }
 
         return [
+            ['img' => asset('images/hero-rally.webp'), 'bg' => '#0d1b38', 'pos' => 'center'],
             ['img' => asset('images/hero-talib-desk.webp'), 'bg' => '#0d1b38', 'pos' => 'center'],
             ['img' => asset('images/hero-masquerade.webp'), 'bg' => '#0a1525', 'pos' => 'center'],
             ['img' => asset('images/hero-supporters.webp'), 'bg' => '#112044', 'pos' => 'center right'],
