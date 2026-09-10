@@ -31,6 +31,14 @@ composer run setup
 
 This installs dependencies, creates `.env`, generates an app key, runs migrations and seeders, links storage, and builds frontend assets.
 
+The seeder creates an admin account — sign in at `/admin`:
+
+| Email | Password |
+| --- | --- |
+| `admin@talibahmedbensouda.com` | `password` |
+
+Override with `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `.env` before first run, or change the password from `/admin/profile` afterwards. On deployed environments the account is created only on the first deploy.
+
 To start the development server (Laravel + queue + logs + Vite):
 
 ```bash

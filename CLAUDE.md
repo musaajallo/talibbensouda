@@ -89,6 +89,14 @@ php artisan make:filament-settings-page ManageThingPage "App\Settings\ThingPageS
 - No public auth. There is no `/register`, `/login` (that's `/admin/login`), or user
   dashboard. Don't reintroduce `route('login')` in Blade.
 
+## Admin login
+
+`AdminUserSeeder` runs on every deploy but creates the account only on the **first** one
+(it no-ops once any user has the `admin`/`super-admin` role — a panel password change is
+never clobbered). Defaults: `admin@talibahmedbensouda.com` / `password` — override with
+`ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` in the Forge env. Change the password from
+`/admin/profile` after the first sign-in.
+
 ## Release
 
 `main` is the deploy target; Forge auto-deploys on push. Open a PR into `main`, merge,

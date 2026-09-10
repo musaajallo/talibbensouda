@@ -10,15 +10,24 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::firstOrCreate(
+        $adminExists = User::query()
+            ->whereHas('roles', fn ($q) => $q->whereIn('name', ['admin', 'super-admin']))
+            ->exists();
+
+        // Idempotent + safe on every deploy: once any admin exists we leave it
+        // alone, so a password changed in the panel is never overwritten. The
+        // seeded password is only ever set on first creation.
+        if ($adminExists) {
+            return;
+        }
+
+        User::firstOrCreate(
             ['email' => config('admin.email')],
             [
                 'name' => config('admin.name'),
                 'password' => Hash::make(config('admin.password')),
                 'email_verified_at' => now(),
             ]
-        );
-
-        $admin->syncRoles(['admin', 'super-admin']);
+        )->syncRoles(['admin', 'super-admin']);
     }
 }

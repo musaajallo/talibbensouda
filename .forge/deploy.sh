@@ -38,11 +38,15 @@ $FORGE_PHP artisan filament:assets
 # Runs both database/migrations and database/settings.
 $FORGE_PHP artisan migrate --force --graceful
 
-# --- Filament Shield: sync generated permissions -----------------------------
-# Regenerates permissions/policies for any new resources, then the seeder
-# re-syncs the admin roles to the full permission set.
+# --- Roles, permissions & the admin account ---------------------------------
+# shield:generate refreshes permissions/policies for any new resources;
+# RolesAndPermissionsSeeder re-syncs the admin roles to the full set;
+# AdminUserSeeder creates the admin login on the first deploy (idempotent —
+# it only re-asserts roles once an admin exists, so a panel password change
+# is never overwritten). Set ADMIN_EMAIL / ADMIN_PASSWORD in the Forge env.
 $FORGE_PHP artisan shield:generate --all --panel=admin --no-interaction || true
 $FORGE_PHP artisan db:seed --class=Database\\Seeders\\RolesAndPermissionsSeeder --force
+$FORGE_PHP artisan db:seed --class=Database\\Seeders\\AdminUserSeeder --force
 
 # --- Cache rebuild ---------------------------------------------------------
 $FORGE_PHP artisan optimize:clear
