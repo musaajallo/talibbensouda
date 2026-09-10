@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             EventSeeder::class,
             GalleryPhotoSeeder::class,
+            ProjectSeeder::class,
+            TestimonialSeeder::class,
+            CommunityPhotoSeeder::class,
         ]);
     }
 }

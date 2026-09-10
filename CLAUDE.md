@@ -10,7 +10,14 @@ disk. Modelled on the sibling `umc` project.
 
 - Panel provider: `app/Providers/Filament/AdminPanelProvider.php`, mounted at `/admin`.
 - Resources: `app/Filament/Admin/Resources/<Name>/…` (Resource + `Schemas/<Name>Form.php` +
-  `Tables/<Name>Table.php` + `Pages/*`).
+  `Tables/<Name>Table.php` + `Pages/*`). Content models so far: `Event`, `GalleryPhoto`,
+  `Project` (metrics repeater + image; home + People's Mayor), `Testimonial` (home
+  recognition), `CommunityPhoto` (home + People's Mayor + Giving Back), plus the
+  `ContactMessage` / `EventRegistration` inboxes.
+- Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
+  `HomePageSettings`. Each public view reads its models + settings in a top `@php` block and
+  degrades gracefully (a section hides when its collection is empty; images fall back to a
+  placeholder tile).
 - Settings pages: `app/Filament/Admin/Pages/Manage*.php` extending `Filament\Pages\SettingsPage`,
   each bound to a class in `app/Settings/`. Nav group **System** for now; page-body settings
   will land under **Page content**.
