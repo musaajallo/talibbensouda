@@ -7,7 +7,7 @@
     <div class="fi-split-login">
         <aside class="fi-split-login-aside">
             <a href="{{ url('/') }}" class="fi-split-login-aside-brand" aria-label="{{ $appName }} — Home">
-                {{ $appName }}
+                {{ $appName }} <span>Admin</span>
             </a>
 
             <div class="fi-split-login-aside-headline">

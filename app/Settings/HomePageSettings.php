@@ -163,7 +163,7 @@ class HomePageSettings extends Settings
             ->map(fn ($slide) => [
                 'img' => Storage::disk('public')->url($slide['image']),
                 'bg' => $slide['bg'] ?? '#0d1b38',
-                'pos' => $slide['position'] ?? 'center',
+                'pos' => $slide['position'] ?? 'center top',
             ])
             ->values()
             ->all();
@@ -172,13 +172,15 @@ class HomePageSettings extends Settings
             return $configured;
         }
 
+        // Slides are anchored to the top so faces/heads aren't cropped as the
+        // hero height varies across viewports.
         return [
-            ['img' => asset('images/hero-rally.webp'), 'bg' => '#0d1b38', 'pos' => 'center'],
-            ['img' => asset('images/hero-talib-desk.webp'), 'bg' => '#0d1b38', 'pos' => 'center'],
-            ['img' => asset('images/hero-masquerade.webp'), 'bg' => '#0a1525', 'pos' => 'center'],
-            ['img' => asset('images/hero-supporters.webp'), 'bg' => '#112044', 'pos' => 'center right'],
-            ['img' => asset('images/hero-hall.webp'), 'bg' => '#091422', 'pos' => 'center'],
-            ['img' => asset('images/hero-victory.webp'), 'bg' => '#0d1b38', 'pos' => 'center right'],
+            ['img' => asset('images/hero-rally.webp'), 'bg' => '#0d1b38', 'pos' => 'center top'],
+            ['img' => asset('images/hero-talib-desk.webp'), 'bg' => '#0d1b38', 'pos' => 'center top'],
+            ['img' => asset('images/hero-masquerade.webp'), 'bg' => '#0a1525', 'pos' => 'center top'],
+            ['img' => asset('images/hero-supporters.webp'), 'bg' => '#112044', 'pos' => 'center top'],
+            ['img' => asset('images/hero-hall.webp'), 'bg' => '#091422', 'pos' => 'center top'],
+            ['img' => asset('images/hero-victory.webp'), 'bg' => '#0d1b38', 'pos' => 'center top'],
         ];
     }
 }

@@ -50,6 +50,13 @@ it('renders with every content model empty', function (): void {
     get('/')->assertOk();
 });
 
+it('anchors hero slides to the top by default', function (): void {
+    $slides = app(HomePageSettings::class)->heroSlides();
+
+    expect($slides)->not->toBeEmpty()
+        ->and(collect($slides)->pluck('pos')->unique()->all())->toBe(['center top']);
+});
+
 it('shows the bundled about portrait and feature video by default', function (): void {
     get('/')
         ->assertOk()

@@ -1,7 +1,7 @@
 /* All @import statements must come first (PostCSS requirement). External
    font URLs must come before the package imports because the package CSS
    files contain non-@import rules. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap');
 @import 'tailwindcss' source(none);
 @import '../../../../vendor/filament/filament/resources/css/index.css';
 
@@ -260,23 +260,24 @@ body {
 
 @media (min-width: 1024px) {
     .fi-split-login {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.05fr 1fr;
     }
 }
 
+/* ---- Left pane: portrait with a navy wash ------------------------------- */
 .fi-split-login-aside {
     display: none;
     position: relative;
     flex-direction: column;
     justify-content: space-between;
-    padding: 3rem 3.5rem;
+    padding: 3.25rem 3.5rem;
     color: #f8fafc;
     background-color: var(--navy-900);
     background-image:
-        linear-gradient(180deg, rgba(8, 15, 32, 0.55) 0%, rgba(8, 15, 32, 0.84) 35%, rgba(8, 15, 32, 0.92) 70%, rgba(8, 15, 32, 0.96) 100%),
-        url('/images/hero-victory.webp');
+        linear-gradient(155deg, rgba(8, 15, 32, 0.30) 0%, rgba(8, 15, 32, 0.55) 45%, rgba(8, 15, 32, 0.86) 100%),
+        url('/images/about-talib.webp');
     background-size: cover, cover;
-    background-position: center, center;
+    background-position: center, center top;
     background-repeat: no-repeat, no-repeat;
     overflow: hidden;
 }
@@ -291,60 +292,66 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-image: radial-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
     background-position: 0 0;
     pointer-events: none;
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+    mask-image: linear-gradient(200deg, rgba(0, 0, 0, 0.5) 0%, transparent 55%);
 }
 
 .fi-split-login-aside-brand {
     position: relative;
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
+    gap: 0.5rem;
     text-decoration: none;
     font-family: 'Montserrat', var(--font-family);
     font-weight: 800;
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     letter-spacing: 0.02em;
     color: #ffffff;
 }
 
-.fi-split-login-aside-logo {
-    display: block;
-    height: 2.5rem;
-    width: auto;
+.fi-split-login-aside-brand span {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-200);
 }
 
 .fi-split-login-aside-headline {
     position: relative;
-    max-width: 28rem;
+    max-width: 26rem;
 }
 
 .fi-split-login-aside-headline h1 {
     font-family: 'Montserrat', var(--font-family);
-    font-size: 2.25rem;
-    line-height: 1.15;
+    font-size: 2.4rem;
+    line-height: 1.12;
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     color: #ffffff;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5);
 }
 
 .fi-split-login-aside-headline p {
-    margin-top: 1rem;
+    margin-top: 1.1rem;
+    max-width: 24rem;
     font-size: 1rem;
-    line-height: 1.6;
-    color: rgb(248 250 252 / 0.92);
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+    line-height: 1.65;
+    color: rgb(248 250 252 / 0.9);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
 .fi-split-login-aside-footer {
     position: relative;
     font-size: 0.75rem;
-    color: rgb(248 250 252 / 0.45);
+    letter-spacing: 0.01em;
+    color: rgb(248 250 252 / 0.5);
 }
 
+/* ---- Right pane: the auth form --------------------------------------- */
 .fi-split-login-main {
     display: flex;
     align-items: center;
@@ -354,13 +361,13 @@ body {
 
 @media (min-width: 640px) {
     .fi-split-login-main {
-        padding: 3rem 2rem;
+        padding: 3rem 2.5rem;
     }
 }
 
 .fi-split-login-main-content {
     width: 100%;
-    max-width: 26rem;
+    max-width: 25rem;
 }
 
 .fi-split-login .fi-simple-page {
@@ -372,7 +379,7 @@ body {
 }
 
 .fi-split-login .fi-simple-page-content {
-    gap: 1.625rem;
+    gap: 1.75rem;
 }
 
 .fi-split-login .fi-simple-header {
@@ -380,28 +387,32 @@ body {
     position: relative;
 }
 
+/* Editorial serif heading — the signature of the page. Fraunces at a large
+   optical size, medium weight, reads as considered rather than loud. */
 .fi-split-login .fi-simple-header-heading {
-    font-family: 'Montserrat', var(--font-family);
-    font-size: 1.875rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
+    font-family: 'Fraunces', 'Montserrat', ui-serif, Georgia, serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 'opsz' 120;
+    font-size: 2.125rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
     color: #0c0a09;
-    line-height: 1.1;
+    line-height: 1.08;
 }
 
 .fi-split-login .fi-simple-header-heading::after {
     content: '';
     display: block;
-    width: 32px;
+    width: 34px;
     height: 2px;
-    margin: 0.875rem auto 0;
+    margin: 1rem auto 0;
     background-color: var(--gold-500);
     border-radius: 1px;
 }
 
 .fi-split-login .fi-simple-header-subheading {
-    margin: 0.625rem auto 0;
-    max-width: 22rem;
+    margin: 0.75rem auto 0;
+    max-width: 20rem;
     font-size: 0.9375rem;
     line-height: 1.5;
     color: #78716c;
@@ -422,15 +433,7 @@ body {
 }
 
 .fi-split-login-back-link:hover {
-    color: rgb(15 15 14);
-}
-
-.dark .fi-split-login-back-link {
-    color: rgb(212 212 208);
-}
-
-.dark .fi-split-login-back-link:hover {
-    color: #ffffff;
+    color: var(--navy-700);
 }
 
 .fi-split-login-back-icon {
@@ -438,9 +441,20 @@ body {
     width: 1rem;
 }
 
-/* Dark-mode tuning for the right pane. */
+/* ============================================================
+   Dark mode — the viewer's stored panel theme carries onto the
+   login page (x-filament-panels::layout.base runs loadDarkMode()).
+   The left pane is already dark; every hardcoded light-pane value
+   above needs a dark counterpart here.
+   ============================================================ */
 .dark .fi-split-login {
     background-color: #0a0a09;
+}
+
+.dark .fi-split-login-aside {
+    background-image:
+        linear-gradient(155deg, rgba(4, 8, 18, 0.45) 0%, rgba(4, 8, 18, 0.7) 45%, rgba(4, 8, 18, 0.94) 100%),
+        url('/images/about-talib.webp');
 }
 
 .dark .fi-split-login .fi-simple-header-heading {
@@ -455,6 +469,14 @@ body {
     color: rgb(168 168 162);
 }
 
+.dark .fi-split-login-back-link {
+    color: rgb(212 212 208);
+}
+
+.dark .fi-split-login-back-link:hover {
+    color: #ffffff;
+}
+
 .dark .fi-split-login .fi-input,
 .dark .fi-split-login .fi-input-wrp {
     color: #f5f5f4;
@@ -462,6 +484,11 @@ body {
 
 .dark .fi-split-login .fi-input::placeholder {
     color: rgb(115 115 110);
+}
+
+.dark .fi-split-login .fi-fo-field-label,
+.dark .fi-split-login .fi-fo-field-label-content {
+    color: rgb(212 212 208);
 }
 
 @keyframes fi-split-login-rise {

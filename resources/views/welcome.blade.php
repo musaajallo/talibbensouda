@@ -34,7 +34,7 @@
             <template x-for="(slide, i) in slides" :key="i">
                 <div class="hero__slide" :class="{ 'is-active': i === current }"
                      :style="slide.img
-                         ? `background-color: ${slide.bg}; background-image: url('${slide.img}'); background-position: ${slide.pos || 'center'}`
+                         ? `background-color: ${slide.bg}; background-image: url('${slide.img}'); background-position: ${slide.pos || 'center top'}`
                          : `background-color: ${slide.bg}`"></div>
             </template>
         </div>
