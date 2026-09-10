@@ -125,6 +125,17 @@ never clobbered). Defaults: `admin@talibahmedbensouda.com` / `password` — over
 `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` in the Forge env. Change the password from
 `/admin/profile` after the first sign-in.
 
+## Mail
+
+`resend/resend-laravel` is wired (`config/resend.php`, `config/services.php`, `config/mail.php`
+`resend` mailer). Locally `MAIL_MAILER=log` → mail lands in `storage/logs`. To go live: set
+`MAIL_MAILER=resend` + `RESEND_API_KEY` in the Forge env, verify `talibahmedbensouda.com` in
+Resend, and point a Resend webhook at `/resend/webhook` with `RESEND_WEBHOOK_SECRET` set.
+`App\Listeners\LogResendDeliveryIssue` (registered in `AppServiceProvider`) logs bounces /
+complaints / failures. Actual send paths: Filament password reset + spatie backup/health/
+failed-job ops notifications. The contact + event-registration forms only write to the DB
+inbox — they don't email anyone.
+
 ## Release
 
 `main` is the deploy target; Forge auto-deploys on push. Open a PR into `main`, merge,
