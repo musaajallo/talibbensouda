@@ -1,7 +1,8 @@
 # talibbensouda — working notes
 
 Laravel 13 · PHP 8.4 · Filament 5 admin · SCSS + Alpine public site (no Tailwind on the
-front end). Public content is a mix of **spatie/laravel-settings** (page copy, edited via
+front end — but the **admin panel** does use Tailwind v4, scoped to its theme file only).
+Public content is a mix of **spatie/laravel-settings** (page copy, edited via
 Filament `SettingsPage`s) and **Eloquent models with Filament resources** (repeating content
 with images). All images go through **spatie/laravel-medialibrary** on the local `public`
 disk. Modelled on the sibling `umc` project.
@@ -9,6 +10,16 @@ disk. Modelled on the sibling `umc` project.
 ## Layout of the admin
 
 - Panel provider: `app/Providers/Filament/AdminPanelProvider.php`, mounted at `/admin`.
+  Top navigation, campaign-navy primary (`#0d1b38`), custom brand theme at
+  `resources/css/filament/admin/theme.css` (a Vite input, `->viteTheme(...)`; needs
+  `@tailwindcss/vite` — already in `vite.config.js`). Branded split-screen login:
+  `app/Filament/Admin/Auth/Login.php` + `resources/views/filament/admin/auth/*`. Brand
+  wordmark: `resources/views/filament/admin/brand.blade.php` (falls back to a Montserrat
+  wordmark; `GeneralSettings::$site_logo` overrides). Dashboard widgets:
+  `app/Filament/Admin/Widgets/*` (QuickActions, SubmissionsOverview, ContentOverview, two
+  latest-submission table widgets) — registered explicitly in the panel provider.
+- **`APP_NAME` must be set in the Forge env** (`APP_NAME="Talib Bensouda"`) — the brand
+  falls back to it, and Forge's default is `Laravel`.
 - Resources: `app/Filament/Admin/Resources/<Name>/…` (Resource + `Schemas/<Name>Form.php` +
   `Tables/<Name>Table.php` + `Pages/*`). Content models: `Event`, `GalleryPhoto`,
   `Project` (`summary` for the home card, full `description` + `metrics` for People's Mayor),

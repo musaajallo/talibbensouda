@@ -1,0 +1,693 @@
+/* All @import statements must come first (PostCSS requirement). External
+   font URLs must come before the package imports because the package CSS
+   files contain non-@import rules. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap');
+@import 'tailwindcss' source(none);
+@import '../../../../vendor/filament/filament/resources/css/index.css';
+
+@source '../../../../app/Filament/**/*.php';
+@source '../../../../app/Livewire/**/*.php';
+@source '../../../../resources/views/filament/**/*.blade.php';
+@source '../../../../resources/views/livewire/**/*.blade.php';
+@source '../../../../vendor/filament/**/*.blade.php';
+
+/* ============================================================
+   Talib Bensouda — campaign admin theme
+   ----------------------------------------------------------
+   Refines Filament 5's default rendering with:
+   - Campaign navy (#0d1b38) primary + gold (#c9a227) accents
+   - Warm stone neutrals instead of cold gray
+   - Inter for type, Montserrat for display/wordmark
+   - Tighter type sizes, more confident hierarchy
+   - 1px ring elevation on cards (no big shadows)
+   - Split-screen branded login
+   ============================================================ */
+
+:root {
+    --font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --color-page-bg: #FAFAF9;
+    --color-card-border: rgb(0 0 0 / 0.06);
+
+    /* Campaign palette */
+    --navy-900: #080f20;
+    --navy-700: #0d1b38;
+    --navy-600: #16294f;
+    --navy-50: #eef1f6;
+    --navy-300: #7f92b5;
+    --gold-600: #a8841d;
+    --gold-500: #c9a227;
+    --gold-200: #f0d98a;
+}
+
+html {
+    font-feature-settings: 'cv11', 'ss01';
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Topbar: search in the right cluster, compact --- */
+.fi-topbar {
+    position: relative;
+}
+
+.fi-topbar-end {
+    flex: 1;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.fi-topbar-end > .fi-global-search-ctn {
+    width: 100%;
+    max-width: 18rem;
+    margin: 0;
+}
+
+.fi-topbar-end > .fi-global-search-ctn .fi-input {
+    font-size: 0.8125rem;
+}
+
+.fi-topbar-end .fi-user-menu {
+    position: relative;
+    margin-left: 0.5rem;
+    padding-left: 0.875rem;
+}
+
+.fi-topbar-end .fi-user-menu::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 1.5rem;
+    background-color: rgb(229 229 226);
+}
+
+.dark .fi-topbar-end .fi-user-menu::before {
+    background-color: rgb(255 255 255 / 0.1);
+}
+
+/* --- Brand wordmark in the topbar --- */
+.fi-topbar .fi-logo {
+    font-family: 'Montserrat', var(--font-family);
+}
+
+/* --- Cards / Sections: 1px ring instead of heavy shadow --- */
+.fi-section {
+    box-shadow: 0 1px 0 0 rgb(0 0 0 / 0.02), 0 0 0 1px var(--color-card-border);
+    border: 0;
+}
+
+.fi-section-header-heading {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* --- Tables: borderless rows, refined hover --- */
+.fi-ta-table thead {
+    background: transparent;
+}
+
+.fi-ta-header-cell {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgb(115 115 110);
+    font-weight: 600;
+}
+
+.fi-ta-row:hover .fi-ta-cell {
+    background-color: rgb(250 250 249 / 0.6);
+}
+
+.fi-ta-text-item .fi-ta-text-item-label,
+.fi-in-text-entry-content {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Badges --- */
+.fi-badge {
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+/* --- Form field labels --- */
+.fi-fo-field-wrp-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgb(58 58 56);
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+/* --- Page header: confident typographic hierarchy --- */
+.fi-header-heading {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+.fi-header-subheading {
+    font-size: 0.875rem;
+    color: rgb(115 115 110);
+}
+
+/* --- Top navigation: tighter, restrained active state --- */
+.fi-topbar-nav .fi-topbar-item-label {
+    font-size: 0.8125rem;
+}
+
+.fi-topbar-group-label,
+.fi-sidebar-group-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(168 168 162);
+    font-weight: 600;
+}
+
+/* --- Section header icons --- */
+.fi-section-header-icon {
+    color: rgb(168 168 162);
+}
+
+/* --- Action buttons --- */
+.fi-btn {
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+/* Primary buttons: force the campaign navy. Filament's contrast solver
+   picks a light shade (bg-400 + dark text) for a colour this dark, which
+   reads off-brand — so we set the fill and text explicitly. Outlined and
+   link variants keep Filament's treatment. */
+.fi-btn.fi-color-primary:not(.fi-outlined) {
+    background-color: var(--navy-700);
+    color: #ffffff;
+    --icon-color: #ffffff;
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined):hover {
+    background-color: var(--navy-600);
+    color: #ffffff;
+}
+
+.dark .fi-btn.fi-color-primary:not(.fi-outlined) {
+    background-color: var(--navy-600);
+}
+
+.dark .fi-btn.fi-color-primary:not(.fi-outlined):hover {
+    background-color: var(--navy-700);
+}
+
+/* --- Infolist text entries --- */
+.fi-in-text-entry-content {
+    font-size: 0.9375rem;
+    color: rgb(15 15 14);
+}
+
+.fi-in-component-ctn .fi-fo-field-wrp-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgb(168 168 162);
+    font-weight: 500;
+}
+
+/* --- Modals --- */
+.fi-modal-window {
+    box-shadow:
+        0 0 0 1px rgb(0 0 0 / 0.06),
+        0 24px 48px -12px rgb(0 0 0 / 0.18);
+}
+
+.fi-modal-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* --- Empty states --- */
+.fi-ta-empty-state-heading {
+    font-weight: 500;
+    letter-spacing: -0.005em;
+}
+
+/* --- Rich editor: taller default + drag-to-resize --- */
+.fi-fo-rich-editor-content {
+    min-height: 20rem;
+    max-height: 60rem;
+    overflow-y: auto;
+    resize: vertical;
+}
+
+/* ============================================================
+   Split-screen login layout
+   ----------------------------------------------------------
+   Two columns at desktop, stacked on mobile. Left pane is a
+   navy-scrimmed campaign photo with the wordmark, a headline
+   and the copyright; right pane holds the Filament auth form.
+   ============================================================ */
+.fi-split-login {
+    display: grid;
+    min-height: 100dvh;
+    grid-template-columns: 1fr;
+    background-color: #ffffff;
+}
+
+@media (min-width: 1024px) {
+    .fi-split-login {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.fi-split-login-aside {
+    display: none;
+    position: relative;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem 3.5rem;
+    color: #f8fafc;
+    background-color: var(--navy-900);
+    background-image:
+        linear-gradient(180deg, rgba(8, 15, 32, 0.55) 0%, rgba(8, 15, 32, 0.84) 35%, rgba(8, 15, 32, 0.92) 70%, rgba(8, 15, 32, 0.96) 100%),
+        url('/images/hero-victory.webp');
+    background-size: cover, cover;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+    overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+    .fi-split-login-aside {
+        display: flex;
+    }
+}
+
+.fi-split-login-aside::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 0 0;
+    pointer-events: none;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+}
+
+.fi-split-login-aside-brand {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-family: 'Montserrat', var(--font-family);
+    font-weight: 800;
+    font-size: 1.125rem;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+}
+
+.fi-split-login-aside-logo {
+    display: block;
+    height: 2.5rem;
+    width: auto;
+}
+
+.fi-split-login-aside-headline {
+    position: relative;
+    max-width: 28rem;
+}
+
+.fi-split-login-aside-headline h1 {
+    font-family: 'Montserrat', var(--font-family);
+    font-size: 2.25rem;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.fi-split-login-aside-headline p {
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgb(248 250 252 / 0.92);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+
+.fi-split-login-aside-footer {
+    position: relative;
+    font-size: 0.75rem;
+    color: rgb(248 250 252 / 0.45);
+}
+
+.fi-split-login-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .fi-split-login-main {
+        padding: 3rem 2rem;
+    }
+}
+
+.fi-split-login-main-content {
+    width: 100%;
+    max-width: 26rem;
+}
+
+.fi-split-login .fi-simple-page {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.fi-split-login .fi-simple-page-content {
+    gap: 1.625rem;
+}
+
+.fi-split-login .fi-simple-header {
+    text-align: center;
+    position: relative;
+}
+
+.fi-split-login .fi-simple-header-heading {
+    font-family: 'Montserrat', var(--font-family);
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #0c0a09;
+    line-height: 1.1;
+}
+
+.fi-split-login .fi-simple-header-heading::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 2px;
+    margin: 0.875rem auto 0;
+    background-color: var(--gold-500);
+    border-radius: 1px;
+}
+
+.fi-split-login .fi-simple-header-subheading {
+    margin: 0.625rem auto 0;
+    max-width: 22rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: #78716c;
+}
+
+.fi-split-login-back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin-inline: auto;
+    gap: 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgb(64 64 60);
+    text-decoration: none;
+    transition: color 150ms;
+}
+
+.fi-split-login-back-link:hover {
+    color: rgb(15 15 14);
+}
+
+.dark .fi-split-login-back-link {
+    color: rgb(212 212 208);
+}
+
+.dark .fi-split-login-back-link:hover {
+    color: #ffffff;
+}
+
+.fi-split-login-back-icon {
+    height: 1rem;
+    width: 1rem;
+}
+
+/* Dark-mode tuning for the right pane. */
+.dark .fi-split-login {
+    background-color: #0a0a09;
+}
+
+.dark .fi-split-login .fi-simple-header-heading {
+    color: #f5f5f4;
+}
+
+.dark .fi-split-login .fi-simple-header-heading::after {
+    background-color: var(--gold-200);
+}
+
+.dark .fi-split-login .fi-simple-header-subheading {
+    color: rgb(168 168 162);
+}
+
+.dark .fi-split-login .fi-input,
+.dark .fi-split-login .fi-input-wrp {
+    color: #f5f5f4;
+}
+
+.dark .fi-split-login .fi-input::placeholder {
+    color: rgb(115 115 110);
+}
+
+@keyframes fi-split-login-rise {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .fi-split-login-main-content {
+        animation: fi-split-login-rise 360ms cubic-bezier(0.32, 0.72, 0.32, 1) both;
+    }
+}
+
+/* Submit button — navy primary with subtle gradient depth. */
+.fi-split-login .fi-btn.fi-color-primary {
+    background-image: linear-gradient(180deg, var(--navy-600) 0%, var(--navy-700) 100%);
+    background-color: var(--navy-700);
+    color: #ffffff;
+    --icon-color: #ffffff;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    border: 0;
+    box-shadow:
+        0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+        0 0 0 1px rgba(8, 15, 32, 0.18),
+        0 4px 14px -4px rgba(13, 27, 56, 0.45),
+        0 1px 1px 0 rgba(8, 15, 32, 0.22);
+    transition:
+        transform 180ms cubic-bezier(0.32, 0.72, 0.32, 1),
+        box-shadow 180ms cubic-bezier(0.32, 0.72, 0.32, 1),
+        filter 180ms cubic-bezier(0.32, 0.72, 0.32, 1);
+}
+
+.fi-split-login .fi-btn.fi-color-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    color: #ffffff;
+    box-shadow:
+        0 1px 0 0 rgba(255, 255, 255, 0.2) inset,
+        0 0 0 1px rgba(8, 15, 32, 0.22),
+        0 8px 18px -4px rgba(13, 27, 56, 0.55),
+        0 2px 4px 0 rgba(8, 15, 32, 0.26);
+}
+
+.fi-split-login .fi-btn.fi-color-primary:active {
+    transform: translateY(0);
+    filter: brightness(0.96);
+    box-shadow:
+        0 0 0 1px rgba(8, 15, 32, 0.26),
+        0 1px 1px 0 rgba(8, 15, 32, 0.18);
+}
+
+/* Login error banner (rendered by back-to-home.blade.php). */
+.fi-split-login-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    margin: 0 auto 1rem;
+    width: fit-content;
+    max-width: 100%;
+    border-radius: 0.5rem;
+    background-color: rgb(254 226 226 / 0.6);
+    border: 1px solid rgb(252 165 165 / 0.6);
+    color: rgb(159 18 57);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.fi-split-login-alert-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+}
+
+.dark .fi-split-login-alert {
+    background-color: rgb(127 29 29 / 0.25);
+    border-color: rgb(220 38 38 / 0.4);
+    color: rgb(252 165 165);
+}
+
+.fi-split-login .fi-input-wrp:has(> .fi-input:focus) {
+    --tw-ring-color: rgb(13 27 56 / 0.35);
+}
+
+/* ============================================================
+   QuickActions widget — top-of-dashboard action grid
+   ============================================================ */
+.fi-quick-actions {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+    .fi-quick-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+    .fi-quick-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+.fi-quick-actions__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-card-border);
+    background-color: rgb(255 255 255 / 0.6);
+    color: rgb(38 38 36);
+    text-decoration: none;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 120ms ease,
+        box-shadow 120ms ease;
+}
+
+.fi-quick-actions__item:hover {
+    background-color: rgb(255 255 255 / 0.95);
+    border-color: rgb(13 27 56 / 0.18);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -6px rgb(8 15 32 / 0.18);
+}
+
+.fi-quick-actions__item:active { transform: translateY(0); }
+
+.fi-quick-actions__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    width: 2.25rem;
+    border-radius: 0.5rem;
+    background-color: rgb(13 27 56 / 0.06);
+    color: var(--navy-700);
+}
+
+.fi-quick-actions__item--create .fi-quick-actions__icon {
+    background-color: rgb(201 162 39 / 0.14);
+    color: var(--gold-600);
+}
+
+.fi-quick-actions__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    text-align: center;
+}
+
+.fi-quick-actions__badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background-color: var(--navy-700);
+    color: #ffffff;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.dark .fi-quick-actions__item {
+    background-color: rgb(255 255 255 / 0.04);
+    color: rgb(245 245 244);
+}
+
+.dark .fi-quick-actions__item:hover {
+    background-color: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.18);
+}
+
+.dark .fi-quick-actions__icon {
+    background-color: rgb(255 255 255 / 0.08);
+    color: rgb(245 245 244);
+}
+
+.dark .fi-quick-actions__item--create .fi-quick-actions__icon {
+    background-color: rgb(201 162 39 / 0.2);
+    color: var(--gold-200);
+}
+
+/* ============================================================
+   Page-load entrance animation
+   ============================================================ */
+@keyframes fi-fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.fi-page-content > .fi-section,
+.fi-page-content > .fi-wi,
+.fi-page-content .fi-wi-stats-overview-stat,
+.fi-page-content .fi-ta {
+    animation: fi-fade-up 360ms ease-out both;
+}
+
+.fi-page-content > *:nth-child(1) { animation-delay: 0ms; }
+.fi-page-content > *:nth-child(2) { animation-delay: 60ms; }
+.fi-page-content > *:nth-child(3) { animation-delay: 120ms; }
+.fi-page-content > *:nth-child(4) { animation-delay: 180ms; }
+.fi-page-content > *:nth-child(5) { animation-delay: 240ms; }
+.fi-page-content > *:nth-child(n+6) { animation-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .fi-page-content > .fi-section,
+    .fi-page-content > .fi-wi,
+    .fi-page-content .fi-wi-stats-overview-stat,
+    .fi-page-content .fi-ta {
+        animation: none;
+    }
+}
