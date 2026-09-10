@@ -50,6 +50,20 @@ it('renders with every content model empty', function (): void {
     get('/')->assertOk();
 });
 
+it('keeps content sections visible with an empty-state note when they have no data', function (): void {
+    $home = app(HomePageSettings::class);
+    $home->projects_headline = 'The People\'s Mayor';
+    $home->recognition_headline = 'Recognition';
+    $home->save();
+
+    get('/')
+        ->assertOk()
+        ->assertSee('The People\'s Mayor')          // section header still rendered
+        ->assertSee('Recognition')
+        ->assertSee('empty-state', false)           // placeholder shown in place of the grid
+        ->assertSee('will be published here soon.');
+});
+
 it('anchors hero slides to the top by default', function (): void {
     $slides = app(HomePageSettings::class)->heroSlides();
 

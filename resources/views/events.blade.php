@@ -201,9 +201,7 @@
 
                 </div>
                 @empty
-                <p style="text-align:center; color:var(--muted); padding:48px 0;">
-                    No events are listed yet. Check back soon.
-                </p>
+                <x-empty-state message="Upcoming events will be listed here soon. Check back shortly." />
                 @endforelse
             </div>
 

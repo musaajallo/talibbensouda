@@ -141,7 +141,6 @@
     </section>
 
     {{-- ── The People's Mayor ───────────────────────────────────────────────── --}}
-    @if ($projects->isNotEmpty())
     <section class="section section--grey">
         <div class="container">
 
@@ -151,6 +150,7 @@
                 <p class="section-header__lead">{{ $home->projects_lead }}</p>
             </div>
 
+            @if ($projects->isNotEmpty())
             <div class="projects-grid">
                 @foreach ($projects as $i => $project)
                 <div class="project-card" data-reveal data-reveal-delay="{{ $i * 80 }}">
@@ -175,13 +175,14 @@
                 <a href="{{ url('/peoples-mayor') }}" class="btn btn--outline-navy">{{ $home->projects_cta_label }}</a>
             </div>
             @endif
+            @else
+            <x-empty-state message="The record of projects will be published here soon." />
+            @endif
 
         </div>
     </section>
-    @endif
 
     {{-- ── In the Community ──────────────────────────────────────────────────── --}}
-    @if ($communityPhotos->isNotEmpty())
     <section class="section">
         <div class="container">
 
@@ -191,6 +192,7 @@
                 <p class="section-header__lead">{{ $home->community_lead }}</p>
             </div>
 
+            @if ($communityPhotos->isNotEmpty())
             <div class="community-grid">
                 @foreach ($communityPhotos as $i => $photo)
                 <div class="community-photo" data-reveal data-reveal-delay="{{ $i * 80 }}">
@@ -214,13 +216,14 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Photos from around the municipality are coming soon." />
+            @endif
 
         </div>
     </section>
-    @endif
 
     {{-- ── Recognition ─────────────────────────────────────────────────────── --}}
-    @if ($testimonials->isNotEmpty())
     <section class="section section--grey">
         <div class="container">
 
@@ -230,6 +233,7 @@
                 <p class="section-header__lead">{{ $home->recognition_lead }}</p>
             </div>
 
+            @if ($testimonials->isNotEmpty())
             <div class="testimonials-grid">
                 @foreach ($testimonials as $i => $testimonial)
                 <div class="testimonial-card {{ $testimonial->featured ? 'testimonial-card--featured' : '' }}" data-reveal data-reveal-delay="{{ $i * 100 }}">
@@ -249,12 +253,13 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Recognition and partnerships will be highlighted here soon." />
+            @endif
         </div>
     </section>
-    @endif
 
     {{-- ── Recent Milestones ────────────────────────────────────────────────── --}}
-    @if ($milestones->isNotEmpty())
     <section class="section section--navy">
         <div class="container">
 
@@ -264,6 +269,7 @@
                 <p class="section-header__lead section-header__lead--light">{{ $home->milestones_lead }}</p>
             </div>
 
+            @if ($milestones->isNotEmpty())
             <div class="events-list">
                 @foreach ($milestones as $i => $event)
                 <div class="event-row" data-reveal data-reveal-delay="{{ $i * 100 }}">
@@ -287,10 +293,12 @@
                 <a href="{{ url('/events') }}" class="btn btn--outline-white">{{ $home->milestones_cta_label }}</a>
             </div>
             @endif
+            @else
+            <x-empty-state message="Recent openings and launches will be listed here soon." />
+            @endif
 
         </div>
     </section>
-    @endif
 
     {{-- ── CTA Banner ───────────────────────────────────────────────────────── --}}
     <section class="cta-banner">
