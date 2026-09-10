@@ -44,8 +44,10 @@ body.has-menu-open {
     &__controls {
         display: flex;
         align-items: center;
-        gap: $space-4;
+        gap: 30px;
         flex-shrink: 0;
+
+        @media (min-width: $breakpoint-lg) { gap: $space-4; }
     }
 
     // ── Slide-down menu panel (mobile) ──
