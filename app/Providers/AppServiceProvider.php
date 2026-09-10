@@ -2,9 +2,15 @@
 
 namespace App\Providers;
 
+use App\Listeners\LogResendDeliveryIssue;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Resend\Laravel\Events\EmailBounced;
+use Resend\Laravel\Events\EmailComplained;
+use Resend\Laravel\Events\EmailDeliveryDelayed;
+use Resend\Laravel\Events\EmailFailed;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +25,12 @@ class AppServiceProvider extends ServiceProvider
 
         // Allow admins to view the Pulse dashboard at /pulse.
         Gate::define('viewPulse', fn ($user) => $user->hasAnyRole(['admin', 'super-admin']));
+
+        // Surface outbound-mail problems reported by Resend (POST /resend/webhook).
+        Event::listen(
+            [EmailBounced::class, EmailComplained::class, EmailFailed::class, EmailDeliveryDelayed::class],
+            LogResendDeliveryIssue::class,
+        );
 
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
