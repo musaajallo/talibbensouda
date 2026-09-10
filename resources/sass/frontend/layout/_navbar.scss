@@ -14,10 +14,17 @@ body.has-menu-open {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--header-bg);
+    // Near-opaque so content scrolling underneath doesn't show through.
+    background: var(--header-bg-solid);
     border-bottom: 1px solid var(--header-border);
-    backdrop-filter: saturate(1.4) blur(8px);
     transition: background 0.25s, border-color 0.25s;
+
+    // The frosted-glass blur repaints the whole bar every scroll frame — too
+    // costly on phone GPUs. Keep it for the desktop bar only.
+    @media (min-width: $breakpoint-lg) {
+        background: var(--header-bg);
+        backdrop-filter: saturate(1.4) blur(8px);
+    }
 }
 
 .site-nav {

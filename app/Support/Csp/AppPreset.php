@@ -30,9 +30,8 @@ class AppPreset implements Preset
             // Force the browser to upgrade http:// asset URLs to https:// in production.
             ->add(Directive::UPGRADE_INSECURE_REQUESTS, [])
 
-            // Google Fonts, loaded in resources/views/layouts/app.blade.php.
-            ->add(Directive::STYLE, 'https://fonts.googleapis.com')
-            ->add(Directive::FONT, 'https://fonts.gstatic.com')
+            // Fonts are self-hosted (public/fonts + resources/sass/shared/base/_fonts.scss),
+            // so no external font/style origins are needed.
 
             // YouTube embed on the home page's "featured video" section
             // (only rendered when an editor sets a video ID).
