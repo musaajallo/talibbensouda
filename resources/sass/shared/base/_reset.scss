@@ -2,7 +2,12 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+    -webkit-text-size-adjust: 100%;
+    // Safety net for any stray horizontal overhang so the page never scrolls
+    // sideways on mobile. Sticky positioning still works with this.
+    overflow-x: hidden;
+}
 
 body {
     margin: 0;

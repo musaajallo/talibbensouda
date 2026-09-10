@@ -5,30 +5,31 @@
 
 .hero {
     position: relative;
-    // Mobile: sized to its content (with a floor), not the viewport — a
-    // vh-based hero overflowed once the headline + lede + buttons stacked.
-    min-height: 26rem;
-    display: flex;
-    align-items: center;
     overflow: hidden;
+    background: $color-navy-dark;
 
-    @media (min-width: $breakpoint-md) { min-height: 62svh; }
-    @media (min-width: $breakpoint-lg) { min-height: 88vh; }
+    // Mobile / tablet: photo on top (full, unfiltered), copy stacked below
+    // on the navy ground.
+    display: flex;
+    flex-direction: column;
 
-    // Dark overlay so text stays readable over any photo. On mobile the text
-    // spans the full width, so darken more evenly (vertical); on desktop the
-    // copy sits left, so fade left→right.
+    @media (min-width: $breakpoint-lg) {
+        min-height: 88vh;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    // Scrim — desktop only (the copy sits over the photo there).
     &::after {
         content: '';
         position: absolute;
         inset: 0;
-        background:
-            linear-gradient(180deg, rgba($color-navy-dark, 0.55) 0%, rgba($color-navy-dark, 0.9) 100%),
-            linear-gradient(90deg, rgba($color-navy-dark, 0.8) 0%, rgba($color-navy-dark, 0.5) 100%);
         z-index: 1;
         pointer-events: none;
+        display: none;
 
         @media (min-width: $breakpoint-lg) {
+            display: block;
             background: linear-gradient(
                 90deg,
                 rgba($color-navy-dark, 0.85) 0%,
@@ -40,21 +41,30 @@
 
     // ── Slider backgrounds ───────────────────────────────────────────────
     &__slides {
-        position: absolute;
-        inset: 0;
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 11;
         z-index: 0;
+
+        @media (min-width: $breakpoint-lg) {
+            position: absolute;
+            inset: 0;
+            aspect-ratio: auto;
+        }
     }
 
     &__slide {
         position: absolute;
         inset: 0;
         background-size: cover;
-        background-position: center top;
+        background-position: center;
         background-repeat: no-repeat;
         opacity: 0;
         transition: opacity 1s ease-in-out;
 
         &.is-active { opacity: 1; }
+
+        @media (min-width: $breakpoint-lg) { background-position: center top; }
     }
 
     // ── Content ──────────────────────────────────────────────────────────
@@ -62,11 +72,14 @@
     // container's horizontal gutter is kept.
     &__inner {
         position: relative;
+        order: 2;
         z-index: 2;
-        padding-block: 44px;
+        padding-block: 32px 40px;
 
-        @media (min-width: $breakpoint-md) { padding-block: 88px; }
-        @media (min-width: $breakpoint-lg) { padding-block: 100px; }
+        @media (min-width: $breakpoint-lg) {
+            order: 0;
+            padding-block: 100px;
+        }
     }
 
     &__content { max-width: 600px; }
@@ -102,22 +115,14 @@
     &__lead {
         color: rgba(255,255,255,0.82);
         font-size: 0.9375rem;
-        line-height: 1.55;
+        line-height: 1.6;
         margin-bottom: $space-4;
         max-width: 520px;
-
-        // Keep the mobile hero compact — trim a long lede to 3 lines.
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
 
         @media (min-width: $breakpoint-md) {
             font-size: 1.1rem;
             line-height: 1.7;
             margin-bottom: $space-8;
-            display: block;
-            overflow: visible;
         }
     }
 
@@ -138,21 +143,22 @@
     }
 
     // ── Slide indicators ────────────────────────────────────────────────
-    // Mobile: a horizontal row centred along the bottom of the hero.
-    // Desktop: a vertical stack pinned to the middle-right.
+    // Mobile: a horizontal row between the photo and the copy.
+    // Desktop: a vertical stack pinned to the middle-right, over the photo.
     &__dots {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 16px;
+        order: 1;
         z-index: 3;
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
         gap: $space-2;
+        padding: 14px 0 2px;
 
         @media (min-width: $breakpoint-lg) {
+            order: 0;
+            position: absolute;
+            padding: 0;
             left: auto;
             bottom: auto;
             right: 32px;
@@ -401,10 +407,12 @@
     @media (max-width: $breakpoint-sm) {
         grid-template-columns: auto 1fr;
         grid-template-rows: auto auto;
-        gap: $space-3;
+        gap: $space-3 $space-4;
+        align-items: start;
 
+        // Button drops to its own row, aligned with the body (not the date).
         .event-row__cta {
-            grid-column: 1 / -1;
+            grid-column: 2 / -1;
         }
     }
 
@@ -427,7 +435,7 @@
         }
     }
 
-    &__info {}
+    &__info { min-width: 0; }
 
     &__title {
         font-weight: 600;
