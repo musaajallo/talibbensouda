@@ -15,8 +15,8 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'    => ['required', 'string', 'max:150'],
-            'email'   => ['required', 'email', 'max:200'],
+            'name' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'email', 'max:200'],
             'subject' => ['required', 'string', 'max:200'],
             'message' => ['required', 'string', 'max:3000'],
         ]);
@@ -24,16 +24,16 @@ class ContactController extends Controller
         ContactMessage::create(array_merge($validated, ['type' => 'inquiry']));
 
         return redirect()
-            ->to(route('contact') . '#contact-form')
+            ->to(route('contact').'#contact-form')
             ->with('contact_success', 'Thank you — your message has been received. We\'ll be in touch within 48 hours.');
     }
 
     public function join(Request $request)
     {
         $validated = $request->validate([
-            'name'    => ['required', 'string', 'max:150'],
-            'email'   => ['required', 'email', 'max:200'],
-            'phone'   => ['nullable', 'string', 'max:30'],
+            'name' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'email', 'max:200'],
+            'phone' => ['nullable', 'string', 'max:30'],
             'country' => ['required', 'string', 'max:100'],
             'message' => ['nullable', 'string', 'max:2000'],
         ]);
@@ -41,7 +41,7 @@ class ContactController extends Controller
         ContactMessage::create(array_merge($validated, ['type' => 'join']));
 
         return redirect()
-            ->to(route('contact') . '#join')
+            ->to(route('contact').'#join')
             ->with('join_success', 'Thank you — we\'ve received your details and will be in touch soon.');
     }
 }

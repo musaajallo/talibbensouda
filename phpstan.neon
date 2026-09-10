@@ -14,7 +14,5 @@ parameters:
         - bootstrap/cache/*
 
     ignoreErrors:
-        # Breeze emits User|null where MustVerifyEmail is expected — runtime guard handles it.
-        - '#Parameter \#1 \$user of class Illuminate\\Auth\\Events\\Verified constructor expects#'
         # MediaLibrary config references the Pro version's TemporaryUpload class.
         - '#Class Spatie\\MediaLibraryPro\\Models\\TemporaryUpload not found#'

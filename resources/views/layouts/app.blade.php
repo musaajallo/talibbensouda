@@ -1,10 +1,27 @@
+@php
+    $general = app(\App\Settings\GeneralSettings::class);
+    $social = app(\App\Settings\SocialSettings::class);
+    $chrome = app(\App\Settings\SiteChromeSettings::class);
+
+    $brandName = $general->site_name ?: 'Talib Bensouda';
+
+    // Inline SVG per platform — only links with a URL set in the panel render.
+    $socialIcons = [
+        'facebook' => ['Facebook', '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>'],
+        'x' => ['X (Twitter)', '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'],
+        'instagram' => ['Instagram', '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>'],
+        'youtube' => ['YouTube', '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>'],
+        'whatsapp' => ['WhatsApp', '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'],
+    ];
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ isset($title) ? $title . ' — ' : '' }}Talib Bensouda</title>
+    <title>{{ isset($title) ? $title . ' — ' : '' }}{{ $brandName }}</title>
+    <link rel="icon" href="{{ $general->faviconUrl() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
@@ -16,7 +33,7 @@
     <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })">
         <div class="site-nav container">
 
-            <a href="{{ url('/') }}" class="site-nav__brand">Talib Bensouda</a>
+            <a href="{{ url('/') }}" class="site-nav__brand">{{ $brandName }}</a>
 
             <button class="nav-toggle" @click="open = !open" :aria-expanded="open.toString()" aria-label="Toggle navigation">
                 <span></span><span></span><span></span>
@@ -32,7 +49,9 @@
                 <li><a href="{{ url('/contact') }}"       class="site-nav__link {{ request()->is('contact') ? 'is-active' : '' }}">Get in Touch</a></li>
             </ul>
 
-            <a href="https://unitemovementgambia.com/join" target="_blank" rel="noopener" class="btn btn--gold nav-cta">Join Party</a>
+            @if ($chrome->join_party_url)
+                <a href="{{ $chrome->join_party_url }}" target="_blank" rel="noopener" class="btn btn--gold nav-cta">{{ $chrome->join_party_label }}</a>
+            @endif
 
             <button class="theme-toggle" @click="dark = !dark" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
                 <svg x-show="!dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -151,7 +170,7 @@
     <footer class="site-footer">
         <div class="container">
 
-            <p class="site-footer__tagline">The People's Mayor.</p>
+            <p class="site-footer__tagline">{{ $chrome->footer_tagline }}</p>
 
             <ul class="site-footer__links">
                 <li><a href="{{ url('/') }}">Home</a></li>
@@ -171,29 +190,21 @@
 
             <div class="site-footer__contact">
                 <div class="site-footer__contact-label">Contact</div>
-                <a href="mailto:info@talibbensouda.gm">info@talibbensouda.gm</a>
+                <a href="mailto:{{ $general->contact_email }}">{{ $general->contact_email }}</a>
             </div>
 
-            <div class="site-footer__social">
-                <a href="https://www.facebook.com/MayorBensouda" target="_blank" rel="noopener" class="social-btn" aria-label="Facebook">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                </a>
-                <a href="#" class="social-btn" aria-label="X (Twitter)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                </a>
-                <a href="#" class="social-btn" aria-label="Instagram">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                </a>
-                <a href="#" class="social-btn" aria-label="YouTube">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
-                </a>
-                <a href="#" class="social-btn" aria-label="WhatsApp">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                </a>
-            </div>
+            @if (count($social->links()))
+                <div class="site-footer__social">
+                    @foreach ($social->links() as $key => $url)
+                        <a href="{{ $url }}" target="_blank" rel="noopener" class="social-btn" aria-label="{{ $socialIcons[$key][0] }}">
+                            {!! $socialIcons[$key][1] !!}
+                        </a>
+                    @endforeach
+                </div>
+            @endif
 
             <div class="site-footer__bottom">
-                <p>&copy; {{ date('Y') }} Talib Bensouda. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ $chrome->copyright_name }}. All rights reserved.</p>
             </div>
 
         </div>

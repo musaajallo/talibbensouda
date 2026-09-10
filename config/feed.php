@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FeedController;
+
 return [
     'feeds' => [
         'main' => [
@@ -8,7 +10,7 @@ return [
              * the items that should appear in the feed. For example:
              * [App\Model::class, 'getAllFeedItems']
              */
-            'items' => [\App\Http\Controllers\FeedController::class, 'items'],
+            'items' => [FeedController::class, 'items'],
 
             /*
              * The feed will be available on this url.

@@ -22,34 +22,25 @@
 
     {{-- ── Gallery ──────────────────────────────────────────────────────────── --}}
     @php
-    // Placeholder set — swap captions and add real image files as photos are chosen.
-    $photos = [
-        // Projects
-        ['category' => 'Projects',  'caption' => 'Mbalit Project — new compactor fleet',        'wide' => true,  'bg' => '#0d1b38'],
-        ['category' => 'Projects',  'caption' => 'Kanifing Municipal Library & Innovation Hub', 'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Projects',  'caption' => 'Road Network Project — Latrikunda',           'wide' => false, 'bg' => '#0f2040'],
-        ['category' => 'Projects',  'caption' => 'Serrekunda Market upgrade',                   'wide' => false, 'bg' => '#112044'],
-        ['category' => 'Projects',  'caption' => 'Bakoteh dumpsite fencing & remediation',      'wide' => false, 'bg' => '#0d1b38'],
-        ['category' => 'Projects',  'caption' => 'Bundung Maternity Ward expansion',            'wide' => false, 'bg' => '#0a1931'],
+    // Managed in the admin panel (Content → Gallery). Each row carries a
+    // `file` URL when a photo has been uploaded; otherwise the grid falls
+    // back to a coloured placeholder tile.
+    $palette = ['#0d1b38', '#0a1931', '#0f2040', '#112044', '#091422'];
 
-        // Community
-        ['category' => 'Community', 'caption' => 'Ward Development Committee office',            'wide' => true,  'bg' => '#112044'],
-        ['category' => 'Community', 'caption' => "Bakau Women's Garden",                        'wide' => false, 'bg' => '#0d1b38'],
-        ['category' => 'Community', 'caption' => "Mayor's Trophy football tournament",          'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Community', 'caption' => 'Set settal community clean-up',               'wide' => false, 'bg' => '#0f2040'],
-        ['category' => 'Community', 'caption' => 'Sewing machines for community centres',       'wide' => false, 'bg' => '#112044'],
-
-        // Events
-        ['category' => 'Events',    'caption' => 'Municipal Library inauguration, 2024',        'wide' => true,  'bg' => '#091422'],
-        ['category' => 'Events',    'caption' => 'UN Deputy Secretary-General visit, 2025',     'wide' => false, 'bg' => '#0d1b38'],
-        ['category' => 'Events',    'caption' => 'Bakau Multipurpose Facility launch, 2025',    'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Events',    'caption' => 'End-of-term awards night, 2022',              'wide' => false, 'bg' => '#0f2040'],
-
-        // Partners
-        ['category' => 'Partners',  'caption' => 'Peterborough City Council — KETP partnership','wide' => true,  'bg' => '#0d1b38'],
-        ['category' => 'Partners',  'caption' => 'Sister-city ties — Freetown & Madison',       'wide' => false, 'bg' => '#0a1931'],
-        ['category' => 'Partners',  'caption' => 'Global Parliament of Mayors',                 'wide' => false, 'bg' => '#112044'],
-    ];
+    $photos = \App\Models\GalleryPhoto::published()
+        ->with('media')
+        ->orderBy('sort_order')
+        ->orderBy('id')
+        ->get()
+        ->values()
+        ->map(fn ($photo, $i) => [
+            'category' => $photo->category,
+            'caption'  => $photo->caption,
+            'wide'     => (bool) $photo->wide,
+            'file'     => $photo->imageUrl(),
+            'bg'       => $palette[$i % count($palette)],
+        ])
+        ->all();
     @endphp
 
     <section
@@ -108,18 +99,14 @@
                         tabindex="0"
                         @keydown.enter="open(idx)"
                     >
-                        {{-- Placeholder (remove when adding real images) --}}
-                        <div class="gallery-item__placeholder" :style="`background-color: ${photo.bg}`">
+                        <img x-show="photo.file" :src="photo.file" :alt="photo.caption" loading="lazy">
+                        <div class="gallery-item__placeholder" x-show="!photo.file" :style="`background-color: ${photo.bg}`">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                                 <circle cx="8.5" cy="8.5" r="1.5"/>
                                 <polyline points="21 15 16 10 5 21"/>
                             </svg>
                         </div>
-                        {{--
-                            Replace placeholder div above with:
-                            <img :src="`/images/gallery/${photo.file}`" :alt="photo.caption">
-                        --}}
 
                         <div class="gallery-item__zoom">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -174,18 +161,18 @@
             {{-- Stage --}}
             <div class="lightbox__stage">
                 <div class="lightbox__media" x-show="filtered.length > 0">
-                    <div class="lightbox__placeholder" :style="filtered[current] ? `background-color: ${filtered[current].bg}` : ''">
+                    <img x-show="filtered[current] && filtered[current].file"
+                         :src="filtered[current] ? filtered[current].file : ''"
+                         :alt="filtered[current] ? filtered[current].caption : ''">
+                    <div class="lightbox__placeholder"
+                         x-show="!filtered[current] || !filtered[current].file"
+                         :style="filtered[current] ? `background-color: ${filtered[current].bg}` : ''">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="18" height="18" rx="2"/>
                             <circle cx="8.5" cy="8.5" r="1.5"/>
                             <polyline points="21 15 16 10 5 21"/>
                         </svg>
                     </div>
-                    {{--
-                        When real images exist, replace the placeholder div with:
-                        <img :src="filtered[current] ? `/images/gallery/${filtered[current].file}` : ''"
-                             :alt="filtered[current] ? filtered[current].caption : ''">
-                    --}}
                 </div>
 
                 <div class="lightbox__caption-wrap" x-show="filtered[current]">

@@ -1,4 +1,5 @@
 <?php
+
 // Convert + compress a folder of images to WebP.
 // Usage: php convert.php <srcDir> <destDir> [maxEdge] [quality]
 
@@ -35,7 +36,7 @@ foreach ($files as $f) {
 
     $base = pathinfo($f, PATHINFO_FILENAME);
     // normalise "name(1)" -> "name-2"
-    $base = preg_replace_callback('/\((\d+)\)$/', fn ($m) => '-' . ($m[1] + 1), $base);
+    $base = preg_replace_callback('/\((\d+)\)$/', fn ($m) => '-'.($m[1] + 1), $base);
     $base = strtolower(preg_replace('/[^A-Za-z0-9_-]+/', '-', $base));
     $out = "$dest/$base.webp";
 
@@ -48,6 +49,7 @@ foreach ($files as $f) {
         if (isset($seen[$sig])) {
             $skipped++;
             $img->clear();
+
             continue;
         }
         $seen[$sig] = $out;
@@ -55,13 +57,23 @@ foreach ($files as $f) {
         // Manual EXIF auto-orient (autoOrientImage() missing in this Imagick build).
         $white = new ImagickPixel('#ffffff');
         switch ($img->getImageOrientation()) {
-            case Imagick::ORIENTATION_TOPRIGHT:    $img->flopImage(); break;
-            case Imagick::ORIENTATION_BOTTOMRIGHT: $img->rotateImage($white, 180); break;
-            case Imagick::ORIENTATION_BOTTOMLEFT:  $img->flopImage(); $img->rotateImage($white, 180); break;
-            case Imagick::ORIENTATION_LEFTTOP:     $img->flopImage(); $img->rotateImage($white, 90); break;
-            case Imagick::ORIENTATION_RIGHTTOP:    $img->rotateImage($white, 90); break;
-            case Imagick::ORIENTATION_RIGHTBOTTOM: $img->flopImage(); $img->rotateImage($white, 270); break;
-            case Imagick::ORIENTATION_LEFTBOTTOM:  $img->rotateImage($white, 270); break;
+            case Imagick::ORIENTATION_TOPRIGHT:    $img->flopImage();
+                break;
+            case Imagick::ORIENTATION_BOTTOMRIGHT: $img->rotateImage($white, 180);
+                break;
+            case Imagick::ORIENTATION_BOTTOMLEFT:  $img->flopImage();
+                $img->rotateImage($white, 180);
+                break;
+            case Imagick::ORIENTATION_LEFTTOP:     $img->flopImage();
+                $img->rotateImage($white, 90);
+                break;
+            case Imagick::ORIENTATION_RIGHTTOP:    $img->rotateImage($white, 90);
+                break;
+            case Imagick::ORIENTATION_RIGHTBOTTOM: $img->flopImage();
+                $img->rotateImage($white, 270);
+                break;
+            case Imagick::ORIENTATION_LEFTBOTTOM:  $img->rotateImage($white, 270);
+                break;
         }
         $img->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
 

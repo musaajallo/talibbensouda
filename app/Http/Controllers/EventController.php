@@ -12,11 +12,11 @@ class EventController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $calEvents = $upcoming->map(fn($e) => [
-            'day'     => $e->js_day,
+        $calEvents = $upcoming->map(fn ($e) => [
+            'day' => $e->js_day,
             'jsMonth' => $e->js_month,
-            'year'    => (int) $e->date_year,
-            'title'   => $e->title,
+            'year' => (int) $e->date_year,
+            'title' => $e->title,
         ])->values()->all();
 
         return view('events', compact('upcoming', 'calEvents'));

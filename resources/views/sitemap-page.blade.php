@@ -2,6 +2,7 @@
 @php
     $title = 'Sitemap';
     $events = \App\Models\Event::orderBy('sort_order')->get();
+    $chrome = app(\App\Settings\SiteChromeSettings::class);
 @endphp
 
     {{-- ── Mini header (matches Image #12 style) ──────────────────────────── --}}
@@ -84,22 +85,10 @@
                     <h2 class="sitemap-card__title">Campaign</h2>
                 </div>
                 <ul class="sitemap-card__list">
-                    <li><a href="https://unitemovementgambia.com/join" target="_blank" rel="noopener" class="sitemap-card__link">Join the Party</a></li>
+                    @if ($chrome->join_party_url)
+                        <li><a href="{{ $chrome->join_party_url }}" target="_blank" rel="noopener" class="sitemap-card__link">{{ $chrome->join_party_label }}</a></li>
+                    @endif
                     <li><a href="{{ url('/giving-back') }}" class="sitemap-card__link">Giving Back</a></li>
-                </ul>
-            </div>
-
-            {{-- Portal --}}
-            <div class="sitemap-card" data-reveal data-reveal-delay="120">
-                <div class="sitemap-card__header">
-                    <span class="sitemap-card__icon sitemap-card__icon--sky">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    </span>
-                    <h2 class="sitemap-card__title">Portal</h2>
-                </div>
-                <ul class="sitemap-card__list">
-                    <li><a href="{{ route('login') }}"            class="sitemap-card__link">Sign In</a></li>
-                    <li><a href="{{ route('password.request') }}" class="sitemap-card__link">Reset Password</a></li>
                 </ul>
             </div>
 

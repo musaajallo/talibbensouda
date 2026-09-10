@@ -1,26 +1,27 @@
 # Talib Bensouda — Official Website
 
-The official campaign and public-facing website for Talib Bensouda, Mayor and party leader of The Gambia. Built with Laravel 13.
+The official campaign and public-facing website for Talib Bensouda, Mayor and party leader of The Gambia. Built with Laravel 13 and a Filament 5 admin panel.
 
 ## Features
 
-- Public pages: home, about, gallery, giving back, events, contact, privacy & cookie policy, sitemap
+- Public pages: home, about, The People's Mayor, gallery, giving back, events, contact, privacy & cookie policy, sitemap
+- **Filament CMS at `/admin`**: events & milestones, photo gallery, editable header/footer/social/contact copy (spatie/laravel-settings), contact-message and event-registration inboxes, admin-user and role management
 - Event management with public registration and `.ics` calendar download
-- Contact form with party join and volunteer sign-up flows
-- Admin panel for contract and contract template management
-- Role-based access control (Spatie Permissions)
-- Media library (Spatie Media Library)
-- PDF generation for contracts (Spatie PDF)
+- Image uploads via Spatie Media Library (local `public` disk) + image optimisation
+- Role-based access control (spatie/laravel-permission + Filament Shield)
 - RSS feed and XML sitemap
 - Application health monitoring (Spatie Health + Laravel Pulse)
 - Response caching, honeypot spam protection, CSP headers
 - Automated backups and schedule monitoring
 
+See [`CLAUDE.md`](CLAUDE.md) for the CMS architecture and common recipes.
+
 ## Requirements
 
-- PHP 8.3+
+- PHP 8.4+
 - Node.js & npm
-- A supported database (SQLite, MySQL, PostgreSQL)
+- A supported database (MySQL or PostgreSQL; SQLite for local/CI)
+- For production image optimisation: `jpegoptim optipng pngquant gifsicle webp`
 
 ## Setup
 
@@ -29,6 +30,14 @@ composer run setup
 ```
 
 This installs dependencies, creates `.env`, generates an app key, runs migrations and seeders, links storage, and builds frontend assets.
+
+The seeder creates an admin account — sign in at `/admin`:
+
+| Email | Password |
+| --- | --- |
+| `admin@talibahmedbensouda.com` | `password` |
+
+Override with `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `.env` before first run, or change the password from `/admin/profile` afterwards. On deployed environments the account is created only on the first deploy.
 
 To start the development server (Laravel + queue + logs + Vite):
 
@@ -42,7 +51,14 @@ composer run dev
 composer run test      # Run the test suite
 composer run pest      # Run Pest directly
 composer run analyse   # PHPStan static analysis
+composer run lint      # Pint (check only) — composer run lint:fix to apply
 composer run ide-helper  # Regenerate IDE helper files
+```
+
+After adding a Filament resource, regenerate Shield permissions:
+
+```bash
+php artisan shield:generate --all --panel=admin
 ```
 
 ## Environment

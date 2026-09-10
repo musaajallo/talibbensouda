@@ -1,6 +1,11 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\Filament\AdminPanelProvider;
+use App\Providers\HealthServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\HealthServiceProvider::class,
+    AppServiceProvider::class,
+    AdminPanelProvider::class,
+    HealthServiceProvider::class,
 ];

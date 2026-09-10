@@ -21,6 +21,4 @@ use Spatie\LaravelData\Data;
  *
  *   $data = CreatePostData::from($request);
  */
-abstract class AppData extends Data
-{
-}
+abstract class AppData extends Data {}
