@@ -60,7 +60,6 @@ class ManageGeneralSettings extends SettingsPage
                     TextInput::make('contact_email')->email()->required()->maxLength(190),
                     TextInput::make('contact_phone')->tel()->maxLength(40),
                     TextInput::make('based_in')->maxLength(120),
-                    TextInput::make('response_time')->maxLength(120),
                 ]),
         ]);
     }

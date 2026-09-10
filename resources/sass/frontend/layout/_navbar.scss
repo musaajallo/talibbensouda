@@ -51,19 +51,19 @@ body.has-menu-open {
     }
 
     // ── Slide-down menu panel (mobile) ──
+    // Sized to its contents; scrolls only if the links overflow the screen.
     &__menu {
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
-        min-height: calc(100dvh - 100%);
         max-height: calc(100dvh - 100%);
         background: var(--header-menu-bg);
         border-top: 1px solid var(--header-border);
         box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
         display: flex;
         flex-direction: column;
-        padding: $space-3 $space-4 $space-6;
+        padding: $space-3 $space-4 $space-4;
         gap: $space-2;
         overflow-y: auto;
         transform: translateY(-8px);
