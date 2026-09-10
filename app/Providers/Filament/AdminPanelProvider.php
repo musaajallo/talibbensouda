@@ -2,6 +2,12 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Auth\Login;
+use App\Filament\Admin\Widgets\ContentOverview;
+use App\Filament\Admin\Widgets\LatestContactMessages;
+use App\Filament\Admin\Widgets\LatestEventRegistrations;
+use App\Filament\Admin\Widgets\QuickActions;
+use App\Filament\Admin\Widgets\SubmissionsOverview;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -32,17 +38,20 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
             ->passwordReset()
             ->profile(isSimple: false)
             ->brandName(config('app.name'))
+            ->brandLogo(fn (): View => view('filament.admin.brand'))
+            ->brandLogoHeight('2.25rem')
             ->favicon(asset('favicon.ico'))
             ->colors([
                 // Campaign navy — matches $color-navy in the public SCSS tokens.
                 'primary' => Color::hex('#0d1b38'),
-                'gray' => Color::Slate,
+                'gray' => Color::Stone,
             ])
             ->defaultThemeMode(ThemeMode::Light)
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->topNavigation()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->databaseNotifications(fn (): bool => auth()->user()?->hasRole('super-admin') ?? false)
@@ -65,13 +74,27 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
-            ->widgets([])
+            ->widgets([
+                QuickActions::class,
+                SubmissionsOverview::class,
+                ContentOverview::class,
+                LatestContactMessages::class,
+                LatestEventRegistrations::class,
+            ])
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 fn (): View => view('filament.admin.visit-site'),
             )
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
+                fn (): View => view('filament.admin.auth.back-to-home'),
+            )
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('System')
+                    ->navigationLabel('Roles & permissions')
+                    ->navigationIcon('heroicon-o-shield-check')
+                    ->navigationSort(40),
                 FilamentSpatieLaravelBackupPlugin::make()
                     ->navigationGroup('System')
                     ->navigationLabel('DB & app backups')
