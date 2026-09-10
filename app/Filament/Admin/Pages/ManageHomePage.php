@@ -55,8 +55,8 @@ class ManageHomePage extends SettingsPage
                             FileUpload::make('image')->image()->imageEditor()
                                 ->disk('public')->directory('hero')->visibility('public')->maxSize(6144),
                             TextInput::make('bg')->label('Fallback colour')->default('#0d1b38')->maxLength(9),
-                            TextInput::make('position')->default('center')->maxLength(30)
-                                ->helperText('CSS background-position, e.g. "center right".'),
+                            TextInput::make('position')->default('center top')->maxLength(30)
+                                ->helperText('CSS background-position, e.g. "center top" or "center".'),
                         ])
                         ->columns(3)
                         ->reorderable()
