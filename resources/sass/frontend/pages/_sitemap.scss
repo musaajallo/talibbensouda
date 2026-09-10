@@ -1,17 +1,21 @@
+@use 'sass:color';
 @use '../../shared/abstracts' as *;
 
-// ── Mini header ───────────────────────────────────────────────────────────────
+// ── Mini header (matches .page-hero — cornflower blue, navy text) ─────────────
 
 .sitemap-header {
-    background: var(--banner-bg);
-    border-bottom: 1px solid var(--banner-border);
     padding: 40px 0 48px;
     position: relative;
-    transition: background 0.25s, border-color 0.25s;
+    color: $color-navy;
+    background:
+        radial-gradient(120% 130% at 12% 0%, rgba(255, 255, 255, 0.4), transparent 55%),
+        linear-gradient(150deg,
+            color.adjust($color-navy, $lightness: 60%),
+            color.adjust($color-navy, $lightness: 45%));
 
     .page-hero__breadcrumb {
-        a, span { color: var(--banner-crumb); font-size: 0.82rem; }
-        a:hover  { color: $color-gold; }
+        a, span { color: rgba($color-navy, 0.72); font-size: 0.82rem; }
+        a:hover  { color: $color-navy; }
         span + span { margin-left: 6px; }
     }
 
@@ -24,28 +28,29 @@
     &__icon {
         width: 52px;
         height: 52px;
-        background: var(--header-ctl-bg);
+        background: rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         border-radius: $radius-md;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
 
-        svg { width: 22px; height: 22px; stroke: var(--banner-fg-muted); }
+        svg { width: 22px; height: 22px; stroke: $color-navy; }
     }
 
     &__title {
         font-family: $font-display;
         font-size: 2rem;
         font-weight: 800;
-        color: var(--banner-fg);
+        color: $color-navy;
         line-height: 1.1;
         margin-bottom: 4px;
     }
 
     &__subtitle {
         font-size: 0.9rem;
-        color: var(--banner-fg-muted);
+        color: rgba($color-navy, 0.82);
     }
 }
 
