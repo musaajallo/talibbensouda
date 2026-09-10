@@ -7,7 +7,7 @@
     display: grid;
     grid-template-columns: 1fr 1.3fr;
     gap: 72px;
-    align-items: start;
+    align-items: center;
 
     @media (max-width: $breakpoint-md) {
         grid-template-columns: 1fr;

@@ -81,11 +81,12 @@ class AboutPageSettings extends Settings
         return 'about_page';
     }
 
-    public function bioPhotoUrl(): ?string
+    /** Absolute URL for the biography portrait, falling back to the bundled photo. */
+    public function bioPhotoUrl(): string
     {
         return $this->bio_photo && Storage::disk('public')->exists($this->bio_photo)
             ? Storage::disk('public')->url($this->bio_photo)
-            : null;
+            : asset('images/about-talib.webp');
     }
 
     public function nationalLogoUrl(): ?string

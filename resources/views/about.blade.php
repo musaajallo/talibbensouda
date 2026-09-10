@@ -34,16 +34,7 @@
 
                 <div class="about-bio__photo-wrap" data-reveal="fade-right">
                     <div class="about-bio__photo">
-                        @if ($page->bioPhotoUrl())
-                            <img src="{{ $page->bioPhotoUrl() }}" alt="{{ $page->hero_title }}" loading="lazy">
-                        @else
-                            <div class="about-bio__photo-placeholder">
-                                <svg class="about-bio__photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="8" r="5"/>
-                                    <path d="M3 21c0-5 3.8-9 9-9s9 4 9 9"/>
-                                </svg>
-                            </div>
-                        @endif
+                        <img src="{{ $page->bioPhotoUrl() }}" alt="{{ $page->hero_title }}" loading="lazy">
                     </div>
                 </div>
 
