@@ -1,23 +1,26 @@
+@use 'sass:color';
 @use '../../shared/abstracts' as *;
 
 // ── Page hero (shared across all inner pages) ─────────────────────────────────
+//
+// Cornflower-blue band in both themes (matching the "Follow the Work" CTA).
+// All text is navy — high contrast on this light-blue ground, and the
+// white radial highlight over the top-left (where the copy sits) lifts it
+// further.
+
+$banner-navy: $color-navy; // #0d1b38 — solid on the blue: ~6:1 at the top, ~3.5:1 at the deepest corner
 
 .page-hero {
-    background: var(--banner-bg);
-    border-bottom: 1px solid var(--banner-border);
     position: relative;
     overflow: hidden;
-    padding: 96px 0 80px;
-    transition: background 0.25s, border-color 0.25s;
-
-    // Radial gold glow behind content
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse at 20% 60%, rgba($color-gold, 0.08) 0%, transparent 55%);
-        pointer-events: none;
-    }
+    padding: 88px 0 72px;
+    border-bottom: none;
+    color: $banner-navy;
+    background:
+        radial-gradient(120% 130% at 12% 0%, rgba(255, 255, 255, 0.4), transparent 55%),
+        linear-gradient(150deg,
+            color.adjust($color-navy, $lightness: 60%),
+            color.adjust($color-navy, $lightness: 45%));
 
     &__inner {
         position: relative;
@@ -28,28 +31,28 @@
     &__breadcrumb {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: $space-2;
-        margin-bottom: $space-6;
+        margin-bottom: $space-4;
         font-size: 0.8rem;
-        color: var(--banner-crumb);
+        color: rgba($banner-navy, 0.72);
 
         a {
-            color: var(--banner-crumb);
+            color: rgba($banner-navy, 0.72);
             transition: color 0.15s;
-            &:hover { color: $color-gold; text-decoration: none; }
+            &:hover { color: $banner-navy; text-decoration: none; }
         }
 
-        span { color: var(--banner-crumb-sep); }
+        span { color: rgba($banner-navy, 0.4); }
     }
 
-    // Current-page crumb (last item) — brighter than the separators/links.
-    &__crumb-current { color: var(--banner-fg-muted) !important; }
+    &__crumb-current { color: $banner-navy !important; font-weight: 500; }
 
     &__eyebrow {
         display: inline-block;
-        color: $color-gold;
+        color: rgba($banner-navy, 0.9);
         font-size: 0.72rem;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 0.15em;
         text-transform: uppercase;
         margin-bottom: $space-3;
@@ -57,22 +60,24 @@
 
     &__title {
         font-family: $font-display;
-        font-size: clamp(2.25rem, 5vw, 3.75rem);
+        font-size: clamp(2rem, 6vw, 3.75rem);
         font-weight: 900;
-        color: var(--banner-fg);
+        color: $banner-navy;
         line-height: 1.1;
         margin-bottom: $space-4;
     }
 
     &__subtitle {
-        color: var(--banner-fg-muted);
-        font-size: 1.15rem;
+        color: rgba($banner-navy, 0.82);
+        font-size: 1.1rem;
         line-height: 1.6;
         max-width: 560px;
         margin: 0;
     }
 
     @media (max-width: $breakpoint-sm) {
-        padding: 64px 0 56px;
+        padding: 56px 0 48px;
+
+        &__subtitle { font-size: 1rem; }
     }
 }
