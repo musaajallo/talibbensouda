@@ -125,7 +125,7 @@
                             controls
                             preload="metadata"
                             playsinline
-                            poster="{{ asset('images/hero-victory.webp') }}"></video>
+                            poster="{{ asset('images/video-poster.webp') }}"></video>
                     @else
                         <iframe
                             src="https://www.youtube-nocookie.com/embed/{{ $home->video_youtube_id }}"
