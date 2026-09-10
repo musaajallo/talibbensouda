@@ -131,7 +131,7 @@ class EventSeeder extends Seeder
         ];
 
         foreach ($events as $data) {
-            Event::updateOrCreate(['slug' => $data['slug']], $data);
+            Event::firstOrCreate(['slug' => $data['slug']], $data);
         }
     }
 }

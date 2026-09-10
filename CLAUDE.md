@@ -25,8 +25,13 @@ disk. Modelled on the sibling `umc` project.
   `Project` (`summary` for the home card, full `description` + `metrics` for People's Mayor),
   `Testimonial`, `CommunityPhoto` (`group`: `municipality` = home + People's Mayor,
   `community-support` = Giving Back), `GivingProgramme`, plus the `ContactMessage` /
-  `EventRegistration` inboxes. Seed-managed rows carry a stable `key` — seeders
-  `updateOrCreate` on it so titles can change without duplicating.
+  `EventRegistration` inboxes. Seed-managed rows carry a stable `key` (or `slug`).
+- **Content seeding:** `ContentSeeder` (projects, events, gallery, community photos,
+  testimonials, giving-back programmes + `HeroSlidesSeeder`) runs on every deploy via
+  `.forge/deploy.sh`. All of them `firstOrCreate` on the key — a missing row is created,
+  an existing one is **never** touched, so panel edits survive re-deploys. `HeroSlidesSeeder`
+  copies `public/images/hero-*.webp` onto the media disk and fills `home_page.hero_slides`
+  so the slider is editable in the panel; it no-ops once slides are configured.
 - Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
   `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`.
   Multi-paragraph fields are stored blank-line-separated and split with the

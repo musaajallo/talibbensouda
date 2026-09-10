@@ -28,7 +28,7 @@ class CommunityPhotoSeeder extends Seeder
         ];
 
         foreach ($photos as $i => [$key, $group, $tag, $caption]) {
-            CommunityPhoto::updateOrCreate(
+            CommunityPhoto::firstOrCreate(
                 ['key' => $key],
                 [
                     'group' => $group,

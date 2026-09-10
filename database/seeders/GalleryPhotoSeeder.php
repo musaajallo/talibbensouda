@@ -36,7 +36,7 @@ class GalleryPhotoSeeder extends Seeder
         ];
 
         foreach ($photos as $i => [$category, $caption, $wide]) {
-            GalleryPhoto::updateOrCreate(
+            GalleryPhoto::firstOrCreate(
                 ['caption' => $caption],
                 [
                     'category' => $category,
