@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\HomePageSettings;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
@@ -16,6 +17,8 @@ use UnitEnum;
 
 class ManageHomePage extends SettingsPage
 {
+    use NormalisesSettingsData;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
 
     protected static string $settings = HomePageSettings::class;

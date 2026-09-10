@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\GeneralSettings;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
@@ -14,6 +15,8 @@ use UnitEnum;
 
 class ManageGeneralSettings extends SettingsPage
 {
+    use NormalisesSettingsData;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static string $settings = GeneralSettings::class;

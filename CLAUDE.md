@@ -40,8 +40,13 @@ disk. Modelled on the sibling `umc` project.
   (a section hides when its collection is empty; images fall back to a placeholder tile;
   decorative SVG icons are cycled by index, not stored).
 - Settings pages: `app/Filament/Admin/Pages/Manage*.php` extending `Filament\Pages\SettingsPage`,
-  each bound to a class in `app/Settings/`. Nav group **System** for now; page-body settings
-  will land under **Page content**.
+  each bound to a class in `app/Settings/`. Groups: **System** (general, social, header/footer)
+  and **Page content** (home, about, People's Mayor, Giving Back). Every one `use`s the
+  `Concerns\NormalisesSettingsData` trait — Filament dehydrates an empty `TextInput` to `null`,
+  but the settings classes type most props as non-nullable `string`, so without the trait
+  clearing an optional field 500s the save (`Cannot assign null to property … of type string`).
+  Keep the trait on any new settings page. `tests/Feature/Admin/SettingsPagesTest.php` mounts
+  and saves all seven.
 - Roles: `spatie/laravel-permission`. Two roles — `admin`, `super-admin`. `super-admin` is
   also short-circuited by `Gate::before` in `AppServiceProvider`. Panel access requires one
   of those roles (`User::canAccessPanel`).
@@ -159,8 +164,13 @@ Progress: baseline 25 → after #1–4 (local, unthrottled) 42 → after #5–7,
 ## Caching
 
 The public marketing site is served from a **full-page response cache**
-(`spatie/laravel-responsecache`, `file` store). `App\Support\ResponseCache\CachePublicPages`
-is the profile: it caches anonymous GET requests to the marketing pages and
+(`spatie/laravel-responsecache`). It runs against its **own isolated `responsecache`
+cache store** (`config/cache.php`, a dedicated `storage/framework/cache/responsecache`
+dir) — never the default store — because `ResponseCache::clear()` fires on every
+content edit and, without isolation, would wipe the permission cache and anything
+else sharing the store, which surfaces in the panel as "Error while loading page".
+`App\Support\ResponseCache\CachePublicPages` is the profile: it caches anonymous
+GET requests to the marketing pages and
 skips `/admin` + Livewire, the two form pages (`/contact`, `/events/register` —
 a cached page would freeze the honeypot's encrypted timestamp and hide flash
 messages), the health/sitemap/feed endpoints, and anything requested by a
@@ -172,9 +182,10 @@ signed-in user.
   with its matching `Content-Security-Policy` header. `CsrfTokenReplacer`
   (registered by default) swaps the per-session token on every serve.
 - **Invalidation** is automatic: `AppServiceProvider::flushResponseCacheOnContentChange()`
-  calls `ResponseCache::clear()` on any content-model `saved`/`deleted`, any
-  `SettingsSaved`, and media add/clear events. `.forge/deploy.sh` also runs
-  `responsecache:clear` so template changes ship immediately.
+  calls `ResponseCache::clear()` (best-effort — wrapped so a cache hiccup never fails
+  the save) on any content-model `saved`/`deleted`, any `SettingsSaved`, and media
+  add/clear events. `.forge/deploy.sh` also runs `responsecache:clear` so template
+  changes ship immediately.
 - **Tests**: disabled globally via `RESPONSE_CACHE_ENABLED=false` in `phpunit.xml`;
   `tests/Feature/ResponseCacheTest.php` re-enables it against an `array` store.
 - **Toggle/inspect**: `RESPONSE_CACHE_ENABLED`, `RESPONSE_CACHE_LIFETIME` (default

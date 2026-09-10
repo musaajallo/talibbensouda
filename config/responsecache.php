@@ -17,7 +17,9 @@ return [
          * to store requests. This can be the name of any store
          * that is configured in your app's cache.php config
          */
-        'store' => env('RESPONSE_CACHE_DRIVER', 'file'),
+        // Its own isolated store (config/cache.php) — clearing it never touches
+        // the application cache. Override only if you know what you're doing.
+        'store' => env('RESPONSE_CACHE_DRIVER', 'responsecache'),
 
         /*
          * The default number of seconds responses will be cached
