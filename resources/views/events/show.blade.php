@@ -133,12 +133,14 @@
 
                         </div>
 
-                        {{-- CTA buttons --}}
+                        {{-- CTA buttons — only while the event is still upcoming --}}
+                        @if ($event->is_upcoming)
                         <div class="event-info-card__actions">
                             <a href="{{ route('events.register') }}" class="btn btn--gold" style="text-align:center;">
                                 Register Your Interest
                             </a>
                         </div>
+                        @endif
 
                         {{-- Add to Calendar --}}
                         <div class="event-info-card__cal-section">
