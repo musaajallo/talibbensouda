@@ -123,6 +123,10 @@
                 </template>
             </div>
 
+            <template x-if="filtered.length === 0">
+                <x-empty-state message="Photos will be added to the gallery soon." />
+            </template>
+
         </div>
 
         {{-- ── Lightbox ──────────────────────────────────────────────────────── --}}

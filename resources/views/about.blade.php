@@ -51,7 +51,6 @@
     </section>
 
     {{-- ── Timeline ─────────────────────────────────────────────────────────── --}}
-    @if ($page->timeline)
     <section class="section section--grey">
         <div class="container">
 
@@ -61,6 +60,7 @@
                 <p class="section-header__lead">{{ $page->timeline_lead }}</p>
             </div>
 
+            @if ($page->timeline)
             <div class="timeline">
                 @foreach ($page->timeline as $i => $item)
                 <div class="tl-item" data-reveal data-reveal-delay="{{ $i * 60 }}">
@@ -76,13 +76,14 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Career milestones will be added here soon." />
+            @endif
 
         </div>
     </section>
-    @endif
 
     {{-- ── Values ───────────────────────────────────────────────────────────── --}}
-    @if ($page->values)
     <section class="section">
         <div class="container">
 
@@ -92,6 +93,7 @@
                 <p class="section-header__lead">{{ $page->values_lead }}</p>
             </div>
 
+            @if ($page->values)
             <div class="values-grid">
                 @foreach ($page->values as $i => $value)
                 <div class="value-card" data-reveal data-reveal-delay="{{ $i * 80 }}">
@@ -105,9 +107,11 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Guiding principles will be added here soon." />
+            @endif
         </div>
     </section>
-    @endif
 
     {{-- ── National role ────────────────────────────────────────────────────── --}}
     <section class="section section--navy">

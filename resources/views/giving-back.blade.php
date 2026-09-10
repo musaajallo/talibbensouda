@@ -85,7 +85,6 @@
     </section>
 
     {{-- ── Programmes ───────────────────────────────────────────────────────── --}}
-    @if ($programmes->isNotEmpty())
     <section class="section section--grey">
         <div class="container">
 
@@ -95,6 +94,7 @@
                 <p class="section-header__lead">{{ $page->programmes_lead }}</p>
             </div>
 
+            @if ($programmes->isNotEmpty())
             <div class="initiatives-grid">
                 @foreach ($programmes as $i => $programme)
                 <div class="initiative-card" data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">
@@ -111,9 +111,11 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Giving-back programmes will be listed here soon." />
+            @endif
         </div>
     </section>
-    @endif
 
     {{-- ── Impact Stats ─────────────────────────────────────────────────────── --}}
     @if ($page->impact_stats)
@@ -136,7 +138,6 @@
     @endif
 
     {{-- ── Community Photos ─────────────────────────────────────────────────── --}}
-    @if ($photos->isNotEmpty())
     <section class="section">
         <div class="container">
 
@@ -146,6 +147,7 @@
                 <p class="section-header__lead">{{ $page->community_lead }}</p>
             </div>
 
+            @if ($photos->isNotEmpty())
             <div class="giving-photos">
                 @foreach ($photos as $i => $photo)
                 @php $bg = $palette[$i % count($palette)]; @endphp
@@ -166,10 +168,12 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Photos from giving-back work are coming soon." />
+            @endif
 
         </div>
     </section>
-    @endif
 
     {{-- ── Municipal enterprises ────────────────────────────────────────────── --}}
     @if ($page->enterprises)

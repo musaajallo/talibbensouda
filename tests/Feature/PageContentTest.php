@@ -69,6 +69,14 @@ it('renders every wired page with all content empty', function (string $path): v
     get($path)->assertOk();
 })->with(['/peoples-mayor', '/giving-back', '/about']);
 
+it('keeps model-backed sections visible with an empty-state note when they have no rows', function (string $path): void {
+    // Project / CommunityPhoto / GivingProgramme have no seeded rows in tests,
+    // so their sections should still render, each with the shared placeholder.
+    get($path)
+        ->assertOk()
+        ->assertSee('class="empty-state"', false);
+})->with(['/', '/peoples-mayor', '/giving-back']);
+
 it('uses the real domain, not the old placeholder, on the policy pages', function (string $path): void {
     get($path)
         ->assertOk()

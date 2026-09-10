@@ -98,6 +98,12 @@
         </div>
         @endforeach
     </section>
+    @else
+    <section class="section">
+        <div class="container">
+            <x-empty-state message="Detailed project write-ups will appear here soon." />
+        </div>
+    </section>
     @endif
 
     {{-- ── Pull Quote ───────────────────────────────────────────────────────── --}}
@@ -113,7 +119,6 @@
     @endif
 
     {{-- ── Community Photo Grid ─────────────────────────────────────────────── --}}
-    @if ($communityPhotos->isNotEmpty())
     <section class="section">
         <div class="container">
 
@@ -123,6 +128,7 @@
                 <p class="section-header__lead">{{ $page->community_lead }}</p>
             </div>
 
+            @if ($communityPhotos->isNotEmpty())
             <div class="community-grid">
                 @foreach ($communityPhotos as $i => $photo)
                 <div class="community-photo" data-reveal data-reveal-delay="{{ $i * 80 }}">
@@ -142,10 +148,12 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Photos from around the municipality are coming soon." />
+            @endif
 
         </div>
     </section>
-    @endif
 
     {{-- ── Note on figures ──────────────────────────────────────────────────── --}}
     @if ($page->figures_note)
