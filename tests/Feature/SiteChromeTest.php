@@ -17,6 +17,20 @@ it('renders the Join Party CTA from settings', function (): void {
         ->assertSee('https://example.test/members');
 });
 
+it('builds the page title as "<site name> — <page>"', function (): void {
+    get('/')->assertOk()->assertSee('<title>Talib Bensouda</title>', false);
+    get('/about')->assertOk()->assertSee('<title>Talib Bensouda — About</title>', false);
+    get('/contact')->assertOk()->assertSee('<title>Talib Bensouda — Get in Touch</title>', false);
+});
+
+it('links the SVG favicon and web manifest', function (): void {
+    get('/')
+        ->assertOk()
+        ->assertSee('favicon.svg', false)
+        ->assertSee('rel="manifest"', false)
+        ->assertSee('name="theme-color"', false);
+});
+
 it('hides social icons that have no URL set', function (): void {
     $social = app(SocialSettings::class);
     $social->facebook = 'https://facebook.com/example';

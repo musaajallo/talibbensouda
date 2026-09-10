@@ -1,5 +1,4 @@
-<x-app-layout>
-@php $title = 'Cookie Policy' @endphp
+<x-app-layout title="Cookie Policy">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

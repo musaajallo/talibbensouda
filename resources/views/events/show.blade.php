@@ -1,5 +1,4 @@
-<x-app-layout>
-@php $title = $event->title @endphp
+<x-app-layout :title="$event->title">
 
     {{-- ── Page hero ──────────────────────────────────────────────────────────── --}}
     <section class="page-hero">

@@ -1,6 +1,5 @@
-<x-app-layout>
+<x-app-layout title="Sitemap">
 @php
-    $title = 'Sitemap';
     $events = \App\Models\Event::orderBy('sort_order')->get();
     $chrome = app(\App\Settings\SiteChromeSettings::class);
 @endphp

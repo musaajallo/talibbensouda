@@ -1,6 +1,5 @@
-<x-app-layout>
+<x-app-layout title="Community Support">
 @php
-    $title = 'Community Support';
     $page = app(\App\Settings\GivingBackPageSettings::class);
 
     $programmes = \App\Models\GivingProgramme::published()->orderBy('sort_order')->get();
