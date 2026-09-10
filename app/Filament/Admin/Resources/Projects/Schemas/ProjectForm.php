@@ -22,7 +22,10 @@ class ProjectForm
                         ->maxLength(60)
                         ->helperText('Short kicker, e.g. "Waste" or "Roads".'),
                     TextInput::make('title')->required()->maxLength(160),
-                    Textarea::make('description')->required()->rows(4)->columnSpanFull(),
+                    Textarea::make('summary')->rows(3)->maxLength(600)->columnSpanFull()
+                        ->helperText('Short version shown on the home page card. Falls back to the full description.'),
+                    Textarea::make('description')->required()->rows(6)->columnSpanFull()
+                        ->helperText('Full text shown on the People\'s Mayor page.'),
                     Toggle::make('published')->default(true),
                     TextInput::make('sort_order')->numeric()->default(0)->required(),
                 ]),

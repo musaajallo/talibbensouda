@@ -13,6 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 /**
  * "On the ground" tiles reused on the home, People's Mayor and Giving Back pages.
  *
+ * @property string $group
  * @property string|null $tag
  * @property string $caption
  * @property bool $published
@@ -24,7 +25,16 @@ class CommunityPhoto extends Model implements HasMedia
     use LogsActivity;
     use ResolvesPublicMediaUrl;
 
-    protected $fillable = ['tag', 'caption', 'published', 'sort_order'];
+    public const GROUP_MUNICIPALITY = 'municipality';
+
+    public const GROUP_COMMUNITY_SUPPORT = 'community-support';
+
+    public const GROUPS = [
+        self::GROUP_MUNICIPALITY => 'Home & People\'s Mayor',
+        self::GROUP_COMMUNITY_SUPPORT => 'Giving Back',
+    ];
+
+    protected $fillable = ['key', 'group', 'tag', 'caption', 'published', 'sort_order'];
 
     protected function casts(): array
     {
@@ -42,7 +52,7 @@ class CommunityPhoto extends Model implements HasMedia
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['tag', 'caption', 'published', 'sort_order'])
+            ->logOnly(['group', 'tag', 'caption', 'published', 'sort_order'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges();
     }
@@ -50,6 +60,11 @@ class CommunityPhoto extends Model implements HasMedia
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('published', true);
+    }
+
+    public function scopeGroup(Builder $query, string $group): Builder
+    {
+        return $query->where('group', $group);
     }
 
     public function imageUrl(): ?string

@@ -8,23 +8,23 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 /**
- * @property string $quote
- * @property string $name
- * @property string|null $role
- * @property bool $featured
+ * The "Community Programmes" cards on the Giving Back page.
+ *
+ * @property string $title
+ * @property string $description
+ * @property string|null $metric
  * @property bool $published
  * @property int $sort_order
  */
-class Testimonial extends Model
+class GivingProgramme extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['key', 'quote', 'name', 'role', 'featured', 'published', 'sort_order'];
+    protected $fillable = ['key', 'title', 'description', 'metric', 'published', 'sort_order'];
 
     protected function casts(): array
     {
         return [
-            'featured' => 'boolean',
             'published' => 'boolean',
             'sort_order' => 'integer',
         ];
@@ -33,7 +33,7 @@ class Testimonial extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'featured', 'published', 'sort_order'])
+            ->logOnly(['title', 'metric', 'published', 'sort_order'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges();
     }

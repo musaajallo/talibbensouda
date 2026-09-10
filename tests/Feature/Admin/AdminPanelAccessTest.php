@@ -44,6 +44,8 @@ it('lets a super-admin reach the panel and its pages', function (string $path): 
     '/admin/testimonials/create',
     '/admin/community-photos',
     '/admin/community-photos/create',
+    '/admin/giving-programmes',
+    '/admin/giving-programmes/create',
     '/admin/contact-messages',
     '/admin/event-registrations',
     '/admin/users',
@@ -51,5 +53,8 @@ it('lets a super-admin reach the panel and its pages', function (string $path): 
     '/admin/manage-social-settings',
     '/admin/manage-site-chrome',
     '/admin/manage-home-page',
+    '/admin/manage-peoples-mayor-page',
+    '/admin/manage-giving-back-page',
+    '/admin/manage-about-page',
     '/admin/shield/roles',
 ]);

@@ -13,6 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 /**
  * @property string|null $tag
  * @property string $title
+ * @property string|null $summary
  * @property string $description
  * @property array<int, array{value: string, label: string}>|null $metrics
  * @property bool $image_fills_card
@@ -25,7 +26,7 @@ class Project extends Model implements HasMedia
     use LogsActivity;
     use ResolvesPublicMediaUrl;
 
-    protected $fillable = ['tag', 'title', 'description', 'metrics', 'image_fills_card', 'published', 'sort_order'];
+    protected $fillable = ['key', 'tag', 'title', 'summary', 'description', 'metrics', 'image_fills_card', 'published', 'sort_order'];
 
     protected function casts(): array
     {
@@ -58,5 +59,11 @@ class Project extends Model implements HasMedia
     public function imageUrl(): ?string
     {
         return $this->publicMediaUrl('image');
+    }
+
+    /** Card copy for the home page — the short summary when set, else the full description. */
+    public function cardText(): string
+    {
+        return $this->summary ?: $this->description;
     }
 }
