@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Auth\Login;
+use App\Filament\Admin\Auth\RequestPasswordReset;
+use App\Filament\Admin\Auth\ResetPassword;
 use App\Filament\Admin\Widgets\ContentOverview;
 use App\Filament\Admin\Widgets\LatestContactMessages;
 use App\Filament\Admin\Widgets\LatestEventRegistrations;
@@ -39,7 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
-            ->passwordReset()
+            ->passwordReset(RequestPasswordReset::class, ResetPassword::class)
             ->profile(isSimple: false)
             ->brandName(config('app.name'))
             ->brandLogo(fn (): View => view('filament.admin.brand'))
@@ -88,6 +90,14 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
                 fn (): View => view('filament.admin.auth.back-to-home'),
+            )
+            ->renderHook(
+                PanelsRenderHook::AUTH_PASSWORD_RESET_REQUEST_FORM_BEFORE,
+                fn (): View => view('filament.admin.auth.back-to-login'),
+            )
+            ->renderHook(
+                PanelsRenderHook::AUTH_PASSWORD_RESET_RESET_FORM_BEFORE,
+                fn (): View => view('filament.admin.auth.back-to-login'),
             )
             ->plugins([
                 FilamentShieldPlugin::make()
