@@ -100,6 +100,30 @@ class ProjectSeeder extends Seeder
                     ['value' => '180', 'label' => 'Solar Lights, Buffer Zone'],
                 ],
             ],
+            [
+                'key' => 'flood-prevention',
+                'tag' => 'Flood Prevention',
+                'title' => 'Disaster Mitigation & Flood Prevention',
+                'summary' => 'Around D20 million spent over four years clearing drains, excavating canals with NDMA, and removing illegal dumpsites before the rains.',
+                'description' => 'Kanifing Municipal Council spends roughly D5 million a year — about D20 million over four years — on flood prevention ahead of the rainy season. Work includes clearing debris from 45 strategic drains and 30 kilometres of drainage annually, an annual excavation of the Kotu/Abuko canal in partnership with the National Disaster Management Agency (NDMA), and the clearance of 40-plus illegal dumpsites a year. The Council also reinstituted "set settal" — community cleaning exercises held across the municipality\'s wards.',
+                'metrics' => [
+                    ['value' => 'D20M', 'label' => 'Spent Over 4 Years'],
+                    ['value' => '30km', 'label' => 'Drains Cleared Annually'],
+                    ['value' => '40+', 'label' => 'Illegal Dumpsites Cleared / Year'],
+                ],
+            ],
+            [
+                'key' => 'governance-reform',
+                'tag' => 'Governance',
+                'title' => 'Governance, Housing & Digital Reform',
+                'summary' => "A dedicated GIS unit and the municipality's first official map, a tripled corruption-prosecution rate, and a plan for an affordable-housing company.",
+                'description' => "The Council established a dedicated GIS unit for addressing and street naming, producing Kanifing's first official municipal map and linking properties to rate data to improve revenue collection. Under improved financial controls, the corruption prosecution rate tripled, alongside staff reforms including a 50% salary increase, more frequent appraisals and a fleet investment of 9 pickups, 6 SUVs and a minibus. On housing, the rent tribunal function was transferred to the Kanifing Magistrate's Court, a 2023 plan was announced to establish an affordable housing company, and 176 plots of land were facilitated for KMC staff.",
+                'metrics' => [
+                    ['value' => '3x', 'label' => 'Corruption Prosecution Rate'],
+                    ['value' => '50%', 'label' => 'Staff Salary Increase'],
+                    ['value' => '176', 'label' => 'Staff Housing Plots'],
+                ],
+            ],
         ];
 
         foreach ($projects as $i => $data) {

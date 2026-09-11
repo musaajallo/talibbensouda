@@ -26,16 +26,42 @@ disk. Modelled on the sibling `umc` project.
   `Testimonial`, `CommunityPhoto` (`group`: `municipality` = home + People's Mayor,
   `community-support` = Giving Back), `GivingProgramme`, plus the `ContactMessage` /
   `EventRegistration` inboxes. Seed-managed rows carry a stable `key` (or `slug`).
+- **`Event` schedule**: the form only asks for one `event_date` + `start_time` / `end_time`
+  (defaults 09:00–17:00). `App\Filament\Admin\Resources\Events\Concerns\HandlesEventSchedule`
+  (used by `CreateEvent` + `EditEvent`) assembles those into the seven columns the model
+  and the public pages actually read — `date_day`/`date_month`/`date_year` (display),
+  `js_day`/`js_month` (0-indexed, feed the public calendar grid) and `ics_start`/`ics_end`
+  (UTC `YYYYMMDDThhmmssZ`, the calendar export — The Gambia is UTC year-round, so no tz
+  math). Events always list newest-first by `ics_start`; there's no `sort_order` for them.
+  `badge` (the type pill) is a free label managed under `EventsPageSettings::event_types`,
+  not a hardcoded enum. `full_description` is a `RichEditor` (HTML); a model mutator wraps
+  any legacy plain text in `<p>` on write. Every event has a flyer image
+  (`Event::flyerImageUrl()`) — the real upload, or `App\Support\EventFlyerPlaceholder`
+  generates an on-brand SVG on the fly from the title/type/date when none is set.
 - **Content seeding:** `ContentSeeder` (projects, events, gallery, community photos,
   testimonials, giving-back programmes + `HeroSlidesSeeder`) runs on every deploy via
   `.forge/deploy.sh`. All of them `firstOrCreate` on the key — a missing row is created,
   an existing one is **never** touched, so panel edits survive re-deploys. `HeroSlidesSeeder`
   copies `public/images/hero-*.webp` onto the media disk and fills `home_page.hero_slides`
   so the slider is editable in the panel; it no-ops once slides are configured.
+  `docs/Talib Legacy - The People's Mayor.md` is the source content brief (KMC records +
+  public reporting) — the seeders are a curated summary of it, not a transcription. When
+  adding seed content, check it against that doc first; a running list of what it covers
+  that the site doesn't yet lives in this session's chat history (parks/stadium and
+  international partnerships were added; still open: flood-prevention specifics beyond the
+  Disaster Mitigation project, deeper governance detail, and a few minor youth-fund items).
 - Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
-  `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`.
+  `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`,
+  `EventsPageSettings` (currently just the event-type list).
   Multi-paragraph fields are stored blank-line-separated and split with the
   `App\Settings\Concerns\SplitsParagraphs` trait (`$page->paragraphs('bio_body')`).
+- **Editing an existing settings array in a migration** (not adding a new key): the
+  migrator's `update()` callback receives `stdClass` objects for array-of-object properties
+  (`json_decode($json, false)`), not associative arrays — use `$item->title`, not
+  `$item['title']`. Reading the same property back through the `Settings` class (i.e. normal
+  app code) gives a plain array as usual; the mismatch is only inside a migration's closure.
+  See `database/settings/2026_09_11_041203_add_fire_trucks_to_enforcement_card.php` and
+  `..._041204_add_womens_congress_to_timeline.php`.
 - Each public view reads its models + settings in a top `@php` block and degrades gracefully
   (a section hides when its collection is empty; images fall back to a placeholder tile;
   decorative SVG icons are cycled by index, not stored).
@@ -51,12 +77,12 @@ disk. Modelled on the sibling `umc` project.
   They still don't email anyone.
 - Settings pages: `app/Filament/Admin/Pages/Manage*.php` extending `Filament\Pages\SettingsPage`,
   each bound to a class in `app/Settings/`. Groups: **System** (general, social, header/footer)
-  and **Page content** (home, about, People's Mayor, Giving Back). Every one `use`s the
+  and **Page content** (home, about, People's Mayor, Giving Back, Events). Every one `use`s the
   `Concerns\NormalisesSettingsData` trait — Filament dehydrates an empty `TextInput` to `null`,
   but the settings classes type most props as non-nullable `string`, so without the trait
   clearing an optional field 500s the save (`Cannot assign null to property … of type string`).
   Keep the trait on any new settings page. `tests/Feature/Admin/SettingsPagesTest.php` mounts
-  and saves all seven.
+  and saves all eight.
 - Roles: `spatie/laravel-permission`. Two roles — `admin`, `super-admin`. `super-admin` is
   also short-circuited by `Gate::before` in `AppServiceProvider`. Panel access requires one
   of those roles (`User::canAccessPanel`).
