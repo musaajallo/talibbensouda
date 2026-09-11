@@ -45,3 +45,13 @@ it('serves a robots.txt that points at the sitemap and blocks the panel', functi
         ->toContain('Sitemap: https://talibahmedbensouda.com/sitemap.xml')
         ->not->toContain('talibbensouda.gm');
 });
+
+it('ships no analytics script until a domain is configured', function (): void {
+    get('/')->assertDontSee('data-domain', false);
+
+    config(['services.analytics.domain' => 'talibahmedbensouda.com']);
+
+    get('/')
+        ->assertSee('data-domain="talibahmedbensouda.com"', false)
+        ->assertSee('plausible.io/js/script.js', false);
+});

@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    /*
+     * Privacy-friendly, cookieless analytics (Plausible-compatible: Plausible,
+     * a self-hosted instance, or a drop-in like Umami with a script URL).
+     * Nothing loads and the CSP stays closed until PLAUSIBLE_DOMAIN is set.
+     * See resources/views/partials/analytics.blade.php + App\Support\Csp\AppPreset.
+     */
+    'analytics' => [
+        'domain' => env('PLAUSIBLE_DOMAIN'),
+        'src' => env('PLAUSIBLE_SRC', 'https://plausible.io/js/script.js'),
+    ],
+
 ];

@@ -38,6 +38,16 @@ class AppPreset implements Preset
             ->add(Directive::FRAME, 'https://www.youtube-nocookie.com')
             ->add(Directive::FRAME, 'https://www.youtube.com');
 
+        // Cookieless analytics — only opened up when a domain is configured
+        // (see config/services.php + resources/views/partials/analytics.blade.php).
+        if ($src = config('services.analytics.domain') ? config('services.analytics.src') : null) {
+            $origin = parse_url($src, PHP_URL_SCHEME).'://'.parse_url($src, PHP_URL_HOST);
+
+            $policy
+                ->add(Directive::SCRIPT, $origin)
+                ->add(Directive::CONNECT, $origin);
+        }
+
         // Examples — uncomment as you add integrations:
         //
         // Bunny Fonts (privacy-friendly Google Fonts mirror)
