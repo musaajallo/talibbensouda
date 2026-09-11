@@ -88,6 +88,18 @@ class ProjectSeeder extends Seeder
                     ['value' => 'D100M', 'label' => "Toward Women's Enterprise"],
                 ],
             ],
+            [
+                'key' => 'parks-community-centres',
+                'tag' => 'Parks & Recreation',
+                'title' => 'Parks, Stadiums & Community Centres',
+                'summary' => 'A D100 million mini-stadium in Serrekunda West, a UNDP-backed rebuild of Kotu Park, and community centres re-equipped across the municipality.',
+                'description' => "The Council has invested in parks, sports facilities and community centres across Kanifing. In partnership with UNDP, Kotu UN@75 Park (formerly Kotu Park) was rehabilitated with a new wall, an outdoor gym and a children's playground. The Bakau Community Centre was rebuilt with the Youth Empowerment Project, and the Bakoteh Multipurpose Centre was expanded and equipped with sewing and t-shirt printing machines in a D10 million YEP-backed investment. The Kanifing Community Centre was rehabilitated and handed over to local youth, and the Westfield-to-Jimpex corridor was beautified. In partnership with Africell, the Council built a D8 million park at the Traffic Light junction, with a KM Qpark now in its launch phase alongside it — and, in Serrekunda West, a D100 million KM SK West/Africell mini-stadium, complete with new goalposts, 180 solar lights, new perimeter fencing and rehabilitated change rooms with boreholes.",
+                'metrics' => [
+                    ['value' => 'D100M', 'label' => 'SK West/Africell Mini-Stadium'],
+                    ['value' => 'D8M', 'label' => 'Traffic Light Park (Africell)'],
+                    ['value' => '180', 'label' => 'Solar Lights, Buffer Zone'],
+                ],
+            ],
         ];
 
         foreach ($projects as $i => $data) {

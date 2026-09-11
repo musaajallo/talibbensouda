@@ -31,6 +31,41 @@ class TestimonialSeeder extends Seeder
                 'role' => 'December 2025',
                 'featured' => false,
             ],
+            [
+                'key' => 'sister-city-freetown',
+                'quote' => "Kanifing Municipal Council holds a sister-city partnership with Freetown, Sierra Leone, supporting cooperation between the two West African capitals' local governments.",
+                'name' => 'Freetown, Sierra Leone',
+                'role' => 'Sister city',
+                'featured' => false,
+            ],
+            [
+                'key' => 'sister-city-madison',
+                'quote' => 'A sister-city relationship with Madison, USA has supported community economic development in Kanifing, including a donation of 1,000 waste bins.',
+                'name' => 'Madison, USA',
+                'role' => 'Sister city',
+                'featured' => false,
+            ],
+            [
+                'key' => 'twinning-balassagyarmat',
+                'quote' => 'A twinning agreement with Balassagyarmat, Hungary focuses on economic, cultural and educational cooperation between the two municipalities.',
+                'name' => 'Balassagyarmat, Hungary',
+                'role' => 'Twinning agreement',
+                'featured' => false,
+            ],
+            [
+                'key' => 'partnership-barcelona',
+                'quote' => 'In partnership with Àrea Metropolitana de Barcelona, the Council built a COVID-19-compliant market in the Talinding Ya Fatou Njie ward.',
+                'name' => 'Àrea Metropolitana de Barcelona',
+                'role' => 'Spain · market partnership',
+                'featured' => false,
+            ],
+            [
+                'key' => 'partnership-kaohsiung',
+                'quote' => 'A partnership with Kaohsiung City, Taiwan supports cooperation on economic development, trade, arts and culture.',
+                'name' => 'Kaohsiung City, Taiwan',
+                'role' => 'Trade & culture partnership',
+                'featured' => false,
+            ],
         ];
 
         foreach ($testimonials as $i => $data) {

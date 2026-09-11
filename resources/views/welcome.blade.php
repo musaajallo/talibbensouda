@@ -7,7 +7,7 @@
     $communityPhotos = \App\Models\CommunityPhoto::published()
         ->group(\App\Models\CommunityPhoto::GROUP_MUNICIPALITY)
         ->with('media')->orderBy('sort_order')->take(6)->get();
-    $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->get();
+    $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->take(6)->get();
     $milestones = \App\Models\Event::where('is_upcoming', true)->orderByDesc('ics_start')->take(4)->get();
 
     // Decorative avatar shapes, cycled across recognition cards.
