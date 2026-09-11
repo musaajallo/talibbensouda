@@ -10,20 +10,19 @@ use Illuminate\Support\Str;
 class Event extends Model
 {
     protected $fillable = [
-        'slug', 'title', 'badge', 'flag',
+        'slug', 'title', 'badge',
         'date_day', 'date_month', 'date_year',
         'js_day', 'js_month',
         'location', 'venue',
         'description', 'full_description',
         'ics_start', 'ics_end',
-        'is_upcoming', 'sort_order',
+        'is_upcoming',
     ];
 
     protected $casts = [
         'is_upcoming' => 'boolean',
         'js_day' => 'integer',
         'js_month' => 'integer',
-        'sort_order' => 'integer',
     ];
 
     public function getRouteKeyName(): string
@@ -115,6 +114,6 @@ class Event extends Model
 
     public function badgeLabel(): string
     {
-        return $this->badge === 'diaspora' ? 'Campaign' : 'Kanifing';
+        return (string) $this->badge;
     }
 }

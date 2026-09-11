@@ -142,9 +142,7 @@
                     </div>
 
                     <div class="event-card__body">
-                        <span class="event-card__badge event-card__badge--{{ $event->badge }}">
-                            {{ $event->badgeLabel() }}
-                        </span>
+                        <span class="event-card__badge">{{ $event->badge }}</span>
                         <h3 class="event-card__title">
                             <a href="{{ route('events.show', $event) }}" style="color:inherit; text-decoration:none;">
                                 {{ $event->title }}

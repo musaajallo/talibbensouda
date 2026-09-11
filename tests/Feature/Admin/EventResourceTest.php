@@ -24,7 +24,7 @@ function eventRow(array $overrides = []): Event
     return Event::create(array_merge([
         'slug' => 'existing-event',
         'title' => 'Existing',
-        'badge' => 'gambia',
+        'badge' => 'Kanifing',
         'date_day' => '1', 'date_month' => 'Jan', 'date_year' => '2025',
         'js_day' => 1, 'js_month' => 0,
         'location' => 'X', 'description' => 'x',
@@ -36,7 +36,7 @@ it('creates an event, auto-slugs the title and derives every date column from on
     Livewire::test(CreateEvent::class)
         ->fillForm([
             'title' => 'Bakau Multipurpose Facility Launched',
-            'badge' => 'gambia',
+            'badge' => 'Kanifing',
             'flag' => '🇬🇲',
             'is_upcoming' => true,
             'sort_order' => 7,
@@ -64,7 +64,7 @@ it('defaults the times when only a date is given', function (): void {
     Livewire::test(CreateEvent::class)
         ->fillForm([
             'title' => 'Date only',
-            'badge' => 'gambia',
+            'badge' => 'Kanifing',
             'sort_order' => 1,
             'event_date' => '2025-07-04',
             'location' => 'Serrekunda',
@@ -84,7 +84,7 @@ it('rejects a duplicate slug', function (): void {
 
     Livewire::test(CreateEvent::class)
         ->fillForm([
-            'title' => 'Another', 'slug' => 'existing-event', 'badge' => 'gambia',
+            'title' => 'Another', 'slug' => 'existing-event', 'badge' => 'Kanifing',
             'flag' => '🇬🇲', 'sort_order' => 1,
             'event_date' => '2025-01-01', 'start_time' => '09:00', 'end_time' => '10:00',
             'location' => 'X', 'description' => 'x',
@@ -111,7 +111,7 @@ it('pre-fills the date and time pickers from the stored ICS timestamps', functio
 it('stores the rich write-up as HTML', function (): void {
     Livewire::test(CreateEvent::class)
         ->fillForm([
-            'title' => 'Rich event', 'badge' => 'gambia', 'sort_order' => 1,
+            'title' => 'Rich event', 'badge' => 'Kanifing', 'sort_order' => 1,
             'event_date' => '2025-05-01',
             'location' => 'Kanifing', 'description' => 'x',
             'full_description' => '<p>First paragraph.</p><p>Second.</p>',

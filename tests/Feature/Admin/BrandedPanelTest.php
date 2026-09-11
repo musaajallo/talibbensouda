@@ -52,11 +52,11 @@ it('populates the dashboard widgets from live data', function (): void {
     actingAs($admin);
 
     Event::create([
-        'slug' => 'town-hall', 'title' => 'Town hall', 'badge' => 'gambia',
+        'slug' => 'town-hall', 'title' => 'Town hall', 'badge' => 'Kanifing',
         'date_day' => '01', 'date_month' => 'Jan', 'date_year' => '2027',
         'js_day' => 1, 'js_month' => 0, 'location' => 'Kanifing',
         'description' => 'Quarterly town hall.', 'ics_start' => '20270101T090000Z',
-        'ics_end' => '20270101T100000Z', 'is_upcoming' => true, 'sort_order' => 0,
+        'ics_end' => '20270101T100000Z', 'is_upcoming' => true,
     ]);
     ContactMessage::create([
         'type' => 'inquiry', 'name' => 'Jane Njie', 'email' => 'jane@example.com', 'message' => 'Hi',

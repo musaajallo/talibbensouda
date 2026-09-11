@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Events\Tables;
 
+use App\Settings\EventsPageSettings;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,37 +17,31 @@ class EventsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->reorderable('sort_order')
-            ->defaultSort('sort_order')
+            ->defaultSort('ics_start', 'desc')
             ->columns([
-                TextColumn::make('title')
-                    ->searchable()
-                    ->sortable()
-                    ->wrap(),
-                TextColumn::make('badge')
-                    ->badge()
-                    ->formatStateUsing(fn (string $state): string => $state === 'diaspora' ? 'Campaign' : 'Kanifing'),
                 TextColumn::make('starts_at')
                     ->label('Date')
                     ->dateTime('j M Y · H:i')
                     ->placeholder('—')
                     ->sortable(query: fn ($query, string $direction) => $query->orderBy('ics_start', $direction)),
+                TextColumn::make('title')
+                    ->searchable()
+                    ->sortable()
+                    ->wrap(),
+                TextColumn::make('badge')
+                    ->label('Type')
+                    ->badge(),
                 TextColumn::make('location')
                     ->searchable()
                     ->limit(40),
                 IconColumn::make('is_upcoming')
                     ->label('Current')
                     ->boolean(),
-                TextColumn::make('sort_order')
-                    ->label('Sort')
-                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('badge')
-                    ->options([
-                        'gambia' => 'Kanifing',
-                        'diaspora' => 'Campaign',
-                    ]),
+                    ->label('Type')
+                    ->options(fn (): array => app(EventsPageSettings::class)->typeOptions()),
                 TernaryFilter::make('is_upcoming')
                     ->label('Current milestones'),
             ])

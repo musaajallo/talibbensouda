@@ -13,11 +13,7 @@
                     <span class="page-hero__crumb-current">{{ $event->title }}</span>
                 </nav>
 
-                @if($event->flag)
-                    <div style="font-size:2rem; line-height:1; margin-bottom:16px;">{{ $event->flag }}</div>
-                @endif
-
-                <span class="page-hero__eyebrow">{{ $event->badgeLabel() }}</span>
+                <span class="page-hero__eyebrow">{{ $event->badge }}</span>
 
                 <h1 class="page-hero__title">{{ $event->title }}</h1>
 

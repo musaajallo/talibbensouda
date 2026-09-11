@@ -23,7 +23,7 @@ class SitemapController extends Controller
             ->add(Url::create('/cookies')->setPriority(0.3)->setChangeFrequency('yearly'))
             ->add(Url::create('/sitemap')->setPriority(0.3)->setChangeFrequency('weekly'));
 
-        Event::orderBy('sort_order')->each(function (Event $event) use ($sitemap) {
+        Event::orderByDesc('ics_start')->each(function (Event $event) use ($sitemap) {
             $sitemap->add(
                 Url::create(route('events.show', $event))
                     ->setPriority(0.8)

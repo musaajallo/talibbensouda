@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Events\Schemas;
 
+use App\Settings\EventsPageSettings;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -17,6 +18,8 @@ class EventForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $settings = app(EventsPageSettings::class);
+
         return $schema->components([
             Section::make('Milestone')
                 ->description('The headline, the URL slug and where it shows on the site.')
@@ -38,26 +41,15 @@ class EventForm
                         ->helperText('Used in the event URL: /events/<slug>'),
                     Select::make('badge')
                         ->label('Type')
-                        ->options([
-                            'gambia' => 'Kanifing',
-                            'diaspora' => 'Campaign',
-                        ])
-                        ->default('gambia')
+                        ->options($settings->typeOptions())
+                        ->default($settings->defaultType())
                         ->required()
-                        ->native(false),
-                    TextInput::make('flag')
-                        ->maxLength(8)
-                        ->default('🇬🇲')
-                        ->helperText('Emoji shown next to the date.'),
+                        ->native(false)
+                        ->helperText('Manage the list under Page content → Events page.'),
                     Toggle::make('is_upcoming')
                         ->label('Show in the current milestones list')
                         ->helperText('Turn off once the event has passed.')
                         ->default(true),
-                    TextInput::make('sort_order')
-                        ->numeric()
-                        ->default(0)
-                        ->required()
-                        ->helperText('Lower numbers appear first.'),
                 ]),
 
             Section::make('Date & place')

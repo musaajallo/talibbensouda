@@ -1,6 +1,7 @@
 <?php
 
 use App\Settings\AboutPageSettings;
+use App\Settings\EventsPageSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\GivingBackPageSettings;
 use App\Settings\HomePageSettings;
@@ -28,6 +29,7 @@ return [
         PeoplesMayorPageSettings::class,
         GivingBackPageSettings::class,
         AboutPageSettings::class,
+        EventsPageSettings::class,
     ],
 
     /*

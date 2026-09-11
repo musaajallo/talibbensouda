@@ -36,11 +36,11 @@ it('renders projects, testimonials and community photos from their models', func
 
 it('pulls recent milestones from upcoming events', function (): void {
     Event::create([
-        'slug' => 'library-hub', 'title' => 'Municipal Library Hub', 'badge' => 'gambia',
+        'slug' => 'library-hub', 'title' => 'Municipal Library Hub', 'badge' => 'Kanifing',
         'date_day' => '01', 'date_month' => 'Dec', 'date_year' => '2024',
         'js_day' => 1, 'js_month' => 11, 'location' => 'Kanifing',
         'description' => 'D45m library inaugurated.', 'ics_start' => '20241201T090000Z', 'ics_end' => '20241201T160000Z',
-        'is_upcoming' => true, 'sort_order' => 1,
+        'is_upcoming' => true,
     ]);
 
     get('/')->assertOk()->assertSee('Municipal Library Hub');

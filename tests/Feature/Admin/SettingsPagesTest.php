@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Admin\Pages\ManageAboutPage;
+use App\Filament\Admin\Pages\ManageEventsPage;
 use App\Filament\Admin\Pages\ManageGeneralSettings;
 use App\Filament\Admin\Pages\ManageGivingBackPage;
 use App\Filament\Admin\Pages\ManageHomePage;
@@ -31,6 +32,7 @@ $pages = [
     'About page content' => [ManageAboutPage::class, 'admin/manage-about-page'],
     "People's Mayor page content" => [ManagePeoplesMayorPage::class, 'admin/manage-peoples-mayor-page'],
     'Giving Back page content' => [ManageGivingBackPage::class, 'admin/manage-giving-back-page'],
+    'Events page content' => [ManageEventsPage::class, 'admin/manage-events-page'],
 ];
 
 it('loads every settings page without error', function (string $class, string $url): void {
