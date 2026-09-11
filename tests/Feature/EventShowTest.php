@@ -9,14 +9,13 @@ function makeEvent(bool $upcoming): Event
     return Event::create([
         'slug' => $upcoming ? 'upcoming-town-hall' : 'past-library-opening',
         'title' => $upcoming ? 'Upcoming Town Hall' : 'Library Opening 2023',
-        'badge' => 'gambia',
+        'badge' => 'Kanifing',
         'date_day' => '01', 'date_month' => 'Jan', 'date_year' => $upcoming ? '2027' : '2023',
         'js_day' => 1, 'js_month' => 0,
         'location' => 'Kanifing',
         'description' => 'An event.',
         'ics_start' => '20270101T090000Z', 'ics_end' => '20270101T100000Z',
         'is_upcoming' => $upcoming,
-        'sort_order' => 1,
     ]);
 }
 

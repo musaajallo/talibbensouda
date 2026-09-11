@@ -56,5 +56,6 @@ it('lets a super-admin reach the panel and its pages', function (string $path): 
     '/admin/manage-peoples-mayor-page',
     '/admin/manage-giving-back-page',
     '/admin/manage-about-page',
+    '/admin/manage-events-page',
     '/admin/shield/roles',
 ]);

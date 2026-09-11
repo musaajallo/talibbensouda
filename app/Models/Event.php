@@ -2,30 +2,101 @@
 
 namespace App\Models;
 
+use App\Support\Media\ResolvesPublicMediaUrl;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Event extends Model
+class Event extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+    use ResolvesPublicMediaUrl;
+
     protected $fillable = [
-        'slug', 'title', 'badge', 'flag',
+        'slug', 'title', 'badge',
         'date_day', 'date_month', 'date_year',
         'js_day', 'js_month',
         'location', 'venue',
         'description', 'full_description',
         'ics_start', 'ics_end',
-        'is_upcoming', 'sort_order',
+        'is_upcoming',
     ];
 
     protected $casts = [
         'is_upcoming' => 'boolean',
         'js_day' => 'integer',
         'js_month' => 'integer',
-        'sort_order' => 'integer',
     ];
 
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('flyer')->singleFile()->useDisk('public');
+    }
+
+    /** The uploaded flyer, or null if none was set. */
+    public function flyerUrl(): ?string
+    {
+        return $this->publicMediaUrl('flyer');
+    }
+
+    /** The uploaded flyer, or a generated on-brand placeholder — always usable as an <img> src. */
+    public function flyerImageUrl(): string
+    {
+        return $this->flyerUrl() ?? route('events.flyer-placeholder', $this);
+    }
+
+    /**
+     * Read-only start/end, parsed from `ics_start` / `ics_end` (UTC,
+     * `YYYYMMDDThhmmssZ` — the Gambia is UTC year-round). Writes go through the
+     * admin form: HandlesEventSchedule assembles the ICS strings and the
+     * derived display / calendar-grid columns from one date + two times.
+     */
+    protected function startsAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?CarbonImmutable => $this->ics_start
+                ? CarbonImmutable::createFromFormat('Ymd\THis\Z', $this->ics_start, 'UTC')
+                : null,
+        );
+    }
+
+    protected function endsAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?CarbonImmutable => $this->ics_end
+                ? CarbonImmutable::createFromFormat('Ymd\THis\Z', $this->ics_end, 'UTC')
+                : null,
+        );
+    }
+
+    /**
+     * The event page renders `full_description` as HTML (the admin uses a rich
+     * editor). Legacy / seeded values are blank-line-separated plain text — wrap
+     * those in paragraphs on write so everything downstream is HTML.
+     */
+    protected function fullDescription(): Attribute
+    {
+        return Attribute::make(
+            set: function (?string $value): ?string {
+                if (blank($value) || Str::contains($value, '<')) {
+                    return $value;
+                }
+
+                return collect(preg_split('/\n{2,}/', trim($value)))
+                    ->map(fn (string $p): string => trim($p))
+                    ->filter()
+                    ->map(fn (string $p): string => '<p>'.e($p).'</p>')
+                    ->implode('');
+            },
+        );
     }
 
     public function gcalUrl(): string
@@ -66,6 +137,6 @@ class Event extends Model
 
     public function badgeLabel(): string
     {
-        return $this->badge === 'diaspora' ? 'Campaign' : 'Kanifing';
+        return (string) $this->badge;
     }
 }

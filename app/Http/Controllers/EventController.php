@@ -9,7 +9,7 @@ class EventController extends Controller
     public function index()
     {
         $upcoming = Event::where('is_upcoming', true)
-            ->orderBy('sort_order')
+            ->orderByDesc('ics_start')
             ->get();
 
         $calEvents = $upcoming->map(fn ($e) => [
@@ -26,7 +26,7 @@ class EventController extends Controller
     {
         $related = Event::where('slug', '!=', $event->slug)
             ->where('is_upcoming', true)
-            ->orderBy('sort_order')
+            ->orderByDesc('ics_start')
             ->limit(3)
             ->get();
 

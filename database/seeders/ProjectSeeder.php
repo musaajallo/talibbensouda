@@ -88,6 +88,42 @@ class ProjectSeeder extends Seeder
                     ['value' => 'D100M', 'label' => "Toward Women's Enterprise"],
                 ],
             ],
+            [
+                'key' => 'parks-community-centres',
+                'tag' => 'Parks & Recreation',
+                'title' => 'Parks, Stadiums & Community Centres',
+                'summary' => 'A D100 million mini-stadium in Serrekunda West, a UNDP-backed rebuild of Kotu Park, and community centres re-equipped across the municipality.',
+                'description' => "The Council has invested in parks, sports facilities and community centres across Kanifing. In partnership with UNDP, Kotu UN@75 Park (formerly Kotu Park) was rehabilitated with a new wall, an outdoor gym and a children's playground. The Bakau Community Centre was rebuilt with the Youth Empowerment Project, and the Bakoteh Multipurpose Centre was expanded and equipped with sewing and t-shirt printing machines in a D10 million YEP-backed investment. The Kanifing Community Centre was rehabilitated and handed over to local youth, and the Westfield-to-Jimpex corridor was beautified. In partnership with Africell, the Council built a D8 million park at the Traffic Light junction, with a KM Qpark now in its launch phase alongside it — and, in Serrekunda West, a D100 million KM SK West/Africell mini-stadium, complete with new goalposts, 180 solar lights, new perimeter fencing and rehabilitated change rooms with boreholes.",
+                'metrics' => [
+                    ['value' => 'D100M', 'label' => 'SK West/Africell Mini-Stadium'],
+                    ['value' => 'D8M', 'label' => 'Traffic Light Park (Africell)'],
+                    ['value' => '180', 'label' => 'Solar Lights, Buffer Zone'],
+                ],
+            ],
+            [
+                'key' => 'flood-prevention',
+                'tag' => 'Flood Prevention',
+                'title' => 'Disaster Mitigation & Flood Prevention',
+                'summary' => 'Around D20 million spent over four years clearing drains, excavating canals with NDMA, and removing illegal dumpsites before the rains.',
+                'description' => 'Kanifing Municipal Council spends roughly D5 million a year — about D20 million over four years — on flood prevention ahead of the rainy season. Work includes clearing debris from 45 strategic drains and 30 kilometres of drainage annually, an annual excavation of the Kotu/Abuko canal in partnership with the National Disaster Management Agency (NDMA), and the clearance of 40-plus illegal dumpsites a year. The Council also reinstituted "set settal" — community cleaning exercises held across the municipality\'s wards.',
+                'metrics' => [
+                    ['value' => 'D20M', 'label' => 'Spent Over 4 Years'],
+                    ['value' => '30km', 'label' => 'Drains Cleared Annually'],
+                    ['value' => '40+', 'label' => 'Illegal Dumpsites Cleared / Year'],
+                ],
+            ],
+            [
+                'key' => 'governance-reform',
+                'tag' => 'Governance',
+                'title' => 'Governance, Housing & Digital Reform',
+                'summary' => "A dedicated GIS unit and the municipality's first official map, a tripled corruption-prosecution rate, and a plan for an affordable-housing company.",
+                'description' => "The Council established a dedicated GIS unit for addressing and street naming, producing Kanifing's first official municipal map and linking properties to rate data to improve revenue collection. Under improved financial controls, the corruption prosecution rate tripled, alongside staff reforms including a 50% salary increase, more frequent appraisals and a fleet investment of 9 pickups, 6 SUVs and a minibus. On housing, the rent tribunal function was transferred to the Kanifing Magistrate's Court, a 2023 plan was announced to establish an affordable housing company, and 176 plots of land were facilitated for KMC staff.",
+                'metrics' => [
+                    ['value' => '3x', 'label' => 'Corruption Prosecution Rate'],
+                    ['value' => '50%', 'label' => 'Staff Salary Increase'],
+                    ['value' => '176', 'label' => 'Staff Housing Plots'],
+                ],
+            ],
         ];
 
         foreach ($projects as $i => $data) {

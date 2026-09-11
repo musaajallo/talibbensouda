@@ -1,4 +1,10 @@
-<x-app-layout :title="$event->title" styles="events">
+{{--
+    og-image: the real uploaded flyer only. The generated placeholder is SVG,
+    which Facebook/X/LinkedIn crawlers don't render as a social-card image —
+    when there's no upload, fall back to the site's default share image
+    instead of a broken card.
+--}}
+<x-app-layout :title="$event->title" styles="events" :description="$event->description" :og-image="$event->flyerUrl()">
 
     {{-- ── Page hero ──────────────────────────────────────────────────────────── --}}
     <section class="page-hero">
@@ -13,11 +19,7 @@
                     <span class="page-hero__crumb-current">{{ $event->title }}</span>
                 </nav>
 
-                @if($event->flag)
-                    <div style="font-size:2rem; line-height:1; margin-bottom:16px;">{{ $event->flag }}</div>
-                @endif
-
-                <span class="page-hero__eyebrow">{{ $event->badgeLabel() }}</span>
+                <span class="page-hero__eyebrow">{{ $event->badge }}</span>
 
                 <h1 class="page-hero__title">{{ $event->title }}</h1>
 
@@ -74,13 +76,13 @@
                         @endif
                     </div>
 
-                    {{-- Full description --}}
-                    <div class="event-show__body">
-                        @foreach(explode("\n\n", $event->full_description ?? $event->description) as $para)
-                            @if(trim($para))
-                                <p>{{ trim($para) }}</p>
-                            @endif
-                        @endforeach
+                    {{-- Full description — rich text (HTML) authored in the admin. --}}
+                    <div class="event-show__body prose">
+                        @if (filled($event->full_description))
+                            {!! $event->full_description !!}
+                        @else
+                            <p>{{ $event->description }}</p>
+                        @endif
                     </div>
 
                     {{-- Back link --}}
@@ -97,6 +99,11 @@
 
                 {{-- ── Sidebar ── --}}
                 <aside class="event-show__sidebar" data-reveal data-reveal-delay="80">
+
+                    {{-- Flyer — the uploaded poster, or a generated placeholder. --}}
+                    <div class="event-flyer">
+                        <img src="{{ $event->flyerImageUrl() }}" alt="{{ $event->title }} flyer" loading="lazy" width="1200" height="1500">
+                    </div>
 
                     <div class="event-info-card">
 

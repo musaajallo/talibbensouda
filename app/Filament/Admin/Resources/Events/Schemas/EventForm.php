@@ -2,9 +2,14 @@
 
 namespace App\Filament\Admin\Resources\Events\Schemas;
 
+use App\Settings\EventsPageSettings;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -14,8 +19,11 @@ class EventForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $settings = app(EventsPageSettings::class);
+
         return $schema->components([
             Section::make('Milestone')
+                ->description('The headline, the URL slug and where it shows on the site.')
                 ->columns(2)
                 ->components([
                     TextInput::make('title')
@@ -33,54 +41,77 @@ class EventForm
                         ->unique(ignoreRecord: true)
                         ->helperText('Used in the event URL: /events/<slug>'),
                     Select::make('badge')
-                        ->options([
-                            'gambia' => 'Kanifing',
-                            'diaspora' => 'Campaign',
-                        ])
-                        ->default('gambia')
-                        ->required(),
-                    TextInput::make('flag')
-                        ->maxLength(8)
-                        ->default('🇬🇲')
-                        ->helperText('Emoji shown next to the date.'),
+                        ->label('Type')
+                        ->options($settings->typeOptions())
+                        ->default($settings->defaultType())
+                        ->required()
+                        ->native(false)
+                        ->helperText('Manage the list under Page content → Events page.'),
                     Toggle::make('is_upcoming')
                         ->label('Show in the current milestones list')
+                        ->helperText('Turn off once the event has passed.')
                         ->default(true),
-                    TextInput::make('sort_order')
-                        ->numeric()
-                        ->default(0)
-                        ->required()
-                        ->helperText('Lower numbers appear first.'),
                 ]),
 
             Section::make('Date & place')
-                ->columns(3)
+                ->description('Everything on the site — the date card, the calendar grid and the "add to calendar" export — comes from this.')
+                ->columns(2)
                 ->components([
-                    TextInput::make('date_day')->label('Day (display)')->required()->maxLength(8)->placeholder('12'),
-                    TextInput::make('date_month')->label('Month (display)')->required()->maxLength(20)->placeholder('July'),
-                    TextInput::make('date_year')->label('Year (display)')->required()->maxLength(8)->placeholder('2025'),
-                    TextInput::make('js_day')->label('Day (number)')->numeric()->minValue(1)->maxValue(31)->required(),
-                    TextInput::make('js_month')->label('Month (0–11)')->numeric()->minValue(0)->maxValue(11)->required()
-                        ->helperText('January = 0, December = 11.'),
-                    TextInput::make('location')->required()->maxLength(255)->columnSpan(1),
-                    TextInput::make('venue')->maxLength(255)->columnSpan(2),
+                    DatePicker::make('event_date')
+                        ->label('Date')
+                        ->required()
+                        ->native(false)
+                        ->displayFormat('D j M Y')
+                        ->closeOnDateSelection()
+                        ->columnSpanFull(),
+                    TimePicker::make('start_time')
+                        ->label('Start time')
+                        ->seconds(false)
+                        ->minutesStep(15)
+                        ->default('09:00'),
+                    TimePicker::make('end_time')
+                        ->label('End time')
+                        ->seconds(false)
+                        ->minutesStep(15)
+                        ->default('17:00')
+                        ->after('start_time'),
+                    TextInput::make('location')
+                        ->required()
+                        ->maxLength(255)
+                        ->helperText('Town or area, e.g. "Bakau".'),
+                    TextInput::make('venue')
+                        ->maxLength(255)
+                        ->helperText('Optional — a specific building or hall.'),
                 ]),
 
             Section::make('Description')
                 ->components([
-                    Textarea::make('description')->required()->rows(2)->maxLength(500)
-                        ->helperText('One or two sentences for the list and cards.'),
-                    Textarea::make('full_description')->rows(8)
-                        ->helperText('Shown on the event page. Separate paragraphs with a blank line.'),
+                    Textarea::make('description')
+                        ->label('Summary')
+                        ->required()
+                        ->rows(2)
+                        ->maxLength(500)
+                        ->helperText('One or two sentences for the events list and cards.'),
+                    RichEditor::make('full_description')
+                        ->label('Full write-up')
+                        ->toolbarButtons([
+                            'bold', 'italic', 'link', 'bulletList', 'orderedList', 'blockquote', 'h3', 'undo', 'redo',
+                        ])
+                        ->helperText('Shown on the event page. Leave blank to fall back to the summary.'),
                 ]),
 
-            Section::make('Add to calendar')
-                ->columns(2)
-                ->collapsed()
+            Section::make('Flyer')
+                ->description('Shown on the events list, the event page and when the link is shared. Optional — a branded placeholder with the title and date is used until one is uploaded.')
                 ->components([
-                    TextInput::make('ics_start')->required()->maxLength(20)->placeholder('20250712T090000Z')
-                        ->helperText('UTC, format YYYYMMDDThhmmssZ.'),
-                    TextInput::make('ics_end')->required()->maxLength(20)->placeholder('20250712T110000Z'),
+                    SpatieMediaLibraryFileUpload::make('flyer')
+                        ->collection('flyer')
+                        ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['4:5', '1:1', null])
+                        ->responsiveImages()
+                        ->maxSize(4096)
+                        ->hiddenLabel()
+                        ->helperText('Recommended 1200 × 1500px (a 4:5 portrait poster). JPG, PNG or WebP, up to 4 MB.'),
                 ]),
         ]);
     }

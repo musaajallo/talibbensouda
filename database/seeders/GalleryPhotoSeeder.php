@@ -21,6 +21,8 @@ class GalleryPhotoSeeder extends Seeder
             ['Projects', 'Serrekunda Market upgrade', false],
             ['Projects', 'Bakoteh dumpsite fencing & remediation', false],
             ['Projects', 'Bundung Maternity Ward expansion', false],
+            ['Projects', 'KM SK West/Africell mini-stadium — Serrekunda West', true],
+            ['Projects', 'Kotu UN@75 Park rehabilitation', false],
             ['Community', 'Ward Development Committee office', true],
             ['Community', "Bakau Women's Garden", false],
             ['Community', "Mayor's Trophy football tournament", false],
@@ -33,6 +35,9 @@ class GalleryPhotoSeeder extends Seeder
             ['Partners', 'Peterborough City Council — KETP partnership', true],
             ['Partners', 'Sister-city ties — Freetown & Madison', false],
             ['Partners', 'Global Parliament of Mayors', false],
+            ['Partners', 'Twinning with Balassagyarmat, Hungary', false],
+            ['Partners', 'Àrea Metropolitana de Barcelona partnership', false],
+            ['Partners', 'Kaohsiung City, Taiwan partnership', false],
         ];
 
         foreach ($photos as $i => [$category, $caption, $wide]) {

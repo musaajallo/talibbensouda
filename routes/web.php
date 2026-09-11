@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventFlyerPlaceholderController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Http\Request;
@@ -54,6 +55,9 @@ Route::get('/events/ics', function (Request $request) {
 
 // Show route MUST come after /events/register and /events/ics
 Route::get('/events/{event:slug}', [EventController::class, 'show'])->name('events.show');
+// No .svg extension — the nginx static-asset cache block matches by file
+// extension and would 404 this before it ever reaches PHP.
+Route::get('/events/{event:slug}/flyer', EventFlyerPlaceholderController::class)->name('events.flyer-placeholder');
 Route::get('/giving-back', fn () => view('giving-back'));
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])

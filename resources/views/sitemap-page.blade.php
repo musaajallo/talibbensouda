@@ -1,6 +1,6 @@
 <x-app-layout title="Sitemap" styles="sitemap">
 @php
-    $events = \App\Models\Event::orderBy('sort_order')->get();
+    $events = \App\Models\Event::orderByDesc('ics_start')->get();
     $chrome = app(\App\Settings\SiteChromeSettings::class);
 @endphp
 
