@@ -37,7 +37,9 @@
 </head>
 <body>
 
-    <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })" :class="{ 'is-menu-open': open }" @keydown.escape.window="open = false" x-effect="document.body.classList.toggle('has-menu-open', open)">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })" :class="{ 'is-menu-open': open }" @keydown.escape.window="open = false" x-effect="document.body.classList.toggle('has-menu-open', open)" x-trap="open">
         <div class="site-nav container">
 
             <a href="{{ url('/') }}" class="site-nav__brand" @click="open = false">{{ $brandName }}</a>
@@ -76,7 +78,7 @@
         </div>
     </header>
 
-    <main>{{ $slot }}</main>
+    <main id="main-content" tabindex="-1">{{ $slot }}</main>
 
     {{-- ── Cookie consent banner ── --}}
     <div

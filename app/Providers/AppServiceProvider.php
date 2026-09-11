@@ -9,10 +9,13 @@ use App\Models\GalleryPhoto;
 use App\Models\GivingProgramme;
 use App\Models\Project;
 use App\Models\Testimonial;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Resend\Laravel\Events\EmailBounced;
@@ -45,6 +48,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->flushResponseCacheOnContentChange();
+
+        // Public form endpoints (contact, join, event registration). Generous for
+        // a real person, tight enough to stop a spam burst.
+        RateLimiter::for('public-forms', fn (Request $request) => [
+            Limit::perMinute(5)->by($request->ip()),
+            Limit::perDay(40)->by($request->ip()),
+        ]);
 
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
