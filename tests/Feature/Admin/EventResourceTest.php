@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
+use App\Filament\Admin\Resources\Events\Pages\EditEvent;
 use App\Models\Event;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
@@ -17,7 +18,21 @@ beforeEach(function (): void {
     actingAs($admin);
 });
 
-it('creates an event, auto-slugs the title and derives every date field from one picker', function (): void {
+/** Create an Event straight in the DB with the columns the seeder uses. */
+function eventRow(array $overrides = []): Event
+{
+    return Event::create(array_merge([
+        'slug' => 'existing-event',
+        'title' => 'Existing',
+        'badge' => 'gambia',
+        'date_day' => '1', 'date_month' => 'Jan', 'date_year' => '2025',
+        'js_day' => 1, 'js_month' => 0,
+        'location' => 'X', 'description' => 'x',
+        'ics_start' => '20250101T090000Z', 'ics_end' => '20250101T100000Z',
+    ], $overrides));
+}
+
+it('creates an event, auto-slugs the title and derives every date column from one picker + two times', function (): void {
     Livewire::test(CreateEvent::class)
         ->fillForm([
             'title' => 'Bakau Multipurpose Facility Launched',
@@ -25,8 +40,9 @@ it('creates an event, auto-slugs the title and derives every date field from one
             'flag' => '🇬🇲',
             'is_upcoming' => true,
             'sort_order' => 7,
-            'starts_at' => '2025-06-01 09:00:00',
-            'ends_at' => '2025-06-01 16:00:00',
+            'event_date' => '2025-06-01',
+            'start_time' => '09:00',
+            'end_time' => '16:00',
             'location' => 'Bakau',
             'description' => 'Launch of a community facility.',
         ])
@@ -39,51 +55,70 @@ it('creates an event, auto-slugs the title and derives every date field from one
         ->and($event->date_month)->toBe('Jun')
         ->and($event->date_year)->toBe('2025')
         ->and($event->js_day)->toBe(1)
-        ->and($event->js_month)->toBe(5)          // June, 0-indexed
+        ->and($event->js_month)->toBe(5)              // June, 0-indexed
         ->and($event->ics_start)->toBe('20250601T090000Z')
         ->and($event->ics_end)->toBe('20250601T160000Z');
 });
 
-it('rejects an end that is before the start', function (): void {
+it('defaults the times when only a date is given', function (): void {
     Livewire::test(CreateEvent::class)
         ->fillForm([
-            'title' => 'Backwards Event',
+            'title' => 'Date only',
             'badge' => 'gambia',
             'sort_order' => 1,
-            'starts_at' => '2025-06-01 16:00:00',
-            'ends_at' => '2025-06-01 09:00:00',
-            'location' => 'X',
+            'event_date' => '2025-07-04',
+            'location' => 'Serrekunda',
             'description' => 'x',
         ])
         ->call('create')
-        ->assertHasFormErrors(['ends_at']);
+        ->assertHasNoFormErrors();
+
+    $event = Event::whereSlug('date-only')->firstOrFail();
+
+    expect($event->ics_start)->toBe('20250704T090000Z')
+        ->and($event->ics_end)->toBe('20250704T170000Z');
 });
 
 it('rejects a duplicate slug', function (): void {
-    Event::create([
-        'slug' => 'existing-event',
-        'title' => 'Existing', 'badge' => 'gambia',
-        'starts_at' => '2025-01-01 09:00:00', 'ends_at' => '2025-01-01 10:00:00',
-        'location' => 'X', 'description' => 'x',
-    ]);
+    eventRow();
 
     Livewire::test(CreateEvent::class)
         ->fillForm([
             'title' => 'Another', 'slug' => 'existing-event', 'badge' => 'gambia',
             'flag' => '🇬🇲', 'sort_order' => 1,
-            'starts_at' => '2025-01-01 09:00:00', 'ends_at' => '2025-01-01 10:00:00',
+            'event_date' => '2025-01-01', 'start_time' => '09:00', 'end_time' => '10:00',
             'location' => 'X', 'description' => 'x',
         ])
         ->call('create')
         ->assertHasFormErrors(['slug']);
 });
 
-it('round-trips the pickers on the edit form', function (): void {
-    $event = Event::create([
-        'slug' => 'town-hall', 'title' => 'Town hall', 'badge' => 'gambia',
-        'starts_at' => '2025-03-15 18:00:00', 'ends_at' => '2025-03-15 20:00:00',
-        'location' => 'Serrekunda', 'description' => 'Community meeting.',
+it('pre-fills the date and time pickers from the stored ICS timestamps', function (): void {
+    $event = eventRow([
+        'slug' => 'town-hall',
+        'ics_start' => '20250315T180000Z',
+        'ics_end' => '20250315T200000Z',
     ]);
 
-    expect($event->fresh()->starts_at->format('Y-m-d H:i'))->toBe('2025-03-15 18:00');
+    Livewire::test(EditEvent::class, ['record' => $event->slug])
+        ->assertFormSet([
+            'event_date' => '2025-03-15',
+            'start_time' => '18:00',
+            'end_time' => '20:00',
+        ]);
+});
+
+it('stores the rich write-up as HTML', function (): void {
+    Livewire::test(CreateEvent::class)
+        ->fillForm([
+            'title' => 'Rich event', 'badge' => 'gambia', 'sort_order' => 1,
+            'event_date' => '2025-05-01',
+            'location' => 'Kanifing', 'description' => 'x',
+            'full_description' => '<p>First paragraph.</p><p>Second.</p>',
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    expect(Event::whereSlug('rich-event')->value('full_description'))
+        ->toBe('<p>First paragraph.</p><p>Second.</p>');
 });

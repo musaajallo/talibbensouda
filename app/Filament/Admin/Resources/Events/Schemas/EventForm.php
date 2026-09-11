@@ -2,10 +2,12 @@
 
 namespace App\Filament\Admin\Resources\Events\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -59,24 +61,27 @@ class EventForm
                 ]),
 
             Section::make('Date & place')
-                ->description('One date and time — the site copy, the calendar grid and the "add to calendar" export all derive from it.')
+                ->description('Everything on the site — the date card, the calendar grid and the "add to calendar" export — comes from this.')
                 ->columns(2)
                 ->components([
-                    DateTimePicker::make('starts_at')
-                        ->label('Starts')
+                    DatePicker::make('event_date')
+                        ->label('Date')
                         ->required()
                         ->native(false)
+                        ->displayFormat('D j M Y')
+                        ->closeOnDateSelection()
+                        ->columnSpanFull(),
+                    TimePicker::make('start_time')
+                        ->label('Start time')
                         ->seconds(false)
                         ->minutesStep(15)
-                        ->displayFormat('D j M Y · H:i'),
-                    DateTimePicker::make('ends_at')
-                        ->label('Ends')
-                        ->required()
-                        ->native(false)
+                        ->default('09:00'),
+                    TimePicker::make('end_time')
+                        ->label('End time')
                         ->seconds(false)
                         ->minutesStep(15)
-                        ->displayFormat('D j M Y · H:i')
-                        ->afterOrEqual('starts_at'),
+                        ->default('17:00')
+                        ->after('start_time'),
                     TextInput::make('location')
                         ->required()
                         ->maxLength(255)
@@ -89,13 +94,17 @@ class EventForm
             Section::make('Description')
                 ->components([
                     Textarea::make('description')
+                        ->label('Summary')
                         ->required()
                         ->rows(2)
                         ->maxLength(500)
-                        ->helperText('One or two sentences for the list and cards.'),
-                    Textarea::make('full_description')
-                        ->rows(8)
-                        ->helperText('Shown on the event page. Separate paragraphs with a blank line.'),
+                        ->helperText('One or two sentences for the events list and cards.'),
+                    RichEditor::make('full_description')
+                        ->label('Full write-up')
+                        ->toolbarButtons([
+                            'bold', 'italic', 'link', 'bulletList', 'orderedList', 'blockquote', 'h3', 'undo', 'redo',
+                        ])
+                        ->helperText('Shown on the event page. Leave blank to fall back to the summary.'),
                 ]),
         ]);
     }

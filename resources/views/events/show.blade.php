@@ -74,13 +74,13 @@
                         @endif
                     </div>
 
-                    {{-- Full description --}}
-                    <div class="event-show__body">
-                        @foreach(explode("\n\n", $event->full_description ?? $event->description) as $para)
-                            @if(trim($para))
-                                <p>{{ trim($para) }}</p>
-                            @endif
-                        @endforeach
+                    {{-- Full description — rich text (HTML) authored in the admin. --}}
+                    <div class="event-show__body prose">
+                        @if (filled($event->full_description))
+                            {!! $event->full_description !!}
+                        @else
+                            <p>{{ $event->description }}</p>
+                        @endif
                     </div>
 
                     {{-- Back link --}}
