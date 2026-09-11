@@ -1,4 +1,4 @@
-<x-app-layout title="Community Support">
+<x-app-layout title="Community Support" styles="giving-back">
 @php
     $page = app(\App\Settings\GivingBackPageSettings::class);
 

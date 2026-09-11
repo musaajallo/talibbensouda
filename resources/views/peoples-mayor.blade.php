@@ -1,4 +1,4 @@
-<x-app-layout title="The People's Mayor">
+<x-app-layout title="The People's Mayor" styles="peoples-mayor">
 @php
     $page = app(\App\Settings\PeoplesMayorPageSettings::class);
 

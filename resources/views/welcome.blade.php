@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout styles="home">
 @php
     $home = app(\App\Settings\HomePageSettings::class);
     $slides = $home->heroSlides();

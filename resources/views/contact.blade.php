@@ -1,4 +1,4 @@
-<x-app-layout title="Get in Touch">
+<x-app-layout title="Get in Touch" styles="contact">
 @php
     $general = app(\App\Settings\GeneralSettings::class);
     $social = app(\App\Settings\SocialSettings::class);

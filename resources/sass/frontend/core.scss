@@ -1,0 +1,25 @@
+// Public-site core bundle — loaded on every page.
+//
+// Page-specific styles live in resources/sass/frontend/pages/ and are pulled in
+// per route via thin entries in pages-entry/ (see App\View\Components\AppLayout
+// and layouts/app.blade.php). Keep this file to what genuinely appears on every
+// page: the reset/theme/type, the header/footer chrome, and shared components.
+@use 'sass:math';
+
+@use '../shared/abstracts' as *;
+@use '../shared/base';
+
+@use 'layout/container';
+@use 'layout/navbar';
+@use 'layout/footer';
+
+@use 'components/buttons';
+@use 'components/empty-state';
+@use 'components/forms';
+@use 'components/social';
+@use 'components/reveal';
+@use 'components/scroll-top';
+@use 'components/cookie-banner';
+
+// The inner-page hero/banner — every route except the home page.
+@use 'pages/inner';

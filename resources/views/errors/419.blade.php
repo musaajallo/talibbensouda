@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>419 — Session Expired · Talib Bensouda</title>
-    @vite(['resources/sass/frontend/frontend.scss'])
+    @vite(['resources/sass/frontend/core.scss', 'resources/sass/frontend/pages-entry/errors.scss'])
 </head>
 <body>
 

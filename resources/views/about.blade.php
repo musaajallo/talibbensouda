@@ -1,4 +1,4 @@
-<x-app-layout title="About">
+<x-app-layout title="About" styles="about">
 @php
     $page = app(\App\Settings\AboutPageSettings::class);
 

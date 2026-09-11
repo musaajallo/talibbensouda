@@ -1,4 +1,4 @@
-<x-app-layout title="Events">
+<x-app-layout title="Events" styles="events">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

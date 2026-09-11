@@ -1,4 +1,4 @@
-<x-app-layout title="Register Your Interest">
+<x-app-layout title="Register Your Interest" styles="register">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

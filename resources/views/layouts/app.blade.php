@@ -30,7 +30,7 @@
     <link rel="preload" as="font" type="font/woff2" href="{{ asset('fonts/inter-latin.woff2') }}" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="{{ asset('fonts/montserrat-latin.woff2') }}" crossorigin>
     <script @cspNonce>document.documentElement.classList.add('js');document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
-    @vite(['resources/sass/frontend/frontend.scss', 'resources/js/frontend.js'])
+    @vite(array_filter(['resources/sass/frontend/core.scss', $styleEntry(), 'resources/js/frontend.js']))
     @stack('head')
 </head>
 <body>

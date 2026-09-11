@@ -1,4 +1,4 @@
-<x-app-layout title="Gallery">
+<x-app-layout title="Gallery" styles="gallery">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">
