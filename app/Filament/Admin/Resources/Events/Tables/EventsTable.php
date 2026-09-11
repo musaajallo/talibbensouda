@@ -26,9 +26,11 @@ class EventsTable
                 TextColumn::make('badge')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => $state === 'diaspora' ? 'Campaign' : 'Kanifing'),
-                TextColumn::make('date_month')
+                TextColumn::make('starts_at')
                     ->label('Date')
-                    ->formatStateUsing(fn ($record): string => "{$record->date_day} {$record->date_month} {$record->date_year}"),
+                    ->dateTime('j M Y · H:i')
+                    ->placeholder('—')
+                    ->sortable(query: fn ($query, string $direction) => $query->orderBy('ics_start', $direction)),
                 TextColumn::make('location')
                     ->searchable()
                     ->limit(40),

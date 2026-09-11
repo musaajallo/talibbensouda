@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
@@ -10,6 +12,7 @@ class Event extends Model
         'slug', 'title', 'badge', 'flag',
         'date_day', 'date_month', 'date_year',
         'js_day', 'js_month',
+        'starts_at', 'ends_at',
         'location', 'venue',
         'description', 'full_description',
         'ics_start', 'ics_end',
@@ -23,9 +26,56 @@ class Event extends Model
         'sort_order' => 'integer',
     ];
 
+    /** Exposed so the Filament form picks them up when editing. */
+    protected $appends = ['starts_at', 'ends_at'];
+
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Start of the event. Backed by `ics_start` (UTC, `YYYYMMDDThhmmssZ`); writing
+     * it also fills the display strings (`date_day`/`date_month`/`date_year`) and
+     * the calendar-grid integers (`js_day`, `js_month` — 0-indexed). The Gambia is
+     * UTC year-round, so wall-clock time is stored as-is.
+     */
+    protected function startsAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?CarbonImmutable => $this->ics_start
+                ? CarbonImmutable::createFromFormat('Ymd\THis\Z', $this->ics_start, 'UTC')
+                : null,
+            set: function ($value): array {
+                if (blank($value)) {
+                    return ['ics_start' => null];
+                }
+
+                $d = CarbonImmutable::parse($value);
+
+                return [
+                    'ics_start' => $d->format('Ymd\THis\Z'),
+                    'date_day' => $d->format('j'),
+                    'date_month' => $d->format('M'),   // "Dec" — matches the compact date card
+                    'date_year' => $d->format('Y'),
+                    'js_day' => (int) $d->format('j'),
+                    'js_month' => (int) $d->format('n') - 1,
+                ];
+            },
+        );
+    }
+
+    /** End of the event. Backed by `ics_end` (UTC, `YYYYMMDDThhmmssZ`). */
+    protected function endsAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?CarbonImmutable => $this->ics_end
+                ? CarbonImmutable::createFromFormat('Ymd\THis\Z', $this->ics_end, 'UTC')
+                : null,
+            set: fn ($value): array => [
+                'ics_end' => blank($value) ? null : CarbonImmutable::parse($value)->format('Ymd\THis\Z'),
+            ],
+        );
     }
 
     public function gcalUrl(): string

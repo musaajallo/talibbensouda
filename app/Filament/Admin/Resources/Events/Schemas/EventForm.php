@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Events\Schemas;
 
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +17,7 @@ class EventForm
     {
         return $schema->components([
             Section::make('Milestone')
+                ->description('The headline, the URL slug and where it shows on the site.')
                 ->columns(2)
                 ->components([
                     TextInput::make('title')
@@ -33,18 +35,21 @@ class EventForm
                         ->unique(ignoreRecord: true)
                         ->helperText('Used in the event URL: /events/<slug>'),
                     Select::make('badge')
+                        ->label('Type')
                         ->options([
                             'gambia' => 'Kanifing',
                             'diaspora' => 'Campaign',
                         ])
                         ->default('gambia')
-                        ->required(),
+                        ->required()
+                        ->native(false),
                     TextInput::make('flag')
                         ->maxLength(8)
                         ->default('🇬🇲')
                         ->helperText('Emoji shown next to the date.'),
                     Toggle::make('is_upcoming')
                         ->label('Show in the current milestones list')
+                        ->helperText('Turn off once the event has passed.')
                         ->default(true),
                     TextInput::make('sort_order')
                         ->numeric()
@@ -54,33 +59,43 @@ class EventForm
                 ]),
 
             Section::make('Date & place')
-                ->columns(3)
+                ->description('One date and time — the site copy, the calendar grid and the "add to calendar" export all derive from it.')
+                ->columns(2)
                 ->components([
-                    TextInput::make('date_day')->label('Day (display)')->required()->maxLength(8)->placeholder('12'),
-                    TextInput::make('date_month')->label('Month (display)')->required()->maxLength(20)->placeholder('July'),
-                    TextInput::make('date_year')->label('Year (display)')->required()->maxLength(8)->placeholder('2025'),
-                    TextInput::make('js_day')->label('Day (number)')->numeric()->minValue(1)->maxValue(31)->required(),
-                    TextInput::make('js_month')->label('Month (0–11)')->numeric()->minValue(0)->maxValue(11)->required()
-                        ->helperText('January = 0, December = 11.'),
-                    TextInput::make('location')->required()->maxLength(255)->columnSpan(1),
-                    TextInput::make('venue')->maxLength(255)->columnSpan(2),
+                    DateTimePicker::make('starts_at')
+                        ->label('Starts')
+                        ->required()
+                        ->native(false)
+                        ->seconds(false)
+                        ->minutesStep(15)
+                        ->displayFormat('D j M Y · H:i'),
+                    DateTimePicker::make('ends_at')
+                        ->label('Ends')
+                        ->required()
+                        ->native(false)
+                        ->seconds(false)
+                        ->minutesStep(15)
+                        ->displayFormat('D j M Y · H:i')
+                        ->afterOrEqual('starts_at'),
+                    TextInput::make('location')
+                        ->required()
+                        ->maxLength(255)
+                        ->helperText('Town or area, e.g. "Bakau".'),
+                    TextInput::make('venue')
+                        ->maxLength(255)
+                        ->helperText('Optional — a specific building or hall.'),
                 ]),
 
             Section::make('Description')
                 ->components([
-                    Textarea::make('description')->required()->rows(2)->maxLength(500)
+                    Textarea::make('description')
+                        ->required()
+                        ->rows(2)
+                        ->maxLength(500)
                         ->helperText('One or two sentences for the list and cards.'),
-                    Textarea::make('full_description')->rows(8)
+                    Textarea::make('full_description')
+                        ->rows(8)
                         ->helperText('Shown on the event page. Separate paragraphs with a blank line.'),
-                ]),
-
-            Section::make('Add to calendar')
-                ->columns(2)
-                ->collapsed()
-                ->components([
-                    TextInput::make('ics_start')->required()->maxLength(20)->placeholder('20250712T090000Z')
-                        ->helperText('UTC, format YYYYMMDDThhmmssZ.'),
-                    TextInput::make('ics_end')->required()->maxLength(20)->placeholder('20250712T110000Z'),
                 ]),
         ]);
     }
