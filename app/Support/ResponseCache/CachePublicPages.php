@@ -17,7 +17,7 @@ use Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests;
  *  - the two form pages — a cached page would freeze the honeypot's encrypted
  *    timestamp (every real submission would then fail the timing check) and
  *    hide server-side flash messages;
- *  - health / sitemap / feed endpoints that must reflect live state;
+ *  - health / sitemap endpoints that must reflect live state;
  *  - any request from a signed-in user (an admin previewing the site).
  *
  * The CSRF token and CSP nonce are NOT a problem here: CsrfTokenReplacer swaps
@@ -41,7 +41,6 @@ class CachePublicPages extends CacheAllSuccessfulGetRequests
         'health-check',
         'up',
         'sitemap.xml',
-        'feed',
     ];
 
     public function shouldCacheRequest(Request $request): bool

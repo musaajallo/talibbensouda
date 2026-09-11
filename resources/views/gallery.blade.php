@@ -1,4 +1,4 @@
-<x-app-layout title="Gallery">
+<x-app-layout title="Gallery" styles="gallery" description="Photos from Talib Ahmed Bensouda's work and campaign across the Kanifing Municipality.">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

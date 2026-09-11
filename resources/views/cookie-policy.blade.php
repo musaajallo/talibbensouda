@@ -1,4 +1,4 @@
-<x-app-layout title="Cookie Policy">
+<x-app-layout title="Cookie Policy" styles="cookie-policy">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

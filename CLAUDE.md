@@ -39,6 +39,16 @@ disk. Modelled on the sibling `umc` project.
 - Each public view reads its models + settings in a top `@php` block and degrades gracefully
   (a section hides when its collection is empty; images fall back to a placeholder tile;
   decorative SVG icons are cycled by index, not stored).
+- Every public view opens with `<x-app-layout title="…" styles="<route>" description="…">`.
+  `styles` picks the route CSS bundle (`resources/sass/frontend/pages-entry/<route>.scss`,
+  also a Vite input) loaded on top of `core.scss`; `description` / `ogImage` feed
+  `resources/views/partials/seo.blade.php` (meta, canonical, OG, Twitter card, JSON-LD
+  Person + WebSite). Layout also `@include`s `partials/analytics` (inert until
+  `PLAUSIBLE_DOMAIN` is set).
+- The contact / event-registration forms POST through the `throttle:public-forms`
+  limiter (5/min, 40/day per IP — `AppServiceProvider`) and raise a Filament database
+  notification to admins via `App\Support\Notifications\AdminAlert` (model observers).
+  They still don't email anyone.
 - Settings pages: `app/Filament/Admin/Pages/Manage*.php` extending `Filament\Pages\SettingsPage`,
   each bound to a class in `app/Settings/`. Groups: **System** (general, social, header/footer)
   and **Page content** (home, about, People's Mayor, Giving Back). Every one `use`s the
@@ -155,11 +165,11 @@ TBT 4.7 s. Optimisation log:
 | 5 | nginx: long cache headers for `/build/*` (1y immutable) + images/fonts/mp4 (30d) | Forge → site → nginx config | ✅ done |
 | 6 | Forge deploy script rewritten for the zero-downtime macro format; runs `artisan migrate` / `optimize` / the seeders — this is why TTFB was ~2 s and content was missing | `.forge/deploy.sh` + Forge UI | ✅ done |
 | 7 | Responsive hero-image variants — 768w `-sm.webp` served to phones (`≤700px`), full ≤1600w above; media-scoped `<link rel=preload>` mirrors the JS pick so nothing double-loads | `public/images/hero-*`, `HeroSlidesSeeder`, `HomePageSettings::heroSlides`, `welcome.blade.php` | ✅ done |
-| 8 | Route-split CSS (frontend.scss bundles every page's styles — ~123 KiB unused on `/`) | Vite config + per-page inputs | ⬜ todo |
+| 8 | Route-split CSS — `core.scss` (chrome + shared, ~4.5 KB gzip, everywhere) + one `pages-entry/<route>.scss` per page, loaded via the `styles` prop on `<x-app-layout>`. `/` went ~15 → ~7.4 KB gzip | `vite.config.js`, `core.scss`, `pages-entry/`, `AppLayout` | ✅ done |
 | 9 | `spatie/laravel-responsecache` — full-page cache for the public site (see **Caching** below) | `CachePublicPages`, `bootstrap/app.php`, `AppServiceProvider` | ✅ done |
 | 10 | Hero auto-advance: first change delayed to ~10 s, interval 7 s (was 5 s), skipped entirely under `prefers-reduced-motion` | `welcome.blade.php` | ✅ done |
 
-Progress: baseline 25 → after #1–4 (local, unthrottled) 42 → after #5–7,9,10 (prod, Lighthouse mobile) **~64 median** (51–75; TTFB and hero-rotation variance), TBT ~140–690 ms, LCP 3.7 s.
+Progress: baseline 25 → after #1–4 (local, unthrottled) 42 → after #5–7,9,10 (prod, Lighthouse mobile) **~64 median** (51–75; TTFB and hero-rotation variance), TBT ~140–690 ms, LCP 3.7 s. All ten items done.
 
 ## Caching
 
@@ -173,7 +183,7 @@ else sharing the store, which surfaces in the panel as "Error while loading page
 GET requests to the marketing pages and
 skips `/admin` + Livewire, the two form pages (`/contact`, `/events/register` —
 a cached page would freeze the honeypot's encrypted timestamp and hide flash
-messages), the health/sitemap/feed endpoints, and anything requested by a
+messages), the health and sitemap endpoints, and anything requested by a
 signed-in user.
 
 - **Middleware order matters.** `CacheResponse` is appended to the `web` group

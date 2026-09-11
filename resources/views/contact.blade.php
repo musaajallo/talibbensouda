@@ -1,4 +1,4 @@
-<x-app-layout title="Get in Touch">
+<x-app-layout title="Get in Touch" styles="contact" description="Contact the campaign team or join the movement behind Talib Ahmed Bensouda.">
 @php
     $general = app(\App\Settings\GeneralSettings::class);
     $social = app(\App\Settings\SocialSettings::class);

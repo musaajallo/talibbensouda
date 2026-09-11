@@ -20,7 +20,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $brandName }}{{ filled($title ?? null) && $title !== $brandName ? ' — ' . $title : '' }}</title>
+    @php $title = filled($title ?? null) && $title !== $brandName ? $brandName . ' — ' . $title : $brandName; @endphp
+    <title>{{ $title }}</title>
+    @include('partials.seo')
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0d1b38" media="(prefers-color-scheme: dark)">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
@@ -30,12 +32,15 @@
     <link rel="preload" as="font" type="font/woff2" href="{{ asset('fonts/inter-latin.woff2') }}" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="{{ asset('fonts/montserrat-latin.woff2') }}" crossorigin>
     <script @cspNonce>document.documentElement.classList.add('js');document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
-    @vite(['resources/sass/frontend/frontend.scss', 'resources/js/frontend.js'])
+    @vite(array_filter(['resources/sass/frontend/core.scss', $styleEntry(), 'resources/js/frontend.js']))
+    @include('partials.analytics')
     @stack('head')
 </head>
 <body>
 
-    <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })" :class="{ 'is-menu-open': open }" @keydown.escape.window="open = false" x-effect="document.body.classList.toggle('has-menu-open', open)">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })" :class="{ 'is-menu-open': open }" @keydown.escape.window="open = false" x-effect="document.body.classList.toggle('has-menu-open', open)" x-trap="open">
         <div class="site-nav container">
 
             <a href="{{ url('/') }}" class="site-nav__brand" @click="open = false">{{ $brandName }}</a>
@@ -74,7 +79,7 @@
         </div>
     </header>
 
-    <main>{{ $slot }}</main>
+    <main id="main-content" tabindex="-1">{{ $slot }}</main>
 
     {{-- ── Cookie consent banner ── --}}
     <div

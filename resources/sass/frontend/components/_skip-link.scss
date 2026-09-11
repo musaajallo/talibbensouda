@@ -1,0 +1,32 @@
+@use '../../shared/abstracts' as *;
+
+// Keyboard skip link — visually hidden until focused, then pinned top-left
+// above the sticky header.
+.skip-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 10px 16px;
+    background: $color-navy;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-bottom-right-radius: 6px;
+    transform: translateY(-120%);
+    transition: transform 0.15s ease;
+
+    &:focus,
+    &:focus-visible {
+        transform: translateY(0);
+        outline: 2px solid $color-gold;
+        outline-offset: 2px;
+        text-decoration: none;
+        color: #fff;
+    }
+}
+
+// The <main> takes focus from the skip link but shouldn't paint a ring.
+main:focus {
+    outline: none;
+}

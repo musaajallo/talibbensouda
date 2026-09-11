@@ -14,7 +14,9 @@ Route::get('/peoples-mayor', fn () => view('peoples-mayor'));
 Route::get('/gallery', fn () => view('gallery'));
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/register', [EventRegistrationController::class, 'show'])->name('events.register');
-Route::post('/events/register', [EventRegistrationController::class, 'store'])->name('events.register.store');
+Route::post('/events/register', [EventRegistrationController::class, 'store'])
+    ->middleware('throttle:public-forms')
+    ->name('events.register.store');
 
 Route::get('/events/ics', function (Request $request) {
     $title = (string) $request->string('title')->limit(200);
@@ -54,8 +56,12 @@ Route::get('/events/ics', function (Request $request) {
 Route::get('/events/{event:slug}', [EventController::class, 'show'])->name('events.show');
 Route::get('/giving-back', fn () => view('giving-back'));
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-Route::post('/contact/join', [ContactController::class, 'join'])->name('contact.join');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:public-forms')
+    ->name('contact.store');
+Route::post('/contact/join', [ContactController::class, 'join'])
+    ->middleware('throttle:public-forms')
+    ->name('contact.join');
 Route::get('/cookies', fn () => view('cookie-policy'))->name('cookies');
 Route::get('/privacy', fn () => view('privacy-policy'))->name('privacy');
 Route::get('/sitemap', fn () => view('sitemap-page'))->name('sitemap.page');
@@ -63,7 +69,6 @@ Route::get('/sitemap', fn () => view('sitemap-page'))->name('sitemap.page');
 // Public JSON endpoint for uptime monitors / load balancers.
 Route::get('/health-check', SimpleHealthCheckController::class);
 
-// SEO endpoints (feed route is auto-registered by spatie/laravel-feed via config/feed.php).
 Route::get('/sitemap.xml', SitemapController::class);
 
 // Admin authentication and the whole back-office live in the Filament panel at

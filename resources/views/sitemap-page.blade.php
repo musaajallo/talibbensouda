@@ -1,4 +1,4 @@
-<x-app-layout title="Sitemap">
+<x-app-layout title="Sitemap" styles="sitemap">
 @php
     $events = \App\Models\Event::orderBy('sort_order')->get();
     $chrome = app(\App\Settings\SiteChromeSettings::class);
