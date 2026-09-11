@@ -63,7 +63,6 @@ Route::get('/sitemap', fn () => view('sitemap-page'))->name('sitemap.page');
 // Public JSON endpoint for uptime monitors / load balancers.
 Route::get('/health-check', SimpleHealthCheckController::class);
 
-// SEO endpoints (feed route is auto-registered by spatie/laravel-feed via config/feed.php).
 Route::get('/sitemap.xml', SitemapController::class);
 
 // Admin authentication and the whole back-office live in the Filament panel at

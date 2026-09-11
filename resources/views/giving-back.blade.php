@@ -1,4 +1,4 @@
-<x-app-layout title="Community Support" styles="giving-back">
+<x-app-layout title="Community Support" styles="giving-back" description="Ward development funds, scholarships, support for elders and women's livelihoods — the everyday side of the Council's work.">
 @php
     $page = app(\App\Settings\GivingBackPageSettings::class);
 

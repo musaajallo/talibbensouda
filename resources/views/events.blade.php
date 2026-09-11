@@ -1,4 +1,4 @@
-<x-app-layout title="Events" styles="events">
+<x-app-layout title="Events" styles="events" description="Upcoming and past events with Talib Ahmed Bensouda and the campaign across the Kanifing Municipality.">
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
     <section class="page-hero">

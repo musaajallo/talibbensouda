@@ -1,4 +1,4 @@
-<x-app-layout title="The People's Mayor" styles="peoples-mayor">
+<x-app-layout title="The People's Mayor" styles="peoples-mayor" description="The full record of the Kanifing Municipal Council under Talib Bensouda — projects, metrics and milestones.">
 @php
     $page = app(\App\Settings\PeoplesMayorPageSettings::class);
 

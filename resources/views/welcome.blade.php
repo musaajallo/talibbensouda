@@ -1,4 +1,4 @@
-<x-app-layout styles="home">
+<x-app-layout styles="home" description="Talib Ahmed Bensouda, Lord Mayor of Kanifing & the People's Mayor — a record of delivery for The Gambia: roads, waste, clinics and a public library.">
 @php
     $home = app(\App\Settings\HomePageSettings::class);
     $slides = $home->heroSlides();

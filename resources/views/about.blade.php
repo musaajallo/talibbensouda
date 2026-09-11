@@ -1,4 +1,4 @@
-<x-app-layout title="About" styles="about">
+<x-app-layout title="About" styles="about" description="The story of Talib Ahmed Bensouda — from Kanifing Municipal Council to a national vision for The Gambia.">
 @php
     $page = app(\App\Settings\AboutPageSettings::class);
 

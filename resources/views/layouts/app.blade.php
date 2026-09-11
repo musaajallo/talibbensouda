@@ -20,7 +20,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $brandName }}{{ filled($title ?? null) && $title !== $brandName ? ' — ' . $title : '' }}</title>
+    @php $title = filled($title ?? null) && $title !== $brandName ? $brandName . ' — ' . $title : $brandName; @endphp
+    <title>{{ $title }}</title>
+    @include('partials.seo')
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0d1b38" media="(prefers-color-scheme: dark)">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
