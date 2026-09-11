@@ -199,40 +199,67 @@
 
         // Actions drop to their own row, aligned with the body (not the date).
         &__actions { grid-column: 2 / -1; }
+
+        &__date { width: 64px; }
     }
 
     @media (max-width: $breakpoint-sm) {
         padding: $space-4 $space-6;
     }
 
+    // Doubles as the flyer thumbnail — background-image is the event's
+    // uploaded flyer (or the generated placeholder), with a dark scrim
+    // underneath so the date stays legible over any photo.
     &__date {
+        position: relative;
         text-align: center;
         flex-shrink: 0;
-        padding-top: 2px;
+        width: 80px;
+        aspect-ratio: 4 / 5;
+        padding: $space-2 4px;
+        border-radius: $radius-sm;
+        overflow: hidden;
+        background-color: $color-navy;
+        background-size: cover;
+        background-position: center top;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(8, 15, 32, 0.25) 0%, rgba(8, 15, 32, 0.8) 100%);
+        }
+    }
+
+    &__date-day,
+    &__date-month,
+    &__date-year {
+        position: relative;
+        z-index: 1;
     }
 
     &__date-day {
         font-family: $font-display;
-        font-size: 2rem;
+        font-size: 1.7rem;
         font-weight: 900;
         color: $color-gold;
         line-height: 1;
     }
 
     &__date-month {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         font-weight: 700;
-        color: var(--muted);
+        color: #fff;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        transition: color 0.25s;
     }
 
     &__date-year {
-        font-size: 0.7rem;
-        color: var(--muted);
-        opacity: 0.6;
-        transition: color 0.25s;
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.7);
     }
 
     &__body { min-width: 0; }
@@ -641,11 +668,34 @@
     &__sidebar {
         position: sticky;
         top: 96px;
+        // Without this a grid item's min-width defaults to its content's
+        // intrinsic size, so the flyer <img> (a 1200×1500 SVG) grows the
+        // column past its 340px track instead of scaling down to fit it.
+        min-width: 0;
 
         @media (max-width: $breakpoint-md) {
             position: static;
             order: -1;
         }
+    }
+}
+
+// Poster-style flyer above the info card — the uploaded image, or the
+// generated placeholder (see App\Support\EventFlyerPlaceholder).
+.event-flyer {
+    border-radius: $radius-lg;
+    overflow: hidden;
+    margin-bottom: $space-4;
+    box-shadow: var(--shadow-card);
+    background: $color-navy;
+
+    img {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
     }
 }
 

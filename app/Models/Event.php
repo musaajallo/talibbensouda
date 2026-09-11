@@ -2,13 +2,19 @@
 
 namespace App\Models;
 
+use App\Support\Media\ResolvesPublicMediaUrl;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Event extends Model
+class Event extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+    use ResolvesPublicMediaUrl;
+
     protected $fillable = [
         'slug', 'title', 'badge',
         'date_day', 'date_month', 'date_year',
@@ -28,6 +34,23 @@ class Event extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('flyer')->singleFile()->useDisk('public');
+    }
+
+    /** The uploaded flyer, or null if none was set. */
+    public function flyerUrl(): ?string
+    {
+        return $this->publicMediaUrl('flyer');
+    }
+
+    /** The uploaded flyer, or a generated on-brand placeholder — always usable as an <img> src. */
+    public function flyerImageUrl(): string
+    {
+        return $this->flyerUrl() ?? route('events.flyer-placeholder', $this);
     }
 
     /**

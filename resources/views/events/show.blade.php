@@ -1,4 +1,10 @@
-<x-app-layout :title="$event->title" styles="events">
+{{--
+    og-image: the real uploaded flyer only. The generated placeholder is SVG,
+    which Facebook/X/LinkedIn crawlers don't render as a social-card image —
+    when there's no upload, fall back to the site's default share image
+    instead of a broken card.
+--}}
+<x-app-layout :title="$event->title" styles="events" :description="$event->description" :og-image="$event->flyerUrl()">
 
     {{-- ── Page hero ──────────────────────────────────────────────────────────── --}}
     <section class="page-hero">
@@ -93,6 +99,11 @@
 
                 {{-- ── Sidebar ── --}}
                 <aside class="event-show__sidebar" data-reveal data-reveal-delay="80">
+
+                    {{-- Flyer — the uploaded poster, or a generated placeholder. --}}
+                    <div class="event-flyer">
+                        <img src="{{ $event->flyerImageUrl() }}" alt="{{ $event->title }} flyer" loading="lazy" width="1200" height="1500">
+                    </div>
 
                     <div class="event-info-card">
 

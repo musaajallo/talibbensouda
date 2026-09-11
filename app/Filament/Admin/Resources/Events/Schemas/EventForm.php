@@ -6,6 +6,7 @@ use App\Settings\EventsPageSettings;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -97,6 +98,20 @@ class EventForm
                             'bold', 'italic', 'link', 'bulletList', 'orderedList', 'blockquote', 'h3', 'undo', 'redo',
                         ])
                         ->helperText('Shown on the event page. Leave blank to fall back to the summary.'),
+                ]),
+
+            Section::make('Flyer')
+                ->description('Shown on the events list, the event page and when the link is shared. Optional — a branded placeholder with the title and date is used until one is uploaded.')
+                ->components([
+                    SpatieMediaLibraryFileUpload::make('flyer')
+                        ->collection('flyer')
+                        ->image()
+                        ->imageEditor()
+                        ->imageEditorAspectRatios(['4:5', '1:1', null])
+                        ->responsiveImages()
+                        ->maxSize(4096)
+                        ->hiddenLabel()
+                        ->helperText('Recommended 1200 × 1500px (a 4:5 portrait poster). JPG, PNG or WebP, up to 4 MB.'),
                 ]),
         ]);
     }

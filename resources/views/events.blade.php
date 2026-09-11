@@ -135,7 +135,7 @@
                 @forelse($upcoming as $i => $event)
                 <div class="event-card" id="event-{{ $i }}" data-reveal data-reveal-delay="{{ $i * 80 }}">
 
-                    <div class="event-card__date">
+                    <div class="event-card__date" style="background-image: url('{{ $event->flyerImageUrl() }}')">
                         <div class="event-card__date-day">{{ $event->date_day }}</div>
                         <div class="event-card__date-month">{{ $event->date_month }}</div>
                         <div class="event-card__date-year">{{ $event->date_year }}</div>

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Admin\Resources\Events\Tables;
 
+use App\Models\Event;
 use App\Settings\EventsPageSettings;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -19,6 +21,12 @@ class EventsTable
         return $table
             ->defaultSort('ics_start', 'desc')
             ->columns([
+                SpatieMediaLibraryImageColumn::make('flyer')
+                    ->collection('flyer')
+                    ->label('')
+                    ->imageWidth(56)
+                    ->imageHeight(70)
+                    ->defaultImageUrl(fn (Event $record): string => $record->flyerImageUrl()),
                 TextColumn::make('starts_at')
                     ->label('Date')
                     ->dateTime('j M Y · H:i')
