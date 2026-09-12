@@ -18,7 +18,7 @@ it('renders the Join Party CTA from settings', function (): void {
 });
 
 it('builds the page title as "<site name> — <page>"', function (): void {
-    get('/')->assertOk()->assertSee('<title>Talib Bensouda</title>', false);
+    get('/')->assertOk()->assertSee('<title>Talib Bensouda — Lord Mayor of Kanifing Municipality, The Gambia</title>', false);
     get('/about')->assertOk()->assertSee('<title>Talib Bensouda — About</title>', false);
     get('/contact')->assertOk()->assertSee('<title>Talib Bensouda — Get in Touch</title>', false);
 });

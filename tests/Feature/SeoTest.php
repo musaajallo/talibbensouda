@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Event;
 use App\Settings\SocialSettings;
 
 use function Pest\Laravel\get;
@@ -44,6 +45,57 @@ it('serves a robots.txt that points at the sitemap and blocks the panel', functi
         ->toContain('Disallow: /admin')
         ->toContain('Sitemap: https://talibahmedbensouda.com/sitemap.xml')
         ->not->toContain('talibbensouda.gm');
+});
+
+it('emits Event and BreadcrumbList JSON-LD on an event page', function (): void {
+    $event = Event::create([
+        'slug' => 'town-hall-2027',
+        'title' => 'Town Hall 2027',
+        'badge' => 'Kanifing',
+        'date_day' => '01', 'date_month' => 'Jan', 'date_year' => '2027',
+        'js_day' => 1, 'js_month' => 0,
+        'location' => 'Kanifing Municipality',
+        'venue' => 'Kanifing Municipal Council',
+        'description' => 'An event.',
+        'ics_start' => '20270101T090000Z', 'ics_end' => '20270101T100000Z',
+        'is_upcoming' => true,
+    ]);
+
+    $html = get(route('events.show', $event))->assertOk()->getContent();
+
+    preg_match_all('#<script type="application/ld\+json">(.+?)</script>#s', $html, $matches);
+    $schemas = collect($matches[1])->map(fn (string $json) => json_decode($json, true, flags: JSON_THROW_ON_ERROR));
+
+    $eventSchema = $schemas->firstWhere('@type', 'Event');
+    expect($eventSchema)->not->toBeNull()
+        ->and($eventSchema['name'])->toBe('Town Hall 2027')
+        ->and($eventSchema['startDate'])->toBe('2027-01-01T09:00:00+00:00')
+        ->and($eventSchema['location']['name'])->toBe('Kanifing Municipal Council');
+
+    $breadcrumbSchema = $schemas->firstWhere('@type', 'BreadcrumbList');
+    expect($breadcrumbSchema)->not->toBeNull()
+        ->and(collect($breadcrumbSchema['itemListElement'])->pluck('name')->all())
+        ->toBe(['Home', 'Events', 'Town Hall 2027']);
+});
+
+it('includes events in the sitemap with a lastmod date', function (): void {
+    $event = Event::create([
+        'slug' => 'town-hall-2027',
+        'title' => 'Town Hall 2027',
+        'badge' => 'Kanifing',
+        'date_day' => '01', 'date_month' => 'Jan', 'date_year' => '2027',
+        'js_day' => 1, 'js_month' => 0,
+        'location' => 'Kanifing Municipality',
+        'description' => 'An event.',
+        'ics_start' => '20270101T090000Z', 'ics_end' => '20270101T100000Z',
+        'is_upcoming' => true,
+    ]);
+
+    $body = get('/sitemap.xml')->assertOk()->getContent();
+
+    expect($body)
+        ->toContain(route('events.show', $event))
+        ->toContain('<lastmod>'.$event->updated_at->toAtomString().'</lastmod>');
 });
 
 it('ships no analytics script until a domain is configured', function (): void {
