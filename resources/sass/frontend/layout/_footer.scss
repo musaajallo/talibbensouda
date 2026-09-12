@@ -73,11 +73,13 @@
         border-top: 1px solid rgba(255,255,255,0.07);
 
         a {
-            color: rgba(255,255,255,0.3);
+            // 0.55 is the lowest opacity that still clears 4.5:1 against
+            // $color-navy-dark (WCAG AA) — Lighthouse flagged the old 0.3.
+            color: rgba(255,255,255,0.55);
             font-size: 0.78rem;
             transition: color 0.15s;
 
-            &:hover { color: rgba(255,255,255,0.7); text-decoration: none; }
+            &:hover { color: rgba(255,255,255,0.8); text-decoration: none; }
         }
     }
 
@@ -95,7 +97,7 @@
         p {
             margin: 0;
             font-size: 0.8rem;
-            color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.55);
         }
     }
 }

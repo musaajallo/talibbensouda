@@ -102,7 +102,7 @@
 
                     @if (session('success'))
                     <div class="reg-form-card">
-                        <div class="reg-success">
+                        <div class="reg-success" role="status">
                             <div class="reg-success__icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"/>
@@ -124,10 +124,10 @@
                     <div class="reg-form-card">
 
                         <h2 class="reg-form-card__heading">Your Details</h2>
-                        <p class="reg-form-card__sub">Fields marked <span style="color:#c9a227">*</span> are required.</p>
+                        <p class="reg-form-card__sub">Fields marked <span style="color:#c9a227" aria-hidden="true">*</span> are required.</p>
 
                         @if ($errors->any())
-                        <div class="form-alert form-alert--error" style="margin-bottom:24px">
+                        <div class="form-alert form-alert--error" role="alert" style="margin-bottom:24px">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                             </svg>
@@ -149,7 +149,7 @@
                             {{-- Name + Email --}}
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="name">Full Name <span class="required">*</span></label>
+                                    <label for="name">Full Name <span class="required" aria-hidden="true">*</span></label>
                                     <input
                                         type="text"
                                         id="name"
@@ -157,15 +157,18 @@
                                         value="{{ old('name') }}"
                                         placeholder="Your name"
                                         required
+                                        aria-required="true"
+                                        aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}"
+                                        @error('name') aria-describedby="name-error" @enderror
                                         autocomplete="name"
                                         class="{{ $errors->has('name') ? 'is-invalid' : '' }}"
                                     >
                                     @error('name')
-                                        <span class="field-error">{{ $message }}</span>
+                                        <span id="name-error" class="field-error">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Email Address <span class="required">*</span></label>
+                                    <label for="email">Email Address <span class="required" aria-hidden="true">*</span></label>
                                     <input
                                         type="email"
                                         id="email"
@@ -173,11 +176,14 @@
                                         value="{{ old('email') }}"
                                         placeholder="you@example.com"
                                         required
+                                        aria-required="true"
+                                        aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}"
+                                        @error('email') aria-describedby="email-error" @enderror
                                         autocomplete="email"
                                         class="{{ $errors->has('email') ? 'is-invalid' : '' }}"
                                     >
                                     @error('email')
-                                        <span class="field-error">{{ $message }}</span>
+                                        <span id="email-error" class="field-error">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>

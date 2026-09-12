@@ -168,26 +168,39 @@
         }
     }
 
+    // 24x24 tap target (WCAG 2.5.8) around a visually small dot — the
+    // button itself is invisible/oversized, the pseudo-element is what's seen.
     &__dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.4);
+        width: 24px;
+        height: 24px;
         border: none;
         padding: 0;
+        background: transparent;
         cursor: pointer;
-        transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        &.is-active {
+        &::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.4);
+            transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+        }
+
+        &.is-active::before {
             width: 22px;
             background: #fff;
         }
 
         @media (min-width: $breakpoint-lg) {
-            &.is-active { width: 6px; height: 28px; }
+            &.is-active::before { width: 6px; height: 28px; }
         }
 
-        &:hover:not(.is-active) { background: rgba(255,255,255,0.7); }
+        &:hover:not(.is-active)::before { background: rgba(255,255,255,0.7); }
     }
 }
 

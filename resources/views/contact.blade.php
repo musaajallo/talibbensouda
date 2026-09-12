@@ -89,7 +89,7 @@
                 <div data-reveal data-reveal-delay="80">
 
                     @if(session('contact_success'))
-                    <div class="form-alert form-alert--success" style="margin-bottom:24px;">
+                    <div class="form-alert form-alert--success" role="status" style="margin-bottom:24px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
                         </svg>
@@ -107,58 +107,74 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="name">Full Name <span class="required">*</span></label>
+                                    <label for="name">Full Name <span class="required" aria-hidden="true">*</span></label>
                                     <input
                                         type="text"
                                         id="name"
                                         name="name"
                                         value="{{ old('name') }}"
                                         placeholder="Your name"
+                                        required
+                                        aria-required="true"
+                                        aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}"
+                                        @error('name') aria-describedby="name-error" @enderror
                                         class="{{ $errors->has('name') ? 'is-invalid' : '' }}"
                                         autocomplete="name"
                                     >
-                                    @error('name')<span class="field-error">{{ $message }}</span>@enderror
+                                    @error('name')<span id="name-error" class="field-error">{{ $message }}</span>@enderror
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email">Email Address <span class="required">*</span></label>
+                                    <label for="email">Email Address <span class="required" aria-hidden="true">*</span></label>
                                     <input
                                         type="email"
                                         id="email"
                                         name="email"
                                         value="{{ old('email') }}"
                                         placeholder="your@email.com"
+                                        required
+                                        aria-required="true"
+                                        aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}"
+                                        @error('email') aria-describedby="email-error" @enderror
                                         class="{{ $errors->has('email') ? 'is-invalid' : '' }}"
                                         autocomplete="email"
                                     >
-                                    @error('email')<span class="field-error">{{ $message }}</span>@enderror
+                                    @error('email')<span id="email-error" class="field-error">{{ $message }}</span>@enderror
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="subject">Subject <span class="required">*</span></label>
+                                <label for="subject">Subject <span class="required" aria-hidden="true">*</span></label>
                                 <input
                                     type="text"
                                     id="subject"
                                     name="subject"
                                     value="{{ old('subject') }}"
                                     placeholder="What is your message about?"
+                                    required
+                                    aria-required="true"
+                                    aria-invalid="{{ $errors->has('subject') ? 'true' : 'false' }}"
+                                    @error('subject') aria-describedby="subject-error" @enderror
                                     class="{{ $errors->has('subject') ? 'is-invalid' : '' }}"
                                 >
-                                @error('subject')<span class="field-error">{{ $message }}</span>@enderror
+                                @error('subject')<span id="subject-error" class="field-error">{{ $message }}</span>@enderror
                             </div>
 
                             <div class="form-group">
-                                <label for="message">Message <span class="required">*</span></label>
+                                <label for="message">Message <span class="required" aria-hidden="true">*</span></label>
                                 <textarea
                                     id="message"
                                     name="message"
                                     rows="6"
                                     placeholder="Write your message here…"
+                                    required
+                                    aria-required="true"
+                                    aria-invalid="{{ $errors->has('message') ? 'true' : 'false' }}"
+                                    @error('message') aria-describedby="message-error" @enderror
                                     class="{{ $errors->has('message') ? 'is-invalid' : '' }}"
                                     style="min-height: 140px;"
                                 >{{ old('message') }}</textarea>
-                                @error('message')<span class="field-error">{{ $message }}</span>@enderror
+                                @error('message')<span id="message-error" class="field-error">{{ $message }}</span>@enderror
                             </div>
 
                             <button type="submit" class="btn btn--gold contact-form-card__submit">
