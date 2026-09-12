@@ -207,9 +207,9 @@
         padding: $space-4 $space-6;
     }
 
-    // Doubles as the flyer thumbnail — background-image is the event's
-    // uploaded flyer (or the generated placeholder), with a dark scrim
-    // underneath so the date stays legible over any photo.
+    // Doubles as the flyer thumbnail — a lazy-loaded <img> of the event's
+    // uploaded flyer (its small `thumb` conversion) or the generated
+    // placeholder, with a dark scrim over it so the date stays legible.
     &__date {
         position: relative;
         text-align: center;
@@ -220,16 +220,24 @@
         border-radius: $radius-sm;
         overflow: hidden;
         background-color: $color-navy;
-        background-size: cover;
-        background-position: center top;
         display: flex;
         flex-direction: column;
         justify-content: center;
+
+        img {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         &::before {
             content: '';
             position: absolute;
             inset: 0;
+            z-index: 1;
             background: linear-gradient(180deg, rgba(8, 15, 32, 0.25) 0%, rgba(8, 15, 32, 0.8) 100%);
         }
     }
