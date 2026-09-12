@@ -3,6 +3,7 @@
 namespace App\Settings;
 
 use App\Settings\Concerns\SplitsParagraphs;
+use App\Support\Media\ResolvesPublicDiskUrl;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelSettings\Settings;
 
@@ -12,6 +13,7 @@ use Spatie\LaravelSettings\Settings;
 class AboutPageSettings extends Settings
 {
     use SplitsParagraphs;
+    use ResolvesPublicDiskUrl;
 
     public string $hero_eyebrow = '';
 
@@ -85,14 +87,14 @@ class AboutPageSettings extends Settings
     public function bioPhotoUrl(): string
     {
         return $this->bio_photo && Storage::disk('public')->exists($this->bio_photo)
-            ? Storage::disk('public')->url($this->bio_photo)
+            ? $this->resolvePublicDiskUrl($this->bio_photo)
             : asset('images/about-talib.webp');
     }
 
     public function nationalLogoUrl(): ?string
     {
         return $this->national_logo && Storage::disk('public')->exists($this->national_logo)
-            ? Storage::disk('public')->url($this->national_logo)
+            ? $this->resolvePublicDiskUrl($this->national_logo)
             : null;
     }
 }

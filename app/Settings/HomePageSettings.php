@@ -2,6 +2,7 @@
 
 namespace App\Settings;
 
+use App\Support\Media\ResolvesPublicDiskUrl;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelSettings\Settings;
 
@@ -12,6 +13,8 @@ use Spatie\LaravelSettings\Settings;
  */
 class HomePageSettings extends Settings
 {
+    use ResolvesPublicDiskUrl;
+
     // Hero
     public string $hero_eyebrow = '';
 
@@ -114,7 +117,7 @@ class HomePageSettings extends Settings
     public function aboutImageUrl(): string
     {
         return $this->about_image && Storage::disk('public')->exists($this->about_image)
-            ? Storage::disk('public')->url($this->about_image)
+            ? $this->resolvePublicDiskUrl($this->about_image)
             : asset('images/about-talib.webp');
     }
 
@@ -126,7 +129,7 @@ class HomePageSettings extends Settings
     public function videoUrl(): ?string
     {
         if ($this->video_file && Storage::disk('public')->exists($this->video_file)) {
-            return Storage::disk('public')->url($this->video_file);
+            return $this->resolvePublicDiskUrl($this->video_file);
         }
 
         if ($this->video_youtube_id !== '') {
@@ -164,9 +167,9 @@ class HomePageSettings extends Settings
         $configured = collect($this->hero_slides)
             ->filter(fn ($slide) => filled($slide['image'] ?? null))
             ->map(function ($slide) {
-                $full = Storage::disk('public')->url($slide['image']);
+                $full = $this->resolvePublicDiskUrl($slide['image']);
                 $small = filled($slide['image_sm'] ?? null) && Storage::disk('public')->exists($slide['image_sm'])
-                    ? Storage::disk('public')->url($slide['image_sm'])
+                    ? $this->resolvePublicDiskUrl($slide['image_sm'])
                     : $full;
 
                 return [
