@@ -3,9 +3,7 @@
     $appName = config('app.name');
     // An admin upload (site_logo on GeneralSettings) wins in both themes.
     // Otherwise fall back to a Montserrat wordmark.
-    $uploaded = $settings->site_logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($settings->site_logo)
-        ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings->site_logo)
-        : null;
+    $uploaded = $settings->uploadedLogoUrl();
 @endphp
 
 @if ($uploaded)

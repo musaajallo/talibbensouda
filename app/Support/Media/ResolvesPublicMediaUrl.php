@@ -16,12 +16,16 @@ namespace App\Support\Media;
  *  2. Ghost rows. Media Library returns a URL for any `media` row even when the
  *     underlying file is missing (e.g. the DB was restored without storage/) or
  *     is a near-empty smoke-test upload. We reject anything under 8 KB / not on
- *     disk so the frontend renders its placeholder instead of a broken <img>.
+ *     disk so the frontend renders its placeholder instead of a broken <img> —
+ *     scaled down to 512 B for a named conversion, since a deliberately small
+ *     thumbnail can legitimately weigh a couple of KB.
  *
  * Requires the consuming model to use Spatie\MediaLibrary\InteractsWithMedia.
  */
 trait ResolvesPublicMediaUrl
 {
+    use ResolvesPublicDiskUrl;
+
     protected function publicMediaUrl(string $collection, ?string $conversion = null): ?string
     {
         $media = $this->getFirstMedia($collection);
@@ -30,20 +34,16 @@ trait ResolvesPublicMediaUrl
             return null;
         }
 
-        $path = $conversion !== null && $media->hasGeneratedConversion($conversion)
-            ? $media->getPath($conversion)
-            : $media->getPath();
+        $usingConversion = $conversion !== null && $media->hasGeneratedConversion($conversion);
+        $path = $usingConversion ? $media->getPath($conversion) : $media->getPath();
+        $minBytes = $usingConversion ? 512 : 8 * 1024;
 
-        if (! @is_file($path) || @filesize($path) < 8 * 1024) {
+        if (! @is_file($path) || @filesize($path) < $minBytes) {
             return null;
         }
 
-        $raw = $conversion !== null && $media->hasGeneratedConversion($conversion)
-            ? $media->getUrl($conversion)
-            : $media->getUrl();
+        $raw = $usingConversion ? $media->getUrl($conversion) : $media->getUrl();
 
-        $urlPath = parse_url($raw, PHP_URL_PATH);
-
-        return $urlPath ? url($urlPath) : $raw;
+        return $this->rebuildAgainstRequest($raw);
     }
 }

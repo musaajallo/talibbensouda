@@ -73,6 +73,7 @@
                     <button
                         class="filter-tab"
                         :class="{ 'is-active': active === cat }"
+                        :aria-pressed="(active === cat).toString()"
                         @click="active = cat"
                         x-text="cat"
                     ></button>
@@ -97,6 +98,7 @@
                         :aria-label="`Open photo: ${photo.caption}`"
                         tabindex="0"
                         @keydown.enter="open(idx)"
+                        @keydown.space.prevent="open(idx)"
                     >
                         <img x-show="photo.file" :src="photo.file" :alt="photo.caption" loading="lazy">
                         <div class="gallery-item__placeholder" x-show="!photo.file" :style="`background-color: ${photo.bg}`">
@@ -140,6 +142,7 @@
             x-transition:leave-end="opacity-0"
             @click.self="close()"
             x-cloak
+            x-trap="lightboxOpen"
             role="dialog"
             aria-modal="true"
             :aria-label="filtered[current] ? filtered[current].caption : 'Photo lightbox'"

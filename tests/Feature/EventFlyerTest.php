@@ -66,10 +66,24 @@ it('uses the uploaded flyer instead of the placeholder once one exists', functio
 it('shows the flyer image on the events list and the event page', function (): void {
     $event = flyerlessEvent();
 
-    get('/events')->assertOk()->assertSee($event->flyerImageUrl(), false);
+    get('/events')->assertOk()->assertSee($event->flyerThumbImageUrl(), false);
 
     get(route('events.show', $event))
         ->assertOk()
         ->assertSee('event-flyer', false)
         ->assertSee($event->flyerImageUrl(), false);
 });
+
+it('serves the small thumb conversion on the events list, not the full poster', function (): void {
+    Storage::fake('public');
+
+    $event = flyerlessEvent();
+    $event->addMedia(UploadedFile::fake()->image('poster.jpg', 1200, 1500))
+        ->toMediaCollection('flyer');
+
+    expect($event->flyerThumbUrl())->not->toBeNull()
+        ->and($event->flyerThumbUrl())->not->toBe($event->flyerUrl());
+
+    get('/events')->assertOk()->assertSee($event->flyerThumbUrl(), false)->assertDontSee($event->flyerUrl(), false);
+});
+

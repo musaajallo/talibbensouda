@@ -28,6 +28,7 @@ class SitemapController extends Controller
                 Url::create(route('events.show', $event))
                     ->setPriority(0.8)
                     ->setChangeFrequency('weekly')
+                    ->setLastModificationDate($event->updated_at)
             );
         });
 

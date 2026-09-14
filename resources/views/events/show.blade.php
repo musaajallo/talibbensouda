@@ -5,6 +5,44 @@
     instead of a broken card.
 --}}
 <x-app-layout :title="$event->title" styles="events" :description="$event->description" :og-image="$event->flyerUrl()">
+@php
+    $eventSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Event',
+        'name' => $event->title,
+        'startDate' => $event->starts_at?->toIso8601String(),
+        'endDate' => $event->ends_at?->toIso8601String(),
+        'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+        'eventStatus' => 'https://schema.org/EventScheduled',
+        'location' => [
+            '@type' => 'Place',
+            'name' => $event->venue ?: $event->location,
+            'address' => $event->location,
+        ],
+        'image' => [$event->flyerImageUrl()],
+        'description' => $event->description,
+        'organizer' => [
+            '@type' => 'Organization',
+            'name' => 'Kanifing Municipal Council',
+            'url' => url('/'),
+        ],
+    ];
+
+    $breadcrumbSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Events', 'item' => route('events.index')],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $event->title, 'item' => url()->current()],
+        ],
+    ];
+@endphp
+
+@push('head')
+    <script type="application/ld+json">{!! json_encode($eventSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+    <script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endpush
 
     {{-- ── Page hero ──────────────────────────────────────────────────────────── --}}
     <section class="page-hero">

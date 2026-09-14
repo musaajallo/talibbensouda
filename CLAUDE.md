@@ -46,10 +46,12 @@ disk. Modelled on the sibling `umc` project.
   so the slider is editable in the panel; it no-ops once slides are configured.
   `docs/Talib Legacy - The People's Mayor.md` is the source content brief (KMC records +
   public reporting) — the seeders are a curated summary of it, not a transcription. When
-  adding seed content, check it against that doc first; a running list of what it covers
-  that the site doesn't yet lives in this session's chat history (parks/stadium and
-  international partnerships were added; still open: flood-prevention specifics beyond the
-  Disaster Mitigation project, deeper governance detail, and a few minor youth-fund items).
+  adding seed content, check it against that doc first. Parks/stadium, international
+  partnerships, flood prevention, and governance/housing detail have all been added
+  (`ProjectSeeder`); still open: the Tekki Fii youth-fund sub-detail — the first
+  COVID-response cohort's named winners and amounts (Gisqo D313,000; Outboost Media and
+  Analytics D429,000; Le Jumbo D257,500) and the separate D1M "Andandorr–Tekki Fii"
+  innovation fund (YEP/ITC + GCCI), neither of which is in the current youth project entry.
 - Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
   `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`,
   `EventsPageSettings` (currently just the event-type list).

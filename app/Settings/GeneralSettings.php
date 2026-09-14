@@ -2,11 +2,14 @@
 
 namespace App\Settings;
 
+use App\Support\Media\ResolvesPublicDiskUrl;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelSettings\Settings;
 
 class GeneralSettings extends Settings
 {
+    use ResolvesPublicDiskUrl;
+
     public string $site_name;
 
     public string $site_tagline;
@@ -33,19 +36,25 @@ class GeneralSettings extends Settings
         return 'general';
     }
 
+    /** Absolute URL for an uploaded logo, or null when none is set. */
+    public function uploadedLogoUrl(): ?string
+    {
+        return $this->site_logo && Storage::disk('public')->exists($this->site_logo)
+            ? $this->resolvePublicDiskUrl($this->site_logo)
+            : null;
+    }
+
     /** Absolute URL for the logo, falling back to the bundled asset. */
     public function logoUrl(): string
     {
-        return $this->site_logo && Storage::disk('public')->exists($this->site_logo)
-            ? Storage::disk('public')->url($this->site_logo)
-            : asset('images/logo.svg');
+        return $this->uploadedLogoUrl() ?? asset('images/logo.svg');
     }
 
     /** Absolute URL for the favicon, falling back to the bundled asset. */
     public function faviconUrl(): string
     {
         return $this->favicon && Storage::disk('public')->exists($this->favicon)
-            ? Storage::disk('public')->url($this->favicon)
+            ? $this->resolvePublicDiskUrl($this->favicon)
             : asset('favicon.ico');
     }
 }

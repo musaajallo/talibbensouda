@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Event extends Model implements HasMedia
 {
@@ -41,10 +42,39 @@ class Event extends Model implements HasMedia
         $this->addMediaCollection('flyer')->singleFile()->useDisk('public');
     }
 
+    /**
+     * A small 4:5 crop for list/card contexts (the events index) — the full
+     * upload is a 1200x1500 poster, far more than an 80px-wide card needs.
+     */
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(240)
+            ->height(300)
+            ->sharpen(10)
+            ->performOnCollections('flyer');
+    }
+
     /** The uploaded flyer, or null if none was set. */
     public function flyerUrl(): ?string
     {
         return $this->publicMediaUrl('flyer');
+    }
+
+    /** The uploaded flyer's small card crop, or null if none was set. */
+    public function flyerThumbUrl(): ?string
+    {
+        return $this->publicMediaUrl('flyer', 'thumb');
+    }
+
+    /**
+     * The flyer thumb for card/list contexts, or the placeholder — always
+     * usable as an <img> src. The placeholder is a cheap vector regardless of
+     * size, so it doesn't need its own small variant.
+     */
+    public function flyerThumbImageUrl(): string
+    {
+        return $this->flyerThumbUrl() ?? route('events.flyer-placeholder', $this);
     }
 
     /** The uploaded flyer, or a generated on-brand placeholder — always usable as an <img> src. */
