@@ -72,8 +72,12 @@
     background: var(--card-bg);
     transition: background 0.25s;
 
+    // A 2-column-span tile needs ~2:1 (not the generic 16:9 ≈ 1.78:1) to
+    // land at the same height as its 1-column, 1:1 neighbours in the same
+    // row — otherwise the grid's rows size to the taller wide tile and the
+    // square tiles next to it leave a gap underneath.
     &--wide {
-        aspect-ratio: 16/9;
+        aspect-ratio: 2;
         grid-column: span 2;
 
         @media (max-width: $breakpoint-sm) { grid-column: span 1; aspect-ratio: 1; }
