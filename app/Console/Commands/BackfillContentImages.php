@@ -35,6 +35,17 @@ class BackfillContentImages extends Command
 
     /** GalleryPhoto.caption => resources/seed-images/gallery-photo/<slug>.jpg */
     private const GALLERY_PHOTOS = [
+        // Fourth batch (2026-09-14) — fills the last empty slots. Three of
+        // these replace captions that had no genuine photo anywhere in the
+        // source set (a Hungary/Barcelona/Taiwan twinning, a "Bakau Women's
+        // Garden") — renamed to what's actually shown rather than force a
+        // mismatched or fabricated photo onto the original claim.
+        'Bundung Maternity Ward expansion' => 'bundung-maternity-ward-expansion',
+        "KMC Women's Group reception" => 'kmc-womens-group-reception',
+        'Manchester City Hall visit' => 'manchester-city-hall-visit',
+        'China delegation — KMC partnership signing' => 'china-delegation-partnership-signing',
+        'China delegation press briefing' => 'china-delegation-press-briefing',
+
         'Mbalit Project — new compactor fleet' => 'mbalit-project-new-compactor-fleet',
         'Serrekunda Market upgrade' => 'serrekunda-market-upgrade',
         'Bakoteh dumpsite fencing & remediation' => 'bakoteh-dumpsite-fencing-remediation',
