@@ -50,6 +50,9 @@ disk. Modelled on the sibling `umc` project.
   partnerships, flood prevention, governance/housing, and the Tekki Fii youth-fund
   sub-detail (first COVID-response cohort's named winners and amounts, plus the separate
   D1M "Andandorr–Tekki Fii" innovation fund) have all been added (`ProjectSeeder`).
+  `GalleryPhotoSeeder` seeds 85 captions across Projects/Community/Events/Partners —
+  see **Photo content** below for how those (and every Project/CommunityPhoto row) got
+  a real image.
 - Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
   `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`,
   `EventsPageSettings` (currently just the event-type list).
@@ -71,6 +74,16 @@ disk. Modelled on the sibling `umc` project.
   `resources/views/partials/seo.blade.php` (meta, canonical, OG, Twitter card, JSON-LD
   Person + WebSite). Layout also `@include`s `partials/analytics` (inert until
   `PLAUSIBLE_DOMAIN` is set).
+- **Any component used on more than one route must live under
+  `resources/sass/frontend/components/` and be `@use`d from `core.scss`** — not declared
+  inside a single page's `pages/_<route>.scss`. `.section`, `.section-header`, `.cta-banner`,
+  `.community-grid`, `.lightbox` all used to live only in `pages/_home.scss`, so every other
+  page that reused that markup (which several do) rendered it completely unstyled. Fixed
+  once (PR #29) by moving them to `components/`; don't reintroduce a page-scoped definition
+  of something other pages also use. The shared photo grid + lightbox markup itself is a
+  Blade component, `<x-community-photo-grid :photos="$collection" empty-message="…">` —
+  used by the home page, People's Mayor, and Giving Back; reuse it rather than hand-rolling
+  another grid.
 - The contact / event-registration forms POST through the `throttle:public-forms`
   limiter (5/min, 40/day per IP — `AppServiceProvider`) and raise a Filament database
   notification to admins via `App\Support\Notifications\AdminAlert` (model observers).
@@ -142,6 +155,36 @@ php artisan make:filament-settings-page ManageThingPage "App\Settings\ThingPageS
   (`App\Support\Media\ResolvesPublicMediaUrl`).
 - To move media to S3 later: `MEDIA_DISK=s3` + the `AWS_*` block. No code change.
 
+## Photo content
+
+Every `Project`, `CommunityPhoto`, and `GalleryPhoto` row's real photo (not an
+admin-panel upload — sourced from real Facebook exports) was attached by
+`php artisan app:backfill-content-images` (`app/Console/Commands/BackfillContentImages.php`),
+not by the seeders. It's **idempotent** — only attaches to a row with no media yet in
+its collection, so a panel upload always wins and re-running it after adding more
+`resources/seed-images/` files only fills newly-added gaps.
+
+- **Source photos**: `docs/assets/facebook-images/` (gitignored — 2,306 real photos,
+  pre-sorted into ~172 folders, documented in `ORGANIZATION_LOG.md`, also gitignored).
+  **Several folder labels there are wrong or mix unrelated events** — confirmed on ~8
+  folders this session (e.g. `hospital-facility-tour` mixes a real ward tour with an
+  unrelated portrait; `lord-mayor-desk-portrait` has a market-construction photo tacked
+  on the end; `africell-25-event` is mostly a different event entirely). Always open and
+  look at a candidate file before using it — never trust the folder name or log
+  description alone. `ORGANIZATION_LOG.md` gets corrected in place as more mislabels turn
+  up; it isn't exhaustively audited.
+- **Committed photos**: `resources/seed-images/{project,community-photo,gallery-photo}/`
+  — small, optimized (Imagick, ≤1800px long edge, quality 78, stripped metadata) copies,
+  the only ones actually tracked in git. `resources/seed-images/MANIFEST.md` lists every
+  one already in use (mechanically generated from the command's own maps) — check it
+  before picking more photos, to avoid duplicating one that's already on the site.
+- Three `GalleryPhoto` captions (Hungary/Barcelona/Taiwan twinning claims) were **renamed**
+  rather than illustrated, because no genuine photo of any of them exists anywhere in the
+  source set — don't invent one from an unrelated country's delegation photo.
+- **Still needs to run in production once this ships** — deliberately not wired into
+  `.forge/deploy.sh`; nobody's decided yet whether it should run on every deploy (like
+  `ContentSeeder`) or once by hand.
+
 ## Gotchas
 
 - **Run `php artisan shield:generate --all --panel=admin` after every new Filament
@@ -157,6 +200,15 @@ php artisan make:filament-settings-page ManageThingPage "App\Settings\ThingPageS
   test — public pages that read settings work without extra seeding.
 - No public auth. There is no `/register`, `/login` (that's `/admin/login`), or user
   dashboard. Don't reintroduce `route('login')` in Blade.
+- **`composer run dev` (server + queue + pail + Vite via `concurrently --kill-others`) can
+  crash entirely — server included — if Vite's file watcher hits the OS's file-watcher
+  limit (`ENOSPC`).** This happened when a background agent's isolated git worktree (each
+  one under `.claude/worktrees/`, holding a full second `vendor/` install) sat inside the
+  project tree — Vite recursed into it, blew the watch limit, died, and `--kill-others`
+  took the other three processes down with it, which just looks like "the dev server keeps
+  crashing." `vite.config.js` now excludes `.claude/**` and `vendor/**` from the watcher,
+  and `.claude/worktrees` is gitignored — if this recurs, check `git worktree list` for
+  something living inside the repo tree before assuming it's a code bug.
 
 ## Admin login
 
