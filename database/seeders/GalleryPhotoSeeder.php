@@ -24,7 +24,7 @@ class GalleryPhotoSeeder extends Seeder
             ['Projects', 'KM SK West/Africell mini-stadium — Serrekunda West', true],
             ['Projects', 'Kotu UN@75 Park rehabilitation', false],
             ['Community', 'Ward Development Committee office', true],
-            ['Community', "Bakau Women's Garden", false],
+            ['Community', "KMC Women's Group reception", false],
             ['Community', "Mayor's Trophy football tournament", false],
             ['Community', 'Set settal community clean-up', false],
             ['Community', 'Sewing machines for community centres', false],
@@ -35,9 +35,9 @@ class GalleryPhotoSeeder extends Seeder
             ['Partners', 'Peterborough City Council — KETP partnership', true],
             ['Partners', 'Sister-city ties — Freetown & Madison', false],
             ['Partners', 'Global Parliament of Mayors', false],
-            ['Partners', 'Twinning with Balassagyarmat, Hungary', false],
-            ['Partners', 'Àrea Metropolitana de Barcelona partnership', false],
-            ['Partners', 'Kaohsiung City, Taiwan partnership', false],
+            ['Partners', 'Manchester City Hall visit', false],
+            ['Partners', 'China delegation — KMC partnership signing', false],
+            ['Partners', 'China delegation press briefing', false],
 
             // Second batch — grows the gallery to 100 photos (2026-09-14).
             ['Projects', 'Community garden & water access programme', false],
