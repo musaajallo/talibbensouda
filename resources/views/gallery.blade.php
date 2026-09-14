@@ -109,7 +109,6 @@
                 <template x-for="photo in paged" :key="photo.i">
                     <div
                         class="gallery-item"
-                        :class="{ 'gallery-item--wide': photo.wide }"
                         @click="open(photo.fi)"
                         :style="`background-color: ${photo.bg}`"
                         role="button"
