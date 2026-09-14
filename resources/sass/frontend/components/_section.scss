@@ -1,0 +1,15 @@
+@use '../../shared/abstracts' as *;
+
+// ── Section shared styles (every route) ────────────────────────────────────────
+
+.section {
+    padding: 80px 0;
+    transition: background 0.25s;
+
+    @media (max-width: $breakpoint-md) { padding: 56px 0; }
+    @media (max-width: $breakpoint-sm) { padding: 40px 0; }
+
+    &--grey { background: var(--bg-alt); }
+    &--navy { background: $color-navy; }
+    &--dark { background: $color-navy-dark; }
+}
