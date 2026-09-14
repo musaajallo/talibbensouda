@@ -49,12 +49,30 @@
             active: 'All',
             lightboxOpen: false,
             current: 0,
+            page: 1,
+            perPage: 25,
             photos: {{ Js::from($photos) }},
 
             get filtered() {
                 if (this.active === 'All') return this.photos.map((p, i) => ({ ...p, i }));
                 return this.photos.map((p, i) => ({ ...p, i })).filter(p => p.category === this.active);
             },
+
+            // Each item also carries its position within `filtered` (`fi`) so a
+            // click on a paginated tile still opens the lightbox at the right
+            // spot, and prev/next can keep cycling across the whole filtered
+            // set — not just the current page.
+            get paged() {
+                const start = (this.page - 1) * this.perPage;
+                return this.filtered.map((p, fi) => ({ ...p, fi })).slice(start, start + this.perPage);
+            },
+
+            get totalPages() {
+                return Math.max(1, Math.ceil(this.filtered.length / this.perPage));
+            },
+
+            setCategory(cat) { this.active = cat; this.page = 1; },
+            goToPage(p) { this.page = p; this.$refs.galleryTop.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
 
             open(idx) { this.current = idx; this.lightboxOpen = true; document.body.style.overflow = 'hidden'; },
             close() { this.lightboxOpen = false; document.body.style.overflow = ''; },
@@ -68,13 +86,13 @@
         <div class="container">
 
             {{-- Filter tabs --}}
-            <div class="gallery-filter" data-reveal>
+            <div class="gallery-filter" data-reveal x-ref="galleryTop">
                 <template x-for="cat in categories" :key="cat">
                     <button
                         class="filter-tab"
                         :class="{ 'is-active': active === cat }"
                         :aria-pressed="(active === cat).toString()"
-                        @click="active = cat"
+                        @click="setCategory(cat)"
                         x-text="cat"
                     ></button>
                 </template>
@@ -88,17 +106,16 @@
 
             {{-- Grid --}}
             <div class="gallery-grid">
-                <template x-for="(photo, idx) in filtered" :key="photo.i">
+                <template x-for="photo in paged" :key="photo.i">
                     <div
                         class="gallery-item"
-                        :class="{ 'gallery-item--wide': photo.wide }"
-                        @click="open(idx)"
+                        @click="open(photo.fi)"
                         :style="`background-color: ${photo.bg}`"
                         role="button"
                         :aria-label="`Open photo: ${photo.caption}`"
                         tabindex="0"
-                        @keydown.enter="open(idx)"
-                        @keydown.space.prevent="open(idx)"
+                        @keydown.enter="open(photo.fi)"
+                        @keydown.space.prevent="open(photo.fi)"
                     >
                         <img x-show="photo.file" :src="photo.file" :alt="photo.caption" loading="lazy">
                         <div class="gallery-item__placeholder" x-show="!photo.file" :style="`background-color: ${photo.bg}`">
@@ -127,6 +144,41 @@
             <template x-if="filtered.length === 0">
                 <x-empty-state message="Photos will be added to the gallery soon." />
             </template>
+
+            {{-- Pagination --}}
+            <nav class="gallery-pagination" x-show="totalPages > 1" x-cloak aria-label="Gallery pages">
+                <button
+                    class="gallery-pagination__nav"
+                    @click="goToPage(page - 1)"
+                    :disabled="page === 1"
+                    aria-label="Previous page"
+                >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                </button>
+
+                <template x-for="p in totalPages" :key="p">
+                    <button
+                        class="gallery-pagination__num"
+                        :class="{ 'is-active': p === page }"
+                        :aria-current="p === page ? 'page' : null"
+                        @click="goToPage(p)"
+                        x-text="p"
+                    ></button>
+                </template>
+
+                <button
+                    class="gallery-pagination__nav"
+                    @click="goToPage(page + 1)"
+                    :disabled="page === totalPages"
+                    aria-label="Next page"
+                >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </button>
+            </nav>
 
         </div>
 

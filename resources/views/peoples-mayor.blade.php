@@ -16,8 +16,6 @@
         '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
         '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     ];
-
-    $communityIcon = '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>';
 @endphp
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
@@ -127,29 +125,7 @@
                 <p class="section-header__lead">{{ $page->community_lead }}</p>
             </div>
 
-            @if ($communityPhotos->isNotEmpty())
-            <div class="community-grid">
-                @foreach ($communityPhotos as $i => $photo)
-                <div class="community-photo" data-reveal data-reveal-delay="{{ $i * 80 }}">
-                    @if ($photo->imageUrl())
-                        <img src="{{ $photo->imageUrl() }}" alt="{{ $photo->caption }}" loading="lazy">
-                    @else
-                        <div class="community-photo__placeholder">
-                            <svg class="community-photo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">{!! $communityIcon !!}</svg>
-                        </div>
-                    @endif
-                    <div class="community-photo__overlay">
-                        @if ($photo->tag)
-                            <span class="community-photo__tag">{{ $photo->tag }}</span>
-                        @endif
-                        <p class="community-photo__caption">{{ $photo->caption }}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            @else
-            <x-empty-state message="Photos from around the municipality are coming soon." />
-            @endif
+            <x-community-photo-grid :photos="$communityPhotos" empty-message="Photos from around the municipality are coming soon." />
 
         </div>
     </section>

@@ -30,4 +30,13 @@ export default defineConfig({
         // Filament admin theme. The public SCSS bundle is untouched.
         tailwindcss(),
     ],
+    server: {
+        watch: {
+            // .claude/worktrees/* can each hold a full second vendor/ install
+            // (used for isolated background agent work) — Vite recursing into
+            // those blows past the OS file-watcher limit (ENOSPC) and crashes,
+            // which takes the whole `composer run dev` bundle down with it.
+            ignored: ['**/.claude/**', '**/vendor/**'],
+        },
+    },
 });

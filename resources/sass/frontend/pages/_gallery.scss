@@ -72,17 +72,6 @@
     background: var(--card-bg);
     transition: background 0.25s;
 
-    // A 2-column-span tile needs ~2:1 (not the generic 16:9 ≈ 1.78:1) to
-    // land at the same height as its 1-column, 1:1 neighbours in the same
-    // row — otherwise the grid's rows size to the taller wide tile and the
-    // square tiles next to it leave a gap underneath.
-    &--wide {
-        aspect-ratio: 2;
-        grid-column: span 2;
-
-        @media (max-width: $breakpoint-sm) { grid-column: span 1; aspect-ratio: 1; }
-    }
-
     img {
         width: 100%;
         height: 100%;
@@ -164,142 +153,61 @@
     &:hover &__zoom { opacity: 1; }
 }
 
-// ── Lightbox ──────────────────────────────────────────────────────────────────
+// ── Pagination ───────────────────────────────────────────────────────────────
 
-.lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 900;
+.gallery-pagination {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.93);
-    backdrop-filter: blur(10px);
-    padding: 24px;
-
-    &__close {
-        position: fixed;
-        top: 20px;
-        right: 24px;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.1);
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        transition: background 0.18s;
-        z-index: 10;
-
-        &:hover { background: rgba(255,255,255,0.2); }
-        svg { width: 20px; height: 20px; }
-    }
-
-    &__stage {
-        position: relative;
-        max-width: 1000px;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: $space-4;
-    }
-
-    &__media {
-        width: 100%;
-        max-height: 75vh;
-        border-radius: $radius-md;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255,255,255,0.04);
-
-        img {
-            max-width: 100%;
-            max-height: 75vh;
-            object-fit: contain;
-            display: block;
-        }
-    }
-
-    &__placeholder {
-        width: 100%;
-        min-height: 50vh;
-        max-height: 75vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: $space-4;
-
-        svg { color: rgba(255,255,255,0.12); width: 64px; height: 64px; }
-    }
-
-    &__caption-wrap {
-        text-align: center;
-    }
-
-    &__tag {
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: $color-gold;
-        margin-bottom: $space-1;
-    }
-
-    &__caption {
-        font-size: 0.95rem;
-        color: rgba(255,255,255,0.7);
-        margin: 0;
-    }
+    gap: $space-2;
+    flex-wrap: wrap;
+    margin-top: 40px;
 
     &__nav {
-        position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 48px;
-        height: 48px;
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
-        background: rgba(255,255,255,0.1);
-        border: none;
-        cursor: pointer;
+        background: transparent;
+        border: 2px solid var(--border);
+        color: var(--fg);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        transition: background 0.18s;
-        z-index: 10;
+        cursor: pointer;
+        transition: background 0.18s, border-color 0.18s, opacity 0.18s;
 
-        &:hover { background: rgba(255,255,255,0.2); }
-        svg { width: 20px; height: 20px; }
+        svg { width: 16px; height: 16px; }
 
-        &--prev { left: 16px; }
-        &--next { right: 16px; }
+        &:hover:not(:disabled) { border-color: $color-navy; }
+        [data-theme="dark"] &:hover:not(:disabled) { border-color: #fff; }
 
-        @media (max-width: $breakpoint-sm) {
-            width: 40px;
-            height: 40px;
-            top: auto;
-            bottom: 80px;
-            transform: none;
-
-            &--prev { left: calc(50% - 52px); }
-            &--next { right: calc(50% - 52px); }
+        &:disabled {
+            opacity: 0.35;
+            cursor: default;
         }
     }
 
-    &__counter {
-        position: fixed;
-        top: 28px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.8rem;
-        color: rgba(255,255,255,0.4);
-        white-space: nowrap;
+    &__num {
+        min-width: 38px;
+        height: 38px;
+        padding: 0 10px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 2px solid transparent;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: background 0.18s, border-color 0.18s, color 0.18s;
+
+        &:hover { border-color: var(--border); color: var(--fg); }
+
+        &.is-active {
+            background: $color-navy;
+            border-color: $color-navy;
+            color: #fff;
+        }
+
+        [data-theme="dark"] &.is-active { background: $color-gold; border-color: $color-gold; color: $color-navy; }
     }
 }

@@ -26,6 +26,7 @@
 @use 'components/section-header';
 @use 'components/cta-banner';
 @use 'components/community-grid';
+@use 'components/lightbox';
 
 // The inner-page hero/banner — every route except the home page.
 @use 'pages/inner';
