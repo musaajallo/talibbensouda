@@ -211,33 +211,7 @@
                 <p class="section-header__lead">{{ $home->community_lead }}</p>
             </div>
 
-            @if ($communityPhotos->isNotEmpty())
-            <div class="community-grid">
-                @foreach ($communityPhotos as $i => $photo)
-                <div class="community-photo" data-reveal data-reveal-delay="{{ $i * 80 }}">
-                    @if ($photo->imageUrl())
-                        <img src="{{ $photo->imageUrl() }}" alt="{{ $photo->caption }}" loading="lazy">
-                    @else
-                        <div class="community-photo__placeholder">
-                            <svg class="community-photo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <polyline points="21 15 16 10 5 21"/>
-                            </svg>
-                        </div>
-                    @endif
-                    <div class="community-photo__overlay">
-                        @if ($photo->tag)
-                            <span class="community-photo__tag">{{ $photo->tag }}</span>
-                        @endif
-                        <p class="community-photo__caption">{{ $photo->caption }}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            @else
-            <x-empty-state message="Photos from around the municipality are coming soon." />
-            @endif
+            <x-community-photo-grid :photos="$communityPhotos" empty-message="Photos from around the municipality are coming soon." />
 
         </div>
     </section>
