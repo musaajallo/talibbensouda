@@ -19,21 +19,6 @@
         </div>
     </section>
 
-    {{-- ── Intro ──────────────────────────────────────────────────────────── --}}
-    <section class="section section--tight">
-        <div class="container">
-            <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">2018 – 2026</span>
-                <h2 class="section-header__title">Delivered, Opened, Launched</h2>
-                <p class="section-header__lead">
-                    The dates below are drawn from Kanifing Municipal Council records and
-                    public reporting. Where only the month is known, events are shown on
-                    the first of that month.
-                </p>
-            </div>
-        </div>
-    </section>
-
     {{-- ── Milestones list / calendar ──────────────────────────────────────── --}}
     {{-- $upcoming and $calEvents are passed from EventController@index --}}
 
