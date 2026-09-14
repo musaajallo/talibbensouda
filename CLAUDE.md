@@ -47,11 +47,9 @@ disk. Modelled on the sibling `umc` project.
   `docs/Talib Legacy - The People's Mayor.md` is the source content brief (KMC records +
   public reporting) — the seeders are a curated summary of it, not a transcription. When
   adding seed content, check it against that doc first. Parks/stadium, international
-  partnerships, flood prevention, and governance/housing detail have all been added
-  (`ProjectSeeder`); still open: the Tekki Fii youth-fund sub-detail — the first
-  COVID-response cohort's named winners and amounts (Gisqo D313,000; Outboost Media and
-  Analytics D429,000; Le Jumbo D257,500) and the separate D1M "Andandorr–Tekki Fii"
-  innovation fund (YEP/ITC + GCCI), neither of which is in the current youth project entry.
+  partnerships, flood prevention, governance/housing, and the Tekki Fii youth-fund
+  sub-detail (first COVID-response cohort's named winners and amounts, plus the separate
+  D1M "Andandorr–Tekki Fii" innovation fund) have all been added (`ProjectSeeder`).
 - Page-copy settings: `GeneralSettings`, `SocialSettings`, `SiteChromeSettings`,
   `HomePageSettings`, `PeoplesMayorPageSettings`, `GivingBackPageSettings`, `AboutPageSettings`,
   `EventsPageSettings` (currently just the event-type list).

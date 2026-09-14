@@ -1,0 +1,161 @@
+@use 'sass:color';
+@use '../../shared/abstracts' as *;
+
+// ── Community photo grid (every route) ──────────────────────────────────────────
+
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 240px;
+    gap: 10px;
+
+    // First photo: large featured (2 cols × 2 rows)
+    .community-photo:first-child {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 200px;
+
+        .community-photo:first-child {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 220px;
+
+        .community-photo:first-child {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+    }
+}
+
+.community-photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: $radius-md;
+    cursor: pointer;
+
+    // ── Placeholder (remove once real images added) ───────────────────────
+    &__placeholder {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg,
+            color.adjust($color-navy, $lightness: 14%),
+            color.adjust($color-navy, $lightness: 6%)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__icon {
+        width: 48px;
+        height: 48px;
+        color: rgba(255,255,255,0.2);
+        flex-shrink: 0;
+    }
+
+    // ── Real image ────────────────────────────────────────────────────────
+    img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    // ── Shine sweep on hover ─────────────────────────────────────────────
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -75%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.10),
+            transparent
+        );
+        z-index: 2;
+        pointer-events: none;
+        transition: none;
+    }
+
+    // ── Gold border frame ─────────────────────────────────────────────────
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 2px solid $color-gold;
+        border-radius: $radius-md;
+        opacity: 0;
+        z-index: 3;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    // ── Caption overlay (slides up from bottom) ───────────────────────────
+    &__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to top,
+            rgba($color-navy-dark, 0.92) 0%,
+            rgba($color-navy-dark, 0.4)  45%,
+            transparent                  70%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 20px;
+        z-index: 1;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    &__tag {
+        display: inline-block;
+        color: $color-gold;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    &__caption {
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    // ── Hover state ───────────────────────────────────────────────────────
+    &:hover {
+        img { transform: scale(1.07); }
+
+        &::before {
+            transition: left 0.65s ease;
+            left: 140%;
+        }
+
+        &::after { opacity: 1; }
+
+        .community-photo__overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

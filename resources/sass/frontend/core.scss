@@ -22,6 +22,10 @@
 @use 'components/reveal';
 @use 'components/scroll-top';
 @use 'components/cookie-banner';
+@use 'components/section';
+@use 'components/section-header';
+@use 'components/cta-banner';
+@use 'components/community-grid';
 
 // The inner-page hero/banner — every route except the home page.
 @use 'pages/inner';
