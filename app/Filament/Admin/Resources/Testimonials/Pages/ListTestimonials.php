@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class ListTestimonials extends ListRecords
 {
@@ -31,7 +32,24 @@ class ListTestimonials extends ListRecords
                 ->action(function (array $data): void {
                     $testimonial = Testimonial::createInvite($data['name'], $data['email']);
 
-                    Mail::to($data['email'])->send(new TestimonialInviteMail($testimonial));
+                    try {
+                        Mail::to($data['email'])->send(new TestimonialInviteMail($testimonial));
+                    } catch (Throwable $e) {
+                        // Don't leave an invite row behind for an email that
+                        // never went anywhere.
+                        $testimonial->delete();
+
+                        report($e);
+
+                        Notification::make()
+                            ->title('Could not send the invite')
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->persistent()
+                            ->send();
+
+                        return;
+                    }
 
                     Notification::make()
                         ->title('Invite sent')
