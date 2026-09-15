@@ -11,7 +11,7 @@ return new class extends SettingsMigration
         // unrelated Mbalit waste-collection project.
         $this->migrator->update(
             'home_page.video_quote',
-            fn () => "Latrikunda Sabiji Market, rebuilt as a storey building with 100 shops — part of a growing network of new and upgraded markets across Kanifing.",
+            fn () => 'Latrikunda Sabiji Market, rebuilt as a storey building with 100 shops — part of a growing network of new and upgraded markets across Kanifing.',
         );
     }
 };

@@ -49,10 +49,10 @@ class Event extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
+            ->performOnCollections('flyer')
             ->width(240)
             ->height(300)
-            ->sharpen(10)
-            ->performOnCollections('flyer');
+            ->sharpen(10);
     }
 
     /** The uploaded flyer, or null if none was set. */

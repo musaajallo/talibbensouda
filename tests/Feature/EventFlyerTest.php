@@ -86,4 +86,3 @@ it('serves the small thumb conversion on the events list, not the full poster', 
 
     get('/events')->assertOk()->assertSee($event->flyerThumbUrl(), false)->assertDontSee($event->flyerUrl(), false);
 });
-

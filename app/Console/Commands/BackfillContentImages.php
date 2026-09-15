@@ -150,20 +150,23 @@ class BackfillContentImages extends Command
         foreach (self::GALLERY_PHOTOS as $caption => $slug) {
             $photo = GalleryPhoto::where('caption', $caption)->first();
 
-            if (!$photo) {
+            if (! $photo) {
                 $this->warn("No GalleryPhoto row found for caption: {$caption}");
+
                 continue;
             }
 
             if ($photo->getFirstMedia('photo')) {
                 $skipped++;
+
                 continue;
             }
 
             $path = resource_path("seed-images/gallery-photo/{$slug}.jpg");
 
-            if (!is_file($path)) {
+            if (! is_file($path)) {
                 $this->warn("Missing seed image: {$path}");
+
                 continue;
             }
 
@@ -177,8 +180,8 @@ class BackfillContentImages extends Command
     }
 
     /**
-     * @param class-string<Project|CommunityPhoto> $model
-     * @param string[] $keys
+     * @param  class-string<Project|CommunityPhoto>  $model
+     * @param  string[]  $keys
      */
     private function backfill(string $model, array $keys, string $keyColumn, string $seedDir, string $collection): void
     {
@@ -188,20 +191,23 @@ class BackfillContentImages extends Command
         foreach ($keys as $key) {
             $row = $model::where($keyColumn, $key)->first();
 
-            if (!$row) {
+            if (! $row) {
                 $this->warn("No {$model} row found for {$keyColumn}={$key}");
+
                 continue;
             }
 
             if ($row->getFirstMedia($collection)) {
                 $skipped++;
+
                 continue;
             }
 
             $path = resource_path("seed-images/{$seedDir}/{$key}.jpg");
 
-            if (!is_file($path)) {
+            if (! is_file($path)) {
                 $this->warn("Missing seed image: {$path}");
+
                 continue;
             }
 
