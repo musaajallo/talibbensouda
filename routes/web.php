@@ -5,6 +5,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventFlyerPlaceholderController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\TestimonialSubmissionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Spatie\Health\Http\Controllers\SimpleHealthCheckController;
@@ -66,6 +67,10 @@ Route::post('/contact', [ContactController::class, 'store'])
 Route::post('/contact/join', [ContactController::class, 'join'])
     ->middleware('throttle:public-forms')
     ->name('contact.join');
+Route::get('/testimonials/submit/{token}', [TestimonialSubmissionController::class, 'show'])->name('testimonials.submit');
+Route::post('/testimonials/submit/{token}', [TestimonialSubmissionController::class, 'store'])
+    ->middleware('throttle:public-forms')
+    ->name('testimonials.submit.store');
 Route::get('/cookies', fn () => view('cookie-policy'))->name('cookies');
 Route::get('/privacy', fn () => view('privacy-policy'))->name('privacy');
 Route::get('/sitemap', fn () => view('sitemap-page'))->name('sitemap.page');

@@ -35,7 +35,7 @@ describe('CachePublicPages profile', function (): void {
     });
 
     it('never caches the panel, the form pages or live endpoints', function () use ($profile, $request): void {
-        foreach (['/admin', '/admin/login', '/contact', '/events/register', '/health-check', '/sitemap.xml'] as $path) {
+        foreach (['/admin', '/admin/login', '/contact', '/events/register', '/testimonials/submit/abc', '/health-check', '/sitemap.xml'] as $path) {
             expect($profile()->shouldCacheRequest($request($path)))->toBeFalse("expected {$path} to bypass the cache");
         }
     });

@@ -1,0 +1,86 @@
+@use '../../shared/abstracts' as *;
+
+// ── Testimonial submission page ─────────────────────────────────────────────────
+
+.testimonial-submit-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-lg;
+    padding: 48px;
+    box-shadow: var(--shadow-card);
+    transition: background 0.25s, border-color 0.25s;
+
+    @media (max-width: $breakpoint-md) { padding: 32px; }
+    @media (max-width: $breakpoint-sm) { padding: 24px 20px; }
+
+    &__heading {
+        font-family: $font-display;
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--fg);
+        margin-bottom: $space-2;
+        transition: color 0.25s;
+    }
+
+    &__sub {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-bottom: 32px;
+        transition: color 0.25s;
+    }
+
+    .form-group + .form-group {
+        margin-top: $space-6;
+    }
+
+    &__submit {
+        margin-top: $space-8;
+        width: 100%;
+    }
+}
+
+.testimonial-success {
+    text-align: center;
+    padding: 56px 32px;
+
+    &__icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgba(#16a34a, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto $space-6;
+
+        svg { width: 28px; height: 28px; color: #16a34a; }
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--fg);
+        margin-bottom: $space-3;
+        transition: color 0.25s;
+    }
+
+    &__text {
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: $space-8;
+        transition: color 0.25s;
+    }
+
+    &__actions {
+        display: flex;
+        gap: $space-3;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
