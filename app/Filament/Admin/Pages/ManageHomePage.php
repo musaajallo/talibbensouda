@@ -9,10 +9,13 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\HtmlString;
 use UnitEnum;
 
 class ManageHomePage extends SettingsPage
@@ -77,9 +80,14 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('about_cta_label')->maxLength(60),
                     Textarea::make('about_headline')->rows(3)->maxLength(255)->columnSpanFull(),
                     Textarea::make('about_body')->rows(5)->maxLength(1200)->columnSpanFull(),
+                    ImageEntry::make('about_image_preview')
+                        ->label('Currently live')
+                        ->state(fn (): string => app(HomePageSettings::class)->aboutImageUrl())
+                        ->imageHeight(120)
+                        ->columnSpanFull(),
                     FileUpload::make('about_image')
                         ->label('Portrait')
-                        ->helperText('Shown beside the about copy. Leave empty to use the bundled photo.')
+                        ->helperText('Shown beside the about copy. Leave empty to use the bundled photo above.')
                         ->image()->imageEditor()
                         ->disk('public')->directory('home')->visibility('public')->maxSize(6144)
                         ->columnSpanFull(),
@@ -96,9 +104,32 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('video_headline')->maxLength(160)->columnSpanFull(),
                     Textarea::make('video_body')->rows(4)->maxLength(800)->columnSpanFull(),
                     Textarea::make('video_quote')->rows(3)->maxLength(400)->columnSpanFull(),
+                    TextEntry::make('video_preview')
+                        ->label('Currently live')
+                        ->html()
+                        ->state(function (): HtmlString {
+                            $home = app(HomePageSettings::class);
+                            $videoUrl = $home->videoUrl();
+
+                            if ($videoUrl !== null) {
+                                return new HtmlString(
+                                    '<video controls preload="metadata" style="max-width:280px;border-radius:8px" src="'.e($videoUrl).'"></video>'
+                                );
+                            }
+
+                            // videoUrl() is only null when a YouTube id is set and takes over.
+                            $youtubeId = e($home->video_youtube_id);
+
+                            return new HtmlString(
+                                '<a href="https://youtu.be/'.$youtubeId.'" target="_blank" rel="noopener">'
+                                .'<img src="https://img.youtube.com/vi/'.$youtubeId.'/hqdefault.jpg" style="max-width:280px;border-radius:8px" alt="Currently live: YouTube video">'
+                                .'</a>'
+                            );
+                        })
+                        ->columnSpanFull(),
                     FileUpload::make('video_file')
                         ->label('Video file')
-                        ->helperText('MP4, up to 128 MB. Takes priority over the YouTube ID. Leave empty to use the bundled clip.')
+                        ->helperText('MP4, up to 128 MB. Takes priority over the YouTube ID. Leave empty to use the bundled clip above.')
                         ->disk('public')->directory('home')->visibility('public')
                         ->acceptedFileTypes(['video/mp4'])->maxSize(131072)
                         ->columnSpanFull(),
