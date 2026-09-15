@@ -2,6 +2,7 @@
 
 use App\Settings\AboutPageSettings;
 use App\Settings\EventsPageSettings;
+use App\Settings\GalleryPageSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\GivingBackPageSettings;
 use App\Settings\HomePageSettings;
@@ -30,6 +31,7 @@ return [
         GivingBackPageSettings::class,
         AboutPageSettings::class,
         EventsPageSettings::class,
+        GalleryPageSettings::class,
     ],
 
     /*
