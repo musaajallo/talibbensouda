@@ -3,14 +3,17 @@
 namespace App\Mail;
 
 use App\Models\Testimonial;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TestimonialInviteMail extends Mailable implements ShouldQueue
+/**
+ * Sent synchronously (not ShouldQueue) — this is a low-volume, admin-triggered
+ * send, and the panel action needs the real send/fail result immediately so
+ * a delivery failure surfaces to the admin right away instead of failing
+ * silently in a queue worker nobody's watching.
+ */
+class TestimonialInviteMail extends Mailable
 {
-    use Queueable;
     use SerializesModels;
 
     public function __construct(public Testimonial $testimonial) {}

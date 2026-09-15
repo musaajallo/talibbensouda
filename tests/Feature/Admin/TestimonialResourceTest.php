@@ -36,7 +36,26 @@ it('sends a testimonial invite and creates a draft row', function (): void {
         ->and($testimonial->published)->toBeFalse()
         ->and($testimonial->approved)->toBeFalse();
 
-    Mail::assertQueued(TestimonialInviteMail::class, fn ($mail) => $mail->hasTo('jane@example.com'));
+    Mail::assertSent(TestimonialInviteMail::class, fn ($mail) => $mail->hasTo('jane@example.com'));
+});
+
+it('surfaces a loud error and rolls back the draft row when sending fails', function (): void {
+    // Force a real, fast transport failure (connection refused) rather than
+    // mocking — this is exactly the class of failure the try/catch needs to
+    // catch instead of letting it fail silently.
+    config([
+        'mail.default' => 'smtp',
+        'mail.mailers.smtp.host' => '127.0.0.1',
+        'mail.mailers.smtp.port' => 1,
+        'mail.mailers.smtp.timeout' => 2,
+    ]);
+
+    Livewire::test(ListTestimonials::class)
+        ->mountAction('sendInvite')
+        ->setActionData(['name' => 'Jane Doe', 'email' => 'jane@example.com'])
+        ->callMountedAction();
+
+    expect(Testimonial::where('invite_email', 'jane@example.com')->exists())->toBeFalse();
 });
 
 it('approves a submitted testimonial without publishing it', function (): void {
