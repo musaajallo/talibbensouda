@@ -108,6 +108,7 @@ class ManageHomePage extends SettingsPage
                 ->icon('heroicon-o-bars-3')
                 ->columns(2)
                 ->collapsed()
+                ->columnSpanFull()
                 ->components([
                     TextInput::make('projects_eyebrow')->maxLength(120),
                     TextInput::make('projects_headline')->maxLength(160),
