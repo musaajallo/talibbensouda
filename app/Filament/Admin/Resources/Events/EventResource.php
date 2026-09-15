@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Resources\Events;
 use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
 use App\Filament\Admin\Resources\Events\Pages\EditEvent;
 use App\Filament\Admin\Resources\Events\Pages\ListEvents;
+use App\Filament\Admin\Resources\Events\Pages\ViewEvent;
 use App\Filament\Admin\Resources\Events\Schemas\EventForm;
+use App\Filament\Admin\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Admin\Resources\Events\Tables\EventsTable;
 use App\Models\Event;
 use BackedEnum;
@@ -34,6 +36,11 @@ class EventResource extends Resource
         return EventForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return EventInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return EventsTable::configure($table);
@@ -51,6 +58,7 @@ class EventResource extends Resource
         return [
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
+            'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
         ];
     }

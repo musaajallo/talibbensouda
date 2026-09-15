@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Resources\GalleryPhotos;
 use App\Filament\Admin\Resources\GalleryPhotos\Pages\CreateGalleryPhoto;
 use App\Filament\Admin\Resources\GalleryPhotos\Pages\EditGalleryPhoto;
 use App\Filament\Admin\Resources\GalleryPhotos\Pages\ListGalleryPhotos;
+use App\Filament\Admin\Resources\GalleryPhotos\Pages\ViewGalleryPhoto;
 use App\Filament\Admin\Resources\GalleryPhotos\Schemas\GalleryPhotoForm;
+use App\Filament\Admin\Resources\GalleryPhotos\Schemas\GalleryPhotoInfolist;
 use App\Filament\Admin\Resources\GalleryPhotos\Tables\GalleryPhotosTable;
 use App\Models\GalleryPhoto;
 use BackedEnum;
@@ -36,6 +38,11 @@ class GalleryPhotoResource extends Resource
         return GalleryPhotoForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return GalleryPhotoInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return GalleryPhotosTable::configure($table);
@@ -53,6 +60,7 @@ class GalleryPhotoResource extends Resource
         return [
             'index' => ListGalleryPhotos::route('/'),
             'create' => CreateGalleryPhoto::route('/create'),
+            'view' => ViewGalleryPhoto::route('/{record}'),
             'edit' => EditGalleryPhoto::route('/{record}/edit'),
         ];
     }

@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Resources\CommunityPhotos;
 use App\Filament\Admin\Resources\CommunityPhotos\Pages\CreateCommunityPhoto;
 use App\Filament\Admin\Resources\CommunityPhotos\Pages\EditCommunityPhoto;
 use App\Filament\Admin\Resources\CommunityPhotos\Pages\ListCommunityPhotos;
+use App\Filament\Admin\Resources\CommunityPhotos\Pages\ViewCommunityPhoto;
 use App\Filament\Admin\Resources\CommunityPhotos\Schemas\CommunityPhotoForm;
+use App\Filament\Admin\Resources\CommunityPhotos\Schemas\CommunityPhotoInfolist;
 use App\Filament\Admin\Resources\CommunityPhotos\Tables\CommunityPhotosTable;
 use App\Models\CommunityPhoto;
 use BackedEnum;
@@ -34,6 +36,11 @@ class CommunityPhotoResource extends Resource
         return CommunityPhotoForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return CommunityPhotoInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return CommunityPhotosTable::configure($table);
@@ -51,6 +58,7 @@ class CommunityPhotoResource extends Resource
         return [
             'index' => ListCommunityPhotos::route('/'),
             'create' => CreateCommunityPhoto::route('/create'),
+            'view' => ViewCommunityPhoto::route('/{record}'),
             'edit' => EditCommunityPhoto::route('/{record}/edit'),
         ];
     }
