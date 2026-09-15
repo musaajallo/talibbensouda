@@ -1,7 +1,7 @@
 <x-app-layout title="Lord Mayor of Kanifing Municipality, The Gambia" styles="home" description="Talib Ahmed Bensouda, Lord Mayor of Kanifing & the People's Mayor — a record of delivery for The Gambia: roads, waste, clinics and a public library.">
 @php
     $home = app(\App\Settings\HomePageSettings::class);
-    $slides = $home->heroSlides();
+    $slides = \App\Models\HeroSlide::heroSlides();
 
     $projects = \App\Models\Project::published()->with('media')->orderBy('sort_order')->take(6)->get();
     $communityPhotos = \App\Models\CommunityPhoto::published()

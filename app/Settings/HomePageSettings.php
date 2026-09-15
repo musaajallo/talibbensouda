@@ -33,9 +33,6 @@ class HomePageSettings extends Settings
 
     public string $hero_secondary_url = '';
 
-    /** Repeater rows: ['image' => disk path|null, 'bg' => hex, 'position' => css]. */
-    public array $hero_slides = [];
-
     // Stats bar — repeater rows: ['value' => '38', 'suffix' => 'km', 'label' => '...'].
     public array $stats = [];
 
@@ -151,57 +148,5 @@ class HomePageSettings extends Settings
         }
 
         return $html;
-    }
-
-    /**
-     * Configured hero slides with resolved image URLs, or a default set built
-     * from the bundled hero images when none are configured.
-     *
-     * Each slide carries both a full image (`img`, ≤1600w) and a 768w variant
-     * (`img_sm`) that the front end serves to phones.
-     *
-     * @return array<int, array{img: string, img_sm: string, bg: string, pos: string}>
-     */
-    public function heroSlides(): array
-    {
-        $configured = collect($this->hero_slides)
-            ->filter(fn ($slide) => filled($slide['image'] ?? null))
-            ->map(function ($slide) {
-                $full = $this->resolvePublicDiskUrl($slide['image']);
-                $small = filled($slide['image_sm'] ?? null) && Storage::disk('public')->exists($slide['image_sm'])
-                    ? $this->resolvePublicDiskUrl($slide['image_sm'])
-                    : $full;
-
-                return [
-                    'img' => $full,
-                    'img_sm' => $small,
-                    'bg' => $slide['bg'] ?? '#0d1b38',
-                    'pos' => $slide['position'] ?? 'center top',
-                ];
-            })
-            ->values()
-            ->all();
-
-        if ($configured !== []) {
-            return $configured;
-        }
-
-        // Slides are anchored to the top so faces/heads aren't cropped as the
-        // hero height varies across viewports.
-        $defaults = [
-            ['file' => 'hero-rally', 'bg' => '#0d1b38'],
-            ['file' => 'hero-talib-desk', 'bg' => '#0d1b38'],
-            ['file' => 'hero-masquerade', 'bg' => '#0a1525'],
-            ['file' => 'hero-supporters', 'bg' => '#112044'],
-            ['file' => 'hero-hall', 'bg' => '#091422'],
-            ['file' => 'hero-victory', 'bg' => '#0d1b38'],
-        ];
-
-        return array_map(fn ($slide) => [
-            'img' => asset("images/{$slide['file']}.webp"),
-            'img_sm' => asset("images/{$slide['file']}-sm.webp"),
-            'bg' => $slide['bg'],
-            'pos' => 'center top',
-        ], $defaults);
     }
 }

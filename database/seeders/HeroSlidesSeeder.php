@@ -2,21 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Settings\HomePageSettings;
+use App\Models\HeroSlide;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 /**
- * Seeds the home hero slider as editable CMS rows. Copies the bundled hero
- * photos (full + 768w `-sm` variant) onto the `public` media disk and points
- * `home_page.hero_slides` at them, so an admin can reorder, replace or remove
- * slides in the panel (Page content → Home page → Hero).
+ * Seeds the home hero slider with the bundled photos as real HeroSlide rows,
+ * so an admin can reorder, replace or remove slides in the panel
+ * (Content → Hero slides) without touching this seeder.
  *
- * First run: seeds the full bundled set. Later runs: no-op, except that a slide
- * still pointing at a bundled photo but missing its `-sm` variant is upgraded
- * in place (so installs seeded before responsive hero images get them without a
- * manual reset). Admin-uploaded slides are never touched.
+ * Create-if-missing: no-ops once any HeroSlide row exists, so admin edits
+ * (including deleting down to zero slides, which falls back to these same
+ * bundled photos — see HeroSlide::heroSlides()) are never overwritten.
  */
 class HeroSlidesSeeder extends Seeder
 {
@@ -32,68 +29,24 @@ class HeroSlidesSeeder extends Seeder
 
     public function run(): void
     {
-        $settings = app(HomePageSettings::class);
-
-        if (! empty($settings->hero_slides)) {
-            $this->backfillSmallVariants($settings);
-
+        if (HeroSlide::query()->exists()) {
             return;
         }
 
-        $settings->hero_slides = array_map(fn ($slide) => [
-            'image' => $this->copyToDisk($slide['file'].'.webp'),
-            'image_sm' => $this->copyToDisk($slide['file'].'-sm.webp'),
-            'bg' => $slide['bg'],
-            'position' => 'center top',
-        ], $this->bundled);
+        foreach ($this->bundled as $i => $slide) {
+            $source = public_path('images/'.$slide['file'].'.webp');
 
-        $settings->save();
-    }
-
-    /**
-     * Add the `-sm` key to any existing slide that still points at a bundled
-     * photo and doesn't have one yet.
-     */
-    protected function backfillSmallVariants(HomePageSettings $settings): void
-    {
-        $changed = false;
-
-        $slides = array_map(function ($slide) use (&$changed) {
-            $image = $slide['image'] ?? null;
-
-            if (filled($slide['image_sm'] ?? null) || ! is_string($image)) {
-                return $slide;
+            if (! File::exists($source)) {
+                continue;
             }
 
-            if (! preg_match('#^hero/(hero-[a-z-]+)\.webp$#', $image, $m)) {
-                return $slide; // an admin upload — leave it alone
-            }
+            $heroSlide = HeroSlide::create([
+                'fallback_colour' => $slide['bg'],
+                'position' => 'center top',
+                'sort_order' => $i,
+            ]);
 
-            $changed = true;
-            $slide['image_sm'] = $this->copyToDisk($m[1].'-sm.webp');
-
-            return $slide;
-        }, $settings->hero_slides);
-
-        if ($changed) {
-            $settings->hero_slides = $slides;
-            $settings->save();
+            $heroSlide->addMedia($source)->preservingOriginal()->toMediaCollection('image');
         }
-    }
-
-    /**
-     * Copy a bundled hero photo onto the `public` media disk, once.
-     * Returns the disk-relative path (also returned when the source is missing).
-     */
-    protected function copyToDisk(string $file): string
-    {
-        $source = public_path('images/'.$file);
-        $target = 'hero/'.$file;
-
-        if (File::exists($source) && ! Storage::disk('public')->exists($target)) {
-            Storage::disk('public')->put($target, File::get($source));
-        }
-
-        return $target;
     }
 }
