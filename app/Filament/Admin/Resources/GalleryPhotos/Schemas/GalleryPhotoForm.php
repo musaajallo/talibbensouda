@@ -35,8 +35,6 @@ class GalleryPhotoForm
                         ->options(array_combine(GalleryPhoto::CATEGORIES, GalleryPhoto::CATEGORIES))
                         ->default('Projects')
                         ->required(),
-                    Toggle::make('wide')
-                        ->helperText('Spans two columns in the gallery grid.'),
                     Toggle::make('published')
                         ->default(true),
                     TextInput::make('sort_order')
