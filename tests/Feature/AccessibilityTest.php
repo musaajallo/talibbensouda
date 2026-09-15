@@ -42,6 +42,6 @@ it('exposes the gallery lightbox as a focus-trapped dialog with keyboard-operabl
         ->toContain('x-trap="lightboxOpen"')
         ->toContain('role="dialog"')
         ->toContain('aria-modal="true"')
-        ->toContain('@keydown.space.prevent="open(idx)"')
+        ->toContain('@keydown.space.prevent="open(photo.fi)"')
         ->toContain(':aria-pressed="(active === cat).toString()"');
 });

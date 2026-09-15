@@ -12,8 +12,8 @@ use Spatie\LaravelSettings\Settings;
  */
 class AboutPageSettings extends Settings
 {
-    use SplitsParagraphs;
     use ResolvesPublicDiskUrl;
+    use SplitsParagraphs;
 
     public string $hero_eyebrow = '';
 
