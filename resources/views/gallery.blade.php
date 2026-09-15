@@ -40,6 +40,9 @@
             'bg'       => $palette[$i % count($palette)],
         ])
         ->all();
+
+    // Managed in the admin panel (Page content → Gallery page).
+    $perPage = app(\App\Settings\GalleryPageSettings::class)->photos_per_page;
     @endphp
 
     <section
@@ -50,7 +53,7 @@
             lightboxOpen: false,
             current: 0,
             page: 1,
-            perPage: 25,
+            perPage: {{ Js::from($perPage) }},
             photos: {{ Js::from($photos) }},
 
             get filtered() {
