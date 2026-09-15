@@ -31,6 +31,7 @@ class ProjectInfolist
                     SpatieMediaLibraryImageEntry::make('image')
                         ->collection('image')
                         ->hiddenLabel()
+                        ->imageHeight(320)
                         ->columnSpanFull(),
                     IconEntry::make('image_fills_card')
                         ->label('Image fills the whole card')
