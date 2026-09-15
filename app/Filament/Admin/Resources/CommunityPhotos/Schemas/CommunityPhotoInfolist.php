@@ -18,7 +18,8 @@ class CommunityPhotoInfolist
                 ->components([
                     SpatieMediaLibraryImageEntry::make('photo')
                         ->collection('photo')
-                        ->hiddenLabel(),
+                        ->hiddenLabel()
+                        ->imageHeight(320),
                 ]),
 
             Section::make('Details')

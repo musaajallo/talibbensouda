@@ -62,6 +62,7 @@ class EventInfolist
                     SpatieMediaLibraryImageEntry::make('flyer')
                         ->collection('flyer')
                         ->hiddenLabel()
+                        ->imageHeight(320)
                         ->placeholder('No flyer uploaded — a branded placeholder is shown on the site instead.'),
                 ]),
         ]);
