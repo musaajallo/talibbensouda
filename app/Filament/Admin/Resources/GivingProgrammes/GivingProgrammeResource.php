@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Resources\GivingProgrammes;
 use App\Filament\Admin\Resources\GivingProgrammes\Pages\CreateGivingProgramme;
 use App\Filament\Admin\Resources\GivingProgrammes\Pages\EditGivingProgramme;
 use App\Filament\Admin\Resources\GivingProgrammes\Pages\ListGivingProgrammes;
+use App\Filament\Admin\Resources\GivingProgrammes\Pages\ViewGivingProgramme;
 use App\Filament\Admin\Resources\GivingProgrammes\Schemas\GivingProgrammeForm;
+use App\Filament\Admin\Resources\GivingProgrammes\Schemas\GivingProgrammeInfolist;
 use App\Filament\Admin\Resources\GivingProgrammes\Tables\GivingProgrammesTable;
 use App\Models\GivingProgramme;
 use BackedEnum;
@@ -34,6 +36,11 @@ class GivingProgrammeResource extends Resource
         return GivingProgrammeForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return GivingProgrammeInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return GivingProgrammesTable::configure($table);
@@ -51,6 +58,7 @@ class GivingProgrammeResource extends Resource
         return [
             'index' => ListGivingProgrammes::route('/'),
             'create' => CreateGivingProgramme::route('/create'),
+            'view' => ViewGivingProgramme::route('/{record}'),
             'edit' => EditGivingProgramme::route('/{record}/edit'),
         ];
     }
