@@ -3,8 +3,14 @@
 namespace App\Filament\Admin\Resources\Testimonials\Pages;
 
 use App\Filament\Admin\Resources\Testimonials\TestimonialResource;
+use App\Mail\TestimonialInviteMail;
+use App\Models\Testimonial;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Mail;
 
 class ListTestimonials extends ListRecords
 {
@@ -13,6 +19,26 @@ class ListTestimonials extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('sendInvite')
+                ->label('Send invite')
+                ->icon('heroicon-o-paper-airplane')
+                ->modalHeading('Send a testimonial invite')
+                ->modalSubmitActionLabel('Send invite')
+                ->schema([
+                    TextInput::make('name')->required()->maxLength(160),
+                    TextInput::make('email')->email()->required()->maxLength(190),
+                ])
+                ->action(function (array $data): void {
+                    $testimonial = Testimonial::createInvite($data['name'], $data['email']);
+
+                    Mail::to($data['email'])->send(new TestimonialInviteMail($testimonial));
+
+                    Notification::make()
+                        ->title('Invite sent')
+                        ->body("A submission link was emailed to {$data['email']}.")
+                        ->success()
+                        ->send();
+                }),
             CreateAction::make(),
         ];
     }

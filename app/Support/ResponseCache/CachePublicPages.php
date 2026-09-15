@@ -14,9 +14,10 @@ use Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests;
  * flush on any content edit (see AppServiceProvider). Excluded:
  *
  *  - the Filament panel and its Livewire/upload traffic (auth-gated, dynamic);
- *  - the two form pages — a cached page would freeze the honeypot's encrypted
- *    timestamp (every real submission would then fail the timing check) and
- *    hide server-side flash messages;
+ *  - the form pages (contact, event registration, testimonial submission) —
+ *    a cached page would freeze the honeypot's encrypted timestamp (every
+ *    real submission would then fail the timing check) and hide server-side
+ *    flash messages;
  *  - health / sitemap endpoints that must reflect live state;
  *  - any request from a signed-in user (an admin previewing the site).
  *
@@ -38,6 +39,7 @@ class CachePublicPages extends CacheAllSuccessfulGetRequests
         'resend',
         'contact',
         'events/register',
+        'testimonials/submit',
         'health-check',
         'up',
         'sitemap.xml',

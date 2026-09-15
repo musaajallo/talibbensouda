@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/sass/frontend/pages-entry/register.scss',
                 'resources/sass/frontend/pages-entry/giving-back.scss',
                 'resources/sass/frontend/pages-entry/contact.scss',
+                'resources/sass/frontend/pages-entry/testimonial-submit.scss',
                 'resources/sass/frontend/pages-entry/cookie-policy.scss',
                 'resources/sass/frontend/pages-entry/sitemap.scss',
                 'resources/sass/frontend/pages-entry/errors.scss',
