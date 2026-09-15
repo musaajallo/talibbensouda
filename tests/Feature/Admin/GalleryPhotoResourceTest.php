@@ -25,7 +25,6 @@ it('creates a gallery photo with an uploaded image', function (): void {
         ->fillForm([
             'caption' => 'Compactor fleet handover',
             'category' => 'Projects',
-            'wide' => true,
             'published' => true,
             'sort_order' => 3,
             'photo' => [UploadedFile::fake()->image('fleet.jpg', 1600, 900)->size(200)],
@@ -37,7 +36,6 @@ it('creates a gallery photo with an uploaded image', function (): void {
 
     expect($photo->caption)->toBe('Compactor fleet handover')
         ->and($photo->category)->toBe('Projects')
-        ->and($photo->wide)->toBeTrue()
         ->and($photo->getFirstMedia('photo'))->not->toBeNull();
 });
 
