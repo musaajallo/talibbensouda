@@ -36,6 +36,7 @@ class ManageHomePage extends SettingsPage
         return $schema->components([
             Section::make('Hero')
                 ->icon('heroicon-o-megaphone')
+                ->description('The background slides themselves are managed under Content → Hero slides.')
                 ->columns(2)
                 ->components([
                     TextInput::make('hero_eyebrow')->maxLength(120),
@@ -50,21 +51,6 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('hero_primary_url')->maxLength(255),
                     TextInput::make('hero_secondary_label')->maxLength(60),
                     TextInput::make('hero_secondary_url')->maxLength(255),
-                    Repeater::make('hero_slides')
-                        ->label('Background slides')
-                        ->helperText('Leave empty to use the bundled hero photos.')
-                        ->columnSpanFull()
-                        ->schema([
-                            FileUpload::make('image')->image()->imageEditor()
-                                ->disk('public')->directory('hero')->visibility('public')->maxSize(6144),
-                            TextInput::make('bg')->label('Fallback colour')->default('#0d1b38')->maxLength(9),
-                            TextInput::make('position')->default('center top')->maxLength(30)
-                                ->helperText('CSS background-position, e.g. "center top" or "center".'),
-                        ])
-                        ->columns(3)
-                        ->reorderable()
-                        ->defaultItems(0)
-                        ->addActionLabel('Add slide'),
                 ]),
 
             Section::make('Stats bar')

@@ -2,6 +2,7 @@
 
 use App\Models\CommunityPhoto;
 use App\Models\Event;
+use App\Models\HeroSlide;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Settings\HomePageSettings;
@@ -65,7 +66,7 @@ it('keeps content sections visible with an empty-state note when they have no da
 });
 
 it('anchors hero slides to the top by default', function (): void {
-    $slides = app(HomePageSettings::class)->heroSlides();
+    $slides = HeroSlide::heroSlides();
 
     expect($slides)->not->toBeEmpty()
         ->and(collect($slides)->pluck('pos')->unique()->all())->toBe(['center top']);
