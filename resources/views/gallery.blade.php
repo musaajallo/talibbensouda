@@ -118,7 +118,7 @@
                         @keydown.space.prevent="open(photo.fi)"
                     >
                         <img x-show="photo.file" :src="photo.file" :alt="photo.caption" loading="lazy">
-                        <div class="gallery-item__placeholder" x-show="!photo.file" :style="`background-color: ${photo.bg}`">
+                        <div class="gallery-item__placeholder" x-show="!photo.file" :style="{ backgroundColor: photo.bg }">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                                 <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -224,7 +224,7 @@
                          :alt="filtered[current] ? filtered[current].caption : ''">
                     <div class="lightbox__placeholder"
                          x-show="!filtered[current] || !filtered[current].file"
-                         :style="filtered[current] ? `background-color: ${filtered[current].bg}` : ''">
+                         :style="{ backgroundColor: filtered[current] ? filtered[current].bg : '' }">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="18" height="18" rx="2"/>
                             <circle cx="8.5" cy="8.5" r="1.5"/>
