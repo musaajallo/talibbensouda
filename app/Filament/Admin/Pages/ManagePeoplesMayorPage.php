@@ -66,11 +66,6 @@ class ManagePeoplesMayorPage extends SettingsPage
                     Textarea::make('community_lead')->rows(2)->maxLength(400)->columnSpanFull(),
                 ]),
 
-            Section::make('Note on figures')
-                ->components([
-                    Textarea::make('figures_note')->rows(3)->maxLength(800),
-                ]),
-
             Section::make('Closing call to action')
                 ->columns(2)
                 ->components([

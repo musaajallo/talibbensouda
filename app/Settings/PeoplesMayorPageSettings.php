@@ -29,8 +29,6 @@ class PeoplesMayorPageSettings extends Settings
 
     public string $community_lead = '';
 
-    public string $figures_note = '';
-
     public string $cta_headline = '';
 
     public string $cta_lead = '';

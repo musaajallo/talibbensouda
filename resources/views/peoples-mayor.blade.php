@@ -130,15 +130,6 @@
         </div>
     </section>
 
-    {{-- ── Note on figures ──────────────────────────────────────────────────── --}}
-    @if ($page->figures_note)
-    <section class="section section--tight">
-        <div class="container">
-            <p style="max-width:760px; margin:0 auto; font-size:0.85rem; color:var(--muted); text-align:center;">{{ $page->figures_note }}</p>
-        </div>
-    </section>
-    @endif
-
     {{-- ── CTA ──────────────────────────────────────────────────────────────── --}}
     <section class="cta-banner">
         <div class="container">
