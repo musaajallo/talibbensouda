@@ -1,0 +1,61 @@
+@use '../../shared/abstracts' as *;
+
+// ── Election countdown strip (top of the sticky header) ────────────────────────
+
+.election-countdown {
+    background: $color-navy;
+    border-bottom: 1px solid rgba($color-gold, 0.25);
+
+    [data-theme="dark"] & { background: $color-navy-dark; }
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: $space-2 $space-4;
+        padding: 7px $space-4;
+        text-align: center;
+    }
+
+    &__label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    &__units {
+        display: flex;
+        align-items: baseline;
+        gap: $space-3;
+    }
+
+    &__unit {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 3px;
+        font-family: $font-display;
+        color: $color-gold;
+
+        strong {
+            font-size: 0.9rem;
+            font-weight: 800;
+            min-width: 1.4em;
+            text-align: right;
+        }
+
+        small {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba($color-gold, 0.75);
+            text-transform: uppercase;
+        }
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        &__inner { padding: 6px $space-3; gap: $space-1 $space-3; }
+        &__label { font-size: 0.66rem; }
+        &__units { gap: $space-2; }
+    }
+}

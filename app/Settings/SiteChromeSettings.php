@@ -18,6 +18,13 @@ class SiteChromeSettings extends Settings
 
     public string $copyright_name = 'Talib Bensouda';
 
+    public bool $election_countdown_enabled = true;
+
+    public string $election_countdown_label = 'To the 2026 Presidential Election';
+
+    /** Date only (Y-m-d) — treated as UTC midnight, same as the events ICS export. */
+    public string $election_date = '2026-12-04';
+
     public static function group(): string
     {
         return 'site_chrome';

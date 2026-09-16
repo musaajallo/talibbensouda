@@ -41,6 +41,37 @@
     <a href="#main-content" class="skip-link">Skip to content</a>
 
     <header class="site-header" x-data="{ open: false, dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', v => { document.documentElement.setAttribute('data-theme', v ? 'dark' : 'light'); localStorage.setItem('theme', v ? 'dark' : 'light'); })" :class="{ 'is-menu-open': open }" @keydown.escape.window="open = false" x-effect="document.body.classList.toggle('has-menu-open', open)" x-trap="open">
+
+        @if ($chrome->election_countdown_enabled)
+            <div class="election-countdown"
+                x-data="{
+                    target: new Date('{{ $chrome->election_date }}T00:00:00Z').getTime(),
+                    days: 0, hours: 0, minutes: 0, seconds: 0, over: false,
+                    tick() {
+                        const diff = this.target - Date.now();
+                        this.over = diff <= 0;
+                        const d = Math.max(0, diff);
+                        this.days = Math.floor(d / 86400000);
+                        this.hours = Math.floor((d % 86400000) / 3600000);
+                        this.minutes = Math.floor((d % 3600000) / 60000);
+                        this.seconds = Math.floor((d % 60000) / 1000);
+                    }
+                }"
+                x-init="tick(); setInterval(() => tick(), 1000)"
+            >
+                <div class="election-countdown__inner container">
+                    <span class="election-countdown__label" x-show="!over">{{ $chrome->election_countdown_label }}</span>
+                    <span class="election-countdown__label" x-show="over" x-cloak>{{ $chrome->election_countdown_label }} — Today</span>
+                    <span class="election-countdown__units" x-show="!over">
+                        <span class="election-countdown__unit"><strong x-text="days"></strong><small>d</small></span>
+                        <span class="election-countdown__unit"><strong x-text="hours.toString().padStart(2, '0')"></strong><small>h</small></span>
+                        <span class="election-countdown__unit"><strong x-text="minutes.toString().padStart(2, '0')"></strong><small>m</small></span>
+                        <span class="election-countdown__unit"><strong x-text="seconds.toString().padStart(2, '0')"></strong><small>s</small></span>
+                    </span>
+                </div>
+            </div>
+        @endif
+
         <div class="site-nav container">
 
             <a href="{{ url('/') }}" class="site-nav__brand" @click="open = false">{{ $brandName }}</a>

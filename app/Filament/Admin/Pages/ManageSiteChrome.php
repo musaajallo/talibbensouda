@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Pages;
 use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\SiteChromeSettings;
 use BackedEnum;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -37,6 +39,26 @@ class ManageSiteChrome extends SettingsPage
                 ->components([
                     TextInput::make('join_party_label')->required()->maxLength(60),
                     TextInput::make('join_party_url')->url()->required()->maxLength(255),
+                ]),
+
+            Section::make('Election countdown')
+                ->description('A slim live countdown shown in the header on every page.')
+                ->icon('heroicon-o-clock')
+                ->columns(2)
+                ->components([
+                    Toggle::make('election_countdown_enabled')
+                        ->label('Show the countdown')
+                        ->columnSpanFull(),
+                    TextInput::make('election_countdown_label')
+                        ->required()
+                        ->maxLength(80)
+                        ->helperText('Shown next to the countdown, e.g. "To the 2026 Presidential Election".'),
+                    DatePicker::make('election_date')
+                        ->required()
+                        ->native(false)
+                        ->displayFormat('D j M Y')
+                        ->closeOnDateSelection()
+                        ->helperText('Counts down to midnight (Gambia time) on this date.'),
                 ]),
 
             Section::make('Footer')
