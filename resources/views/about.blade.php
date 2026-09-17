@@ -78,35 +78,51 @@
             @if ($milestones->isNotEmpty())
             <div class="milestone-grid">
                 <svg class="milestone-grid__thread" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M 6 96 C 40 70, 45 30, 94 6" />
+                    <defs>
+                        <linearGradient id="milestone-thread-fade" x1="0%" y1="100%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="currentColor" stop-opacity="0.12" />
+                            <stop offset="45%" stop-color="currentColor" stop-opacity="0.85" />
+                            <stop offset="55%" stop-color="currentColor" stop-opacity="0.85" />
+                            <stop offset="100%" stop-color="currentColor" stop-opacity="0.12" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 8 96 C 30 75, 38 25, 60 4" stroke="url(#milestone-thread-fade)" vector-effect="non-scaling-stroke" />
                 </svg>
 
                 <div class="milestone-grid__col">
                     @foreach ($milestonesLeft as $i => $item)
-                    <div class="milestone-card" data-reveal data-reveal-delay="{{ $i * 60 }}">
-                        <div class="milestone-card__icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                {!! $milestoneIcons[$item['category'] ?? ''] ?? $milestoneIcons['project'] !!}
-                            </svg>
+                    <div class="milestone-row" data-reveal data-reveal-delay="{{ $i * 60 }}">
+                        <div class="milestone-row__year">{{ $item['year'] ?? '' }}</div>
+                        <div class="milestone-row__marker">
+                            <div class="milestone-row__dot">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    {!! $milestoneIcons[$item['category'] ?? ''] ?? $milestoneIcons['project'] !!}
+                                </svg>
+                            </div>
                         </div>
-                        <div class="milestone-card__year">{{ $item['year'] ?? '' }}</div>
-                        <h3 class="milestone-card__title">{{ $item['title'] ?? '' }}</h3>
-                        <p class="milestone-card__desc">{{ $item['description'] ?? '' }}</p>
+                        <div class="milestone-row__content">
+                            <h3 class="milestone-row__title">{{ $item['title'] ?? '' }}</h3>
+                            <p class="milestone-row__desc">{{ $item['description'] ?? '' }}</p>
+                        </div>
                     </div>
                     @endforeach
                 </div>
 
                 <div class="milestone-grid__col">
                     @foreach ($milestonesRight as $i => $item)
-                    <div class="milestone-card" data-reveal data-reveal-delay="{{ $i * 60 }}">
-                        <div class="milestone-card__icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                {!! $milestoneIcons[$item['category'] ?? ''] ?? $milestoneIcons['project'] !!}
-                            </svg>
+                    <div class="milestone-row" data-reveal data-reveal-delay="{{ $i * 60 }}">
+                        <div class="milestone-row__year">{{ $item['year'] ?? '' }}</div>
+                        <div class="milestone-row__marker">
+                            <div class="milestone-row__dot">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    {!! $milestoneIcons[$item['category'] ?? ''] ?? $milestoneIcons['project'] !!}
+                                </svg>
+                            </div>
                         </div>
-                        <div class="milestone-card__year">{{ $item['year'] ?? '' }}</div>
-                        <h3 class="milestone-card__title">{{ $item['title'] ?? '' }}</h3>
-                        <p class="milestone-card__desc">{{ $item['description'] ?? '' }}</p>
+                        <div class="milestone-row__content">
+                            <h3 class="milestone-row__title">{{ $item['title'] ?? '' }}</h3>
+                            <p class="milestone-row__desc">{{ $item['description'] ?? '' }}</p>
+                        </div>
                     </div>
                     @endforeach
                 </div>
