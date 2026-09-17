@@ -7,6 +7,7 @@ use App\Settings\GeneralSettings;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -63,6 +64,14 @@ class ManageGeneralSettings extends SettingsPage
                     TextInput::make('contact_email')->email()->required()->maxLength(190),
                     TextInput::make('contact_phone')->tel()->maxLength(40),
                     TextInput::make('based_in')->maxLength(120),
+                ]),
+
+            Section::make('Maintenance mode')
+                ->icon('heroicon-o-wrench-screwdriver')
+                ->description('Shows a "coming soon" page to visitors while you keep working. Signed-in admins always see the real site.')
+                ->components([
+                    Toggle::make('maintenance_mode')
+                        ->label('Site is in maintenance mode'),
                 ]),
         ]);
     }

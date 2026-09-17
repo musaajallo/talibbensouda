@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\MaintenanceMode;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -41,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // fresh, mismatched one. On a miss the response is stored with both in
         // sync. See App\Support\ResponseCache\CachePublicPages for what's cached.
         $middleware->web(append: [
+            MaintenanceMode::class,
             ProtectAgainstSpam::class,
             CacheResponse::class,
             AddCspHeaders::class,
