@@ -45,6 +45,8 @@
         @if ($chrome->election_countdown_enabled)
             <div class="election-countdown"
                 x-data="{
+                    dismissKey: 'tb_countdown_dismissed_{{ $chrome->election_date }}',
+                    dismissed: false,
                     target: new Date('{{ $chrome->election_date }}T00:00:00Z').getTime(),
                     days: 0, hours: 0, minutes: 0, seconds: 0, over: false,
                     tick() {
@@ -55,9 +57,20 @@
                         this.hours = Math.floor((d % 86400000) / 3600000);
                         this.minutes = Math.floor((d % 3600000) / 60000);
                         this.seconds = Math.floor((d % 60000) / 1000);
+                    },
+                    dismiss() {
+                        this.dismissed = true;
+                        try { localStorage.setItem(this.dismissKey, '1'); } catch (e) {}
+                    },
+                    boot() {
+                        try { this.dismissed = localStorage.getItem(this.dismissKey) === '1'; } catch (e) {}
+                        this.tick();
+                        setInterval(() => this.tick(), 1000);
                     }
                 }"
-                x-init="tick(); setInterval(() => tick(), 1000)"
+                x-init="boot()"
+                x-show="!dismissed"
+                x-cloak
             >
                 <div class="election-countdown__inner container">
                     <span class="election-countdown__label" x-show="!over">{{ $chrome->election_countdown_label }}</span>
@@ -68,6 +81,9 @@
                         <span class="election-countdown__unit"><strong x-text="minutes.toString().padStart(2, '0')"></strong><small>m</small></span>
                         <span class="election-countdown__unit"><strong x-text="seconds.toString().padStart(2, '0')"></strong><small>s</small></span>
                     </span>
+                    <button class="election-countdown__dismiss" @click="dismiss()" aria-label="Dismiss">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                 </div>
             </div>
         @endif
