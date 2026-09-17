@@ -7,6 +7,7 @@ use App\Settings\AboutPageSettings;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
@@ -64,7 +65,11 @@ class ManageAboutPage extends SettingsPage
                     Repeater::make('timeline')->hiddenLabel()->columnSpanFull()
                         ->schema([
                             TextInput::make('year')->required()->maxLength(12),
-                            TextInput::make('title')->required()->maxLength(160),
+                            Select::make('category')
+                                ->options(AboutPageSettings::TIMELINE_CATEGORIES)
+                                ->required()
+                                ->helperText('Picks the icon shown on the milestone.'),
+                            TextInput::make('title')->required()->maxLength(160)->columnSpanFull(),
                             Textarea::make('description')->required()->rows(2)->columnSpanFull(),
                         ])
                         ->columns(2)->reorderable()->collapsible()
