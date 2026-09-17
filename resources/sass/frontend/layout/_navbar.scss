@@ -36,15 +36,22 @@ body.has-menu-open {
     position: relative;
 
     &__brand {
-        font-family: $font-display;
-        font-weight: 800;
-        font-size: 1.05rem;
-        color: var(--header-fg);
-        letter-spacing: 0.01em;
-        white-space: nowrap;
+        display: flex;
+        align-items: center;
         flex-shrink: 0;
 
-        &:hover { text-decoration: none; color: $color-gold; }
+        &:hover { opacity: 0.85; }
+    }
+
+    &__brand-logo {
+        display: block;
+        height: 55px;
+        width: auto;
+
+        &--dark { display: none; }
+
+        [data-theme="dark"] &--light { display: none; }
+        [data-theme="dark"] &--dark { display: block; }
     }
 
     // ── Right-hand controls (theme toggle + hamburger on mobile) ──
@@ -174,8 +181,6 @@ body.has-menu-open {
         gap: $space-6;
         padding: $space-4;
     }
-
-    .site-nav__brand { font-size: 1.1rem; }
 
     .site-nav__menu {
         position: static;
