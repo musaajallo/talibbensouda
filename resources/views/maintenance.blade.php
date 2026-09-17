@@ -18,7 +18,7 @@
         html, body {
             margin: 0;
             font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-            background: #0d1b38;
+            background: #0B142E;
             color: #fff;
             height: 100%;
         }
@@ -37,7 +37,7 @@
             font-weight: 700;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: #c9a227;
+            color: #BD2038;
             margin-bottom: 16px;
         }
         .maintenance__title {
@@ -62,7 +62,7 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
-        .maintenance__contact:hover { border-color: #c9a227; color: #c9a227; }
+        .maintenance__contact:hover { border-color: #BD2038; color: #BD2038; }
         .maintenance__logo { height: 56px; width: auto; margin-bottom: 32px; }
         .maintenance__wordmark {
             display: block;

@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 /**
  * Builds an on-brand SVG "flyer" for an event that has no uploaded image —
- * navy card, gold accents, the event's type / title / date. Deterministic
+ * navy card, red accents, the event's type / title / date. Deterministic
  * from the event's own fields, so it's cheap to regenerate per request and
  * safe to cache by URL (see routes/web.php: events.flyer-placeholder).
  */
@@ -19,11 +19,11 @@ class EventFlyerPlaceholder
 
     protected const PAD = 110;
 
-    protected const NAVY = '#0d1b38';
+    protected const NAVY = '#0B142E';
 
     protected const NAVY_DARK = '#080f20';
 
-    protected const GOLD = '#c9a227';
+    protected const GOLD = '#BD2038';
 
     public static function svgFor(Event $event): string
     {

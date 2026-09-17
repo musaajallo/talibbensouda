@@ -19,12 +19,12 @@ class HeroSlidesSeeder extends Seeder
 {
     /** @var list<array{file: string, bg: string}> */
     protected array $bundled = [
-        ['file' => 'hero-rally', 'bg' => '#0d1b38'],
-        ['file' => 'hero-talib-desk', 'bg' => '#0d1b38'],
+        ['file' => 'hero-rally', 'bg' => '#0B142E'],
+        ['file' => 'hero-talib-desk', 'bg' => '#0B142E'],
         ['file' => 'hero-masquerade', 'bg' => '#0a1525'],
         ['file' => 'hero-supporters', 'bg' => '#112044'],
         ['file' => 'hero-hall', 'bg' => '#091422'],
-        ['file' => 'hero-victory', 'bg' => '#0d1b38'],
+        ['file' => 'hero-victory', 'bg' => '#0B142E'],
     ];
 
     public function run(): void
