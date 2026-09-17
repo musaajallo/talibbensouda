@@ -39,3 +39,27 @@ it('still allows the admin login page during maintenance mode', function (): voi
 
     get('/admin/login')->assertOk();
 });
+
+it('bypasses the gate for requests carrying the X-Livewire header', function (): void {
+    // Filament's login form posts through Livewire's update endpoint, whose
+    // path is a random per-app hash rather than a fixed /livewire/* prefix
+    // -- Livewire tags these requests with an X-Livewire header instead, so
+    // that's what the middleware checks. A 404 here (route not found) means
+    // the request reached the router instead of being stopped by the gate;
+    // a 503 would mean the bypass isn't working.
+    $settings = app(GeneralSettings::class);
+    $settings->maintenance_mode = true;
+    $settings->save();
+
+    $this->withHeaders(['X-Livewire' => 'true'])
+        ->post('/some-random-livewire-update-path')
+        ->assertStatus(404);
+});
+
+it('still gates a plain request to a different path while maintenance mode is on', function (): void {
+    $settings = app(GeneralSettings::class);
+    $settings->maintenance_mode = true;
+    $settings->save();
+
+    get('/contact')->assertStatus(503);
+});

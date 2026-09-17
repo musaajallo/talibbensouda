@@ -1,6 +1,10 @@
 @php
     $general = app(\App\Settings\GeneralSettings::class);
     $siteName = $general->site_name ?: config('app.name');
+    // The public site never uses an image logo — just a text wordmark, same
+    // fallback convention as the admin panel's own brand (resources/views/
+    // filament/admin/brand.blade.php): an admin-uploaded logo wins if set.
+    $uploadedLogo = $general->uploadedLogoUrl();
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -59,12 +63,24 @@
             font-size: 0.95rem;
         }
         .maintenance__contact:hover { border-color: #c9a227; color: #c9a227; }
+        .maintenance__logo { height: 56px; width: auto; margin-bottom: 32px; }
+        .maintenance__wordmark {
+            display: block;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: 0.01em;
+            margin-bottom: 32px;
+        }
     </style>
 </head>
 <body>
     <main class="maintenance" aria-labelledby="maintenance-heading">
         <div class="maintenance__panel">
-            <img class="maintenance__logo" src="{{ $general->logoUrl() }}" alt="{{ $siteName }}">
+            @if ($uploadedLogo)
+                <img class="maintenance__logo" src="{{ $uploadedLogo }}" alt="{{ $siteName }}">
+            @else
+                <span class="maintenance__wordmark">{{ $siteName }}</span>
+            @endif
             <p class="maintenance__eyebrow">Coming Soon</p>
             <h1 id="maintenance-heading" class="maintenance__title">We'll be right back.</h1>
             <p class="maintenance__message">
