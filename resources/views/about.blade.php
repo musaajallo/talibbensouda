@@ -8,6 +8,22 @@
         '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
         '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     ];
+
+    // One icon per milestone `category` (see AboutPageSettings::TIMELINE_CATEGORIES).
+    $milestoneIcons = [
+        'personal' => '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+        'education' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+        'election' => '<circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/>',
+        'project' => '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+        'environment' => '<path d="M11 20A7 7 0 0 1 4 13c0-4 4-9 12-9 0 8-3 12-7 12z"/><path d="M4 20c3-3 6-6 12-15"/>',
+        'national' => '<path d="M3 11v3a1 1 0 0 0 1 1h3l4 4V6l-4 4H4a1 1 0 0 0-1 1z"/><path d="M16 8a4 4 0 0 1 0 8"/><path d="M19 5a8 8 0 0 1 0 14"/>',
+    ];
+
+    // Two columns, each read top-to-bottom: left finishes where right begins.
+    $milestones = collect($page->timeline ?? [])->values();
+    $milestoneHalf = (int) ceil($milestones->count() / 2);
+    $milestonesLeft = $milestones->slice(0, $milestoneHalf)->values();
+    $milestonesRight = $milestones->slice($milestoneHalf)->values();
 @endphp
 
     {{-- ── Page Hero ───────────────────────────────────────────────────────── --}}
@@ -59,21 +75,41 @@
                 <p class="section-header__lead">{{ $page->timeline_lead }}</p>
             </div>
 
-            @if ($page->timeline)
-            <div class="timeline">
-                @foreach ($page->timeline as $i => $item)
-                <div class="tl-item" data-reveal data-reveal-delay="{{ $i * 60 }}">
-                    <div class="tl-item__year">{{ $item['year'] ?? '' }}</div>
-                    <div class="tl-item__connector">
-                        <div class="tl-item__dot"></div>
-                        <div class="tl-item__line"></div>
+            @if ($milestones->isNotEmpty())
+            <div class="milestone-grid">
+                <svg class="milestone-grid__thread" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M 6 96 C 40 70, 45 30, 94 6" />
+                </svg>
+
+                <div class="milestone-grid__col">
+                    @foreach ($milestonesLeft as $i => $item)
+                    <div class="milestone-card" data-reveal data-reveal-delay="{{ $i * 60 }}">
+                        <div class="milestone-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                {!! $milestoneIcons[$item['category'] ?? ''] ?? $milestoneIcons['project'] !!}
+                            </svg>
+                        </div>
+                        <div class="milestone-card__year">{{ $item['year'] ?? '' }}</div>
+                        <h3 class="milestone-card__title">{{ $item['title'] ?? '' }}</h3>
+                        <p class="milestone-card__desc">{{ $item['description'] ?? '' }}</p>
                     </div>
-                    <div class="tl-item__content">
-                        <h3 class="tl-item__title">{{ $item['title'] ?? '' }}</h3>
-                        <p class="tl-item__desc">{{ $item['description'] ?? '' }}</p>
-                    </div>
+                    @endforeach
                 </div>
-                @endforeach
+
+                <div class="milestone-grid__col">
+                    @foreach ($milestonesRight as $i => $item)
+                    <div class="milestone-card" data-reveal data-reveal-delay="{{ $i * 60 }}">
+                        <div class="milestone-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                {!! $milestoneIcons[$item['category'] ?? ''] ?? $milestoneIcons['project'] !!}
+                            </svg>
+                        </div>
+                        <div class="milestone-card__year">{{ $item['year'] ?? '' }}</div>
+                        <h3 class="milestone-card__title">{{ $item['title'] ?? '' }}</h3>
+                        <p class="milestone-card__desc">{{ $item['description'] ?? '' }}</p>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             @else
             <x-empty-state message="Career milestones will be added here soon." />

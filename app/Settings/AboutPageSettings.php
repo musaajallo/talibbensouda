@@ -15,6 +15,22 @@ class AboutPageSettings extends Settings
     use ResolvesPublicDiskUrl;
     use SplitsParagraphs;
 
+    /**
+     * Which icon a timeline milestone renders with (about.blade.php). Key is
+     * stored on each `timeline` entry as `category`; value is the label shown
+     * in the admin picker.
+     *
+     * @var array<string, string>
+     */
+    public const TIMELINE_CATEGORIES = [
+        'personal' => 'Personal',
+        'education' => 'Education',
+        'election' => 'Election',
+        'project' => 'Project launch',
+        'environment' => 'Environment',
+        'national' => 'National politics',
+    ];
+
     public string $hero_eyebrow = '';
 
     public string $hero_title = '';
