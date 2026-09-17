@@ -124,29 +124,6 @@
         grid-template-columns: 1fr;
     }
 
-    // Continuity thread from the end of the left column to the start of the
-    // right column — decorative, not a literal per-row connector, but drawn
-    // solid and bold enough to read as intentional rather than a stray line.
-    &__thread {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        overflow: visible;
-        pointer-events: none;
-        color: $color-gold;
-
-        @media (max-width: $breakpoint-md) { display: none; }
-
-        path {
-            fill: none;
-            stroke-width: 1.6;
-            stroke-linecap: round;
-            vector-effect: non-scaling-stroke;
-        }
-    }
-
     &__col {
         position: relative;
         z-index: 1;
@@ -155,8 +132,7 @@
 
         // On mobile the columns stack in reading order, so the left column's
         // last row should keep connecting into the right column's first row
-        // instead of dead-ending — the literal continuation of the desktop
-        // thread accent.
+        // instead of dead-ending.
         @media (max-width: $breakpoint-md) {
             &:first-child .milestone-row:last-child {
                 margin-bottom: $space-6;

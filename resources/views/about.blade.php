@@ -77,18 +77,6 @@
 
             @if ($milestones->isNotEmpty())
             <div class="milestone-grid">
-                <svg class="milestone-grid__thread" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="milestone-thread-fade" x1="0%" y1="100%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="currentColor" stop-opacity="0.12" />
-                            <stop offset="45%" stop-color="currentColor" stop-opacity="0.85" />
-                            <stop offset="55%" stop-color="currentColor" stop-opacity="0.85" />
-                            <stop offset="100%" stop-color="currentColor" stop-opacity="0.12" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M 8 96 C 30 75, 38 25, 60 4" stroke="url(#milestone-thread-fade)" vector-effect="non-scaling-stroke" />
-                </svg>
-
                 <div class="milestone-grid__col">
                     @foreach ($milestonesLeft as $i => $item)
                     <div class="milestone-row" data-reveal data-reveal-delay="{{ $i * 60 }}">
