@@ -90,7 +90,10 @@
 
         <div class="site-nav container">
 
-            <a href="{{ url('/') }}" class="site-nav__brand" @click="open = false">{{ $brandName }}</a>
+            <a href="{{ url('/') }}" class="site-nav__brand" aria-label="{{ $brandName }}" @click="open = false">
+                <img src="{{ asset('images/brand/talib-bensouda-logo.svg') }}" alt="" aria-hidden="true" class="site-nav__brand-logo site-nav__brand-logo--light">
+                <img src="{{ asset('images/brand/talib-bensouda-logo-white.svg') }}" alt="" aria-hidden="true" class="site-nav__brand-logo site-nav__brand-logo--dark">
+            </a>
 
             <nav class="site-nav__menu" :class="{ 'is-open': open }" aria-label="Primary">
                 <ul class="site-nav__links">
