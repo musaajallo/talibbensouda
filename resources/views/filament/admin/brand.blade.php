@@ -11,7 +11,7 @@
 @else
     <span class="flex items-baseline gap-1.5"
           style="font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;">
-        <span class="text-lg font-extrabold tracking-tight text-[#0d1b38] dark:text-white">Talib Bensouda</span>
-        <span class="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[#c9a227]">Admin</span>
+        <span class="text-lg font-extrabold tracking-tight text-[#0B142E] dark:text-white">Talib Bensouda</span>
+        <span class="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[#BD2038]">Admin</span>
     </span>
 @endif

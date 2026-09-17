@@ -124,7 +124,7 @@
                     <div class="reg-form-card">
 
                         <h2 class="reg-form-card__heading">Your Details</h2>
-                        <p class="reg-form-card__sub">Fields marked <span style="color:#c9a227" aria-hidden="true">*</span> are required.</p>
+                        <p class="reg-form-card__sub">Fields marked <span style="color:#BD2038" aria-hidden="true">*</span> are required.</p>
 
                         @if ($errors->any())
                         <div class="form-alert form-alert--error" role="alert" style="margin-bottom:24px">

@@ -10,7 +10,7 @@
                     <span class="page-hero__crumb-current">Privacy Policy</span>
                 </nav>
                 <span class="page-hero__eyebrow">Privacy Policy</span>
-                <h1 class="page-hero__title">Your data, <span style="color:#c9a227; font-style:italic;">handled honestly.</span></h1>
+                <h1 class="page-hero__title">Your data, <span style="color:#BD2038; font-style:italic;">handled honestly.</span></h1>
                 <p class="page-hero__subtitle">
                     What personal information we collect, why we collect it,
                     how we use it, and the choices you have over it.

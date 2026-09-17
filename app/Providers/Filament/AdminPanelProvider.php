@@ -49,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('favicon.ico'))
             ->colors([
                 // Campaign navy — matches $color-navy in the public SCSS tokens.
-                'primary' => Color::hex('#0d1b38'),
+                'primary' => Color::hex('#0B142E'),
                 'gray' => Color::Stone,
             ])
             ->defaultThemeMode(ThemeMode::Light)

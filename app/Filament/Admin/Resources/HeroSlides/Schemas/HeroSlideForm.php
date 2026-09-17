@@ -28,7 +28,7 @@ class HeroSlideForm
                 ->columns(2)
                 ->components([
                     TextInput::make('fallback_colour')
-                        ->default('#0d1b38')
+                        ->default('#0B142E')
                         ->maxLength(9)
                         ->required()
                         ->helperText('Shown behind the image while it loads.'),

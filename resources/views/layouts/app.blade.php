@@ -24,7 +24,7 @@
     <title>{{ $title }}</title>
     @include('partials.seo')
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0d1b38" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#0B142E" media="(prefers-color-scheme: dark)">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" type="image/x-icon" href="{{ $general->faviconUrl() }}">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">

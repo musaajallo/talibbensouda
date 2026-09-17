@@ -96,12 +96,12 @@ class HeroSlide extends Model implements HasMedia
         // Slides are anchored to the top so faces/heads aren't cropped as the
         // hero height varies across viewports.
         $defaults = [
-            ['file' => 'hero-rally', 'bg' => '#0d1b38'],
-            ['file' => 'hero-talib-desk', 'bg' => '#0d1b38'],
+            ['file' => 'hero-rally', 'bg' => '#0B142E'],
+            ['file' => 'hero-talib-desk', 'bg' => '#0B142E'],
             ['file' => 'hero-masquerade', 'bg' => '#0a1525'],
             ['file' => 'hero-supporters', 'bg' => '#112044'],
             ['file' => 'hero-hall', 'bg' => '#091422'],
-            ['file' => 'hero-victory', 'bg' => '#0d1b38'],
+            ['file' => 'hero-victory', 'bg' => '#0B142E'],
         ];
 
         return array_map(fn ($slide) => [

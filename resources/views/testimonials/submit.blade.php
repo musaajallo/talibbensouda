@@ -46,7 +46,7 @@
                                 You've already submitted this — feel free to update it below
                                 any time before it's reviewed.
                             @else
-                                Fields marked <span style="color:#c9a227" aria-hidden="true">*</span> are required.
+                                Fields marked <span style="color:#BD2038" aria-hidden="true">*</span> are required.
                             @endif
                         </p>
 

@@ -10,7 +10,7 @@
                     <span class="page-hero__crumb-current">Cookie Policy</span>
                 </nav>
                 <span class="page-hero__eyebrow">Cookie Policy</span>
-                <h1 class="page-hero__title">How we use <span style="color:{{ '#c9a227' }}; font-style:italic;">cookies.</span></h1>
+                <h1 class="page-hero__title">How we use <span style="color:{{ '#BD2038' }}; font-style:italic;">cookies.</span></h1>
                 <p class="page-hero__subtitle">
                     A plain-language explanation of the cookies this website stores on
                     your device, why we use them, and how you can manage your consent.

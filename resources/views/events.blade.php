@@ -241,7 +241,7 @@
 
                 {{-- Legend --}}
                 <div style="display:flex; align-items:center; gap:8px; margin-top:16px; font-size:0.78rem; color:var(--muted);">
-                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#c9a227;"></span>
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#BD2038;"></span>
                     Milestone on this date — click to jump to details
                 </div>
             </div>

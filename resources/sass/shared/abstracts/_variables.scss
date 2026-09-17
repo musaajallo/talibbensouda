@@ -1,10 +1,10 @@
 // Design tokens shared by frontend + admin.
 // Override per-bundle by `@use 'shared/abstracts/variables' with (...)` at the top of frontend.scss / admin.scss.
 
-$color-navy:      #0d1b38 !default;
+$color-navy:      #0B142E !default;
 $color-navy-dark: #080f20 !default;
-$color-gold:      #c9a227 !default;
-$color-gold-dark: #a8841d !default;
+$color-gold:      #BD2038 !default;
+$color-gold-dark: #9B172B !default;
 
 $color-bg:        #ffffff !default;
 $color-fg:        #1a1a1a !default;
