@@ -2,6 +2,7 @@
 
 use App\Models\CommunityPhoto;
 use App\Models\Event;
+use App\Models\GalleryPhoto;
 use App\Models\HeroSlide;
 use App\Models\Milestone;
 use App\Models\Project;
@@ -170,4 +171,93 @@ it('falls back to a YouTube embed when an id is set and no file is uploaded', fu
         ->assertOk()
         ->assertSee('youtube-nocookie.com/embed/abc123', escape: false)
         ->assertDontSee('videos/market-event.mp4');
+});
+
+function homeVideo(string $id, string $caption, array $overrides = []): GalleryPhoto
+{
+    return GalleryPhoto::create([
+        'caption' => $caption, 'category' => 'Events', 'type' => GalleryPhoto::TYPE_VIDEO,
+        'youtube_video_id' => $id, 'published' => true, 'sort_order' => 0,
+        ...$overrides,
+    ]);
+}
+
+describe('home video slider', function (): void {
+    it('shows the published Gallery videos, with thumbnail and embed', function (): void {
+        homeVideo('vid111', 'Rally in Bakau');
+
+        get('/')
+            ->assertOk()
+            ->assertSee('See the Work in Action')
+            ->assertSee('Rally in Bakau')
+            ->assertSee('https://i.ytimg.com/vi/vid111/hqdefault.jpg', false)
+            // The embed URL sits in the slider's JSON-escaped Alpine data
+            // (slashes and & are escaped), so match the parts that survive that.
+            ->assertSee('youtube-nocookie.com', false)
+            ->assertSee('vid111?autoplay=1', false);
+    });
+
+    it('leaves out unpublished videos and plain photos', function (): void {
+        homeVideo('vid111', 'Shown video');
+        homeVideo('vid222', 'Draft video', ['published' => false]);
+        GalleryPhoto::create(['caption' => 'A photo caption', 'category' => 'Events', 'type' => GalleryPhoto::TYPE_PHOTO, 'published' => true, 'sort_order' => 0]);
+
+        get('/')
+            ->assertOk()
+            ->assertSee('Shown video')
+            ->assertDontSee('Draft video')
+            ->assertDontSee('vid222')
+            ->assertDontSee('A photo caption');
+    });
+
+    it('hides the whole section while no video is published', function (): void {
+        homeVideo('vid222', 'Draft video', ['published' => false]);
+
+        get('/')
+            ->assertOk()
+            ->assertDontSee('See the Work in Action')
+            ->assertDontSee('video-slider');
+    });
+
+    it('follows the Gallery\'s sort order and caps the strip at twelve', function (): void {
+        foreach (range(1, 14) as $n) {
+            homeVideo("vid{$n}", "Video number {$n}", ['sort_order' => 100 - $n]);
+        }
+
+        $html = get('/')->assertOk()->getContent();
+
+        // Lowest sort_order first: 14, 13, ... — so the last two (1 and 2) fall off.
+        expect(substr_count($html, 'class="video-slide"'))->toBe(12);
+        expect($html)->toContain('Video number 14')->toContain('Video number 3')
+            ->not->toContain('Video number 2"')->not->toContain('Video number 1"');
+        expect(strpos($html, 'Video number 14'))->toBeLessThan(strpos($html, 'Video number 13'));
+    });
+
+    it('renders the editable copy and links to the Gallery\'s video filter', function (): void {
+        homeVideo('vid111', 'Rally in Bakau');
+
+        $home = app(HomePageSettings::class);
+        $home->videos_eyebrow = 'Eyebrow canary';
+        $home->videos_headline = 'Headline canary';
+        $home->videos_lead = 'Lead canary';
+        $home->videos_cta_label = 'CTA canary';
+        $home->save();
+
+        get('/')
+            ->assertOk()
+            ->assertSee('Eyebrow canary')
+            ->assertSee('Headline canary')
+            ->assertSee('Lead canary')
+            ->assertSee('CTA canary')
+            ->assertSee('/gallery?media=Videos', false);
+    });
+
+    it('sits directly below the community section', function (): void {
+        homeVideo('vid111', 'Rally in Bakau');
+        CommunityPhoto::create(['tag' => 'Library', 'caption' => 'Library opened 2024', 'published' => true, 'sort_order' => 1]);
+
+        $html = get('/')->assertOk()->getContent();
+
+        expect(strpos($html, 'Across the Municipality'))->toBeLessThan(strpos($html, 'See the Work in Action'));
+    });
 });

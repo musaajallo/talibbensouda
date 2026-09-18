@@ -78,6 +78,15 @@ class HomePageSettings extends Settings
 
     public string $community_lead = '';
 
+    // Video slider — the published YouTube videos from the Gallery
+    public string $videos_eyebrow = '';
+
+    public string $videos_headline = '';
+
+    public string $videos_lead = '';
+
+    public string $videos_cta_label = '';
+
     public string $recognition_eyebrow = '';
 
     public string $recognition_headline = '';
