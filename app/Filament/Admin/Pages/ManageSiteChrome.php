@@ -6,6 +6,7 @@ use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\SiteChromeSettings;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
@@ -59,6 +60,29 @@ class ManageSiteChrome extends SettingsPage
                         ->displayFormat('D j M Y')
                         ->closeOnDateSelection()
                         ->helperText('Counts down to midnight (Gambia time) on this date.'),
+                ]),
+
+            Section::make('Sign-up pop-up')
+                ->description('Shown once per visitor, only once they have spent some time browsing (never on top of the cookie banner). Collects name, phone and an optional location — no email, no pre-ticked boxes.')
+                ->icon('heroicon-o-megaphone')
+                ->columns(2)
+                ->components([
+                    Toggle::make('signup_popup_enabled')
+                        ->label('Show the pop-up')
+                        ->columnSpanFull(),
+                    TextInput::make('signup_popup_heading')->required()->maxLength(80)->columnSpanFull(),
+                    Textarea::make('signup_popup_body')->required()->rows(2)->maxLength(400)->columnSpanFull(),
+                    TextInput::make('signup_popup_button_label')->required()->maxLength(40),
+                    TextInput::make('signup_popup_delay_seconds')
+                        ->label('Show it after')
+                        ->numeric()
+                        ->integer()
+                        ->required()
+                        ->minValue(0)
+                        ->maxValue(3600)
+                        ->suffix('seconds')
+                        ->default(120)
+                        ->helperText('Active browsing time, added up across pages — it only counts while the visitor is actually on the site (scrolling, tapping or moving the mouse), not a tab left open in the background. 120 = two minutes. 0 = as soon as the cookie banner has been answered.'),
                 ]),
 
             Section::make('Footer')

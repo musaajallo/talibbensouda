@@ -5,6 +5,8 @@ use App\Models\User;
 use App\Settings\AboutPageSettings;
 use App\Support\ResponseCache\CachePublicPages;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
 use Spatie\ResponseCache\Facades\ResponseCache;
 
 use function Pest\Laravel\actingAs;
@@ -83,4 +85,39 @@ it('flushes the cache when a settings page is saved', function (): void {
     app(AboutPageSettings::class)->save();
 
     get('/about')->assertHeader('X-Cache-Status', 'MISS');
+});
+
+describe('flash data from the site-wide sign-up pop-up', function (): void {
+    it('bypasses the cache for the redirect-back request so the thank-you shows', function (): void {
+        // Warm the cache with the plain page first — the stale copy a real
+        // redirect-back GET would otherwise be answered with.
+        get('/about')->assertHeader('X-Cache-Status', 'MISS');
+        get('/about')->assertHeader('X-Cache-Status', 'HIT');
+
+        $this->withSession(['campaign_signup_success' => 'Thanks — flash-canary-123'])
+            ->get('/about')
+            ->assertOk()
+            ->assertHeaderMissing('X-Cache-Status')
+            ->assertSee('flash-canary-123');
+    });
+
+    it('never stores the flashed render for the visitors who follow', function (): void {
+        $this->withSession(['campaign_signup_success' => 'Thanks — flash-canary-456'])->get('/about');
+
+        // withSession sets a plain key that would linger in the test client's
+        // session (real flash data is gone after one request) — clear it so
+        // this next request is a genuinely different, anonymous visitor.
+        $this->flushSession();
+
+        get('/about')->assertOk()->assertDontSee('flash-canary-456');
+    });
+
+    it('also bypasses the cache when validation errors are pending', function (): void {
+        get('/about');
+
+        $this->withSession(['errors' => (new ViewErrorBag)->put(
+            'campaignSignup',
+            new MessageBag(['popup_phone' => 'error-canary-789']),
+        )])->get('/about')->assertOk()->assertHeaderMissing('X-Cache-Status');
+    });
 });

@@ -50,6 +50,7 @@ it('lets a super-admin reach the panel and its pages', function (string $path): 
     '/admin/giving-programmes/create',
     '/admin/contact-messages',
     '/admin/event-registrations',
+    '/admin/campaign-signups',
     '/admin/users',
     '/admin/manage-general-settings',
     '/admin/manage-social-settings',

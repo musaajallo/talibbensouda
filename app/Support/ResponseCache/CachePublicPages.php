@@ -45,6 +45,39 @@ class CachePublicPages extends CacheAllSuccessfulGetRequests
         'sitemap.xml',
     ];
 
+    /**
+     * Skip the cache entirely — lookup AND store — for the one request that
+     * follows a form submission which flashed something to the session.
+     *
+     * The site-wide sign-up pop-up POSTs from any page and redirects back, and
+     * its thank-you message / validation errors are session flash data. That
+     * redirect-back GET would otherwise be answered by a cached copy of the
+     * page rendered without the flash (the pop-up then just re-opens empty
+     * six seconds later, with no feedback and nothing to say it worked) — and
+     * a page rendered *with* the flash must never be stored for everyone else.
+     * `enabled()` is the only hook that gates the cache lookup;
+     * shouldCacheRequest() only decides what gets stored.
+     */
+    public function enabled(Request $request): bool
+    {
+        if ($this->hasPendingFlash($request)) {
+            return false;
+        }
+
+        return parent::enabled($request);
+    }
+
+    protected function hasPendingFlash(Request $request): bool
+    {
+        if (! $request->hasSession()) {
+            return false;
+        }
+
+        $session = $request->session();
+
+        return $session->has('campaign_signup_success') || $session->has('errors');
+    }
+
     public function shouldCacheRequest(Request $request): bool
     {
         if (Auth::check()) {
