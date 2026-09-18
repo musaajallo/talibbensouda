@@ -497,16 +497,25 @@ on purpose, since it collects no email and doesn't fit that model's required-ema
   than the memo's suggested pre-ticked box — a pre-ticked box is a dark pattern and
   directly at odds with the explicit-consent approach the whole rest of the site
   (cookie banner, analytics gate) already uses.
-- **Shows once per visitor** (`localStorage` `tb_signup_popup_seen`), and only after the
-  visitor has **actually used the site** — asking for details before that is a bad first
-  impression. `SiteChromeSettings::$signup_popup_delay_seconds` (default **120**, editable
-  under *System → Header & footer*; 0 = as soon as the cookie banner is out of the way) is
-  measured as *engaged* time, totalled **across pages** in `localStorage`
+- **Shows once per visitor at a time, and a dismissal is "not now", not "never".** It only
+  appears after the visitor has **actually used the site** — asking for details before that
+  is a bad first impression. `SiteChromeSettings::$signup_popup_delay_seconds` (default
+  **120**, editable under *System → Header & footer*; 0 = as soon as the cookie banner is out
+  of the way) is measured as *engaged* time, totalled **across pages** in `localStorage`
   (`tb_signup_popup_elapsed`) — a per-page timer would restart on every navigation and
   almost never fire. A second only counts while the tab is visible and the visitor has
   scrolled / tapped / typed / moved the mouse in the last 30 s, so a background tab isn't
   "browsing". The delay is rendered into the page, so it rides the response cache —
   saving settings already clears that cache.
+- **Dismissal snoozes it for `$signup_popup_snooze_days` (default 14; 0 = never again).**
+  Closing it (X / backdrop / Escape) stores the *time* in `tb_signup_popup_seen`. Once the
+  snooze lapses that flag **and the engagement clock are both wiped**, so the visitor gets a
+  full `delaySeconds` of browsing again — leaving the old total in place would make it fire on
+  the first page load, which is exactly what the delay exists to prevent. **Signing up is
+  final:** a submission sets `tb_signup_popup_done`, which never expires. A bare `'1'` in
+  `tb_signup_popup_seen` (what the first version stored) is read as "dismissed now". All of
+  this is per-browser `localStorage` — a different device, a private window, or cleared site
+  data starts over.
 - **Never stacks with the cookie banner.** The banner (`z-index` 9000) sits above the
   pop-up and would cover half the form, so once the delay is up the pop-up still waits
   for the banner to be answered (it listens for the banner's `cookie-consent-saved`

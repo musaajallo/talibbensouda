@@ -11,21 +11,47 @@
         x-data="{
             show: false,
             delaySeconds: {{ max(0, (int) $chrome->signup_popup_delay_seconds) }},
+            snoozeDays: {{ max(0, (int) $chrome->signup_popup_snooze_days) }},
             submitted: {{ session('campaign_signup_success') ? 'true' : 'false' }},
             hasErrors: {{ $popupErrors->any() ? 'true' : 'false' }},
             init() {
                 if (this.submitted || this.hasErrors) {
                     this.show = true;
+                    // Signing up is final: unlike a dismissal, it never expires.
                     if (this.submitted) {
-                        try { localStorage.setItem('tb_signup_popup_seen', '1'); } catch (e) {}
+                        try { localStorage.setItem('tb_signup_popup_done', '1'); } catch (e) {}
                     }
                     return;
                 }
-                let seen = false;
-                try { seen = localStorage.getItem('tb_signup_popup_seen') === '1'; } catch (e) {}
-                if (seen) return;
+                if (this.suppressed()) return;
 
                 this.startEngagementClock();
+            },
+            // Does an earlier sign-up or dismissal still keep the pop-up away?
+            // A dismissal is 'not now', not 'never': it stores WHEN it happened
+            // and lapses after `snoozeDays` (0 = never lapses). When it lapses
+            // the engagement clock is wiped too, so the visitor gets a full
+            // `delaySeconds` of browsing again instead of the pop-up firing on
+            // the first page they load (their old total is already over it).
+            suppressed() {
+                try {
+                    if (localStorage.getItem('tb_signup_popup_done') === '1') return true;
+
+                    const raw = localStorage.getItem('tb_signup_popup_seen');
+                    if (!raw) return false;
+
+                    let at = parseInt(raw, 10);
+                    // Earlier versions stored a bare '1' — count it as dismissed now.
+                    if (!(at > 1e12)) {
+                        at = Date.now();
+                        localStorage.setItem('tb_signup_popup_seen', String(at));
+                    }
+                    if (this.snoozeDays === 0 || Date.now() - at < this.snoozeDays * 86400000) return true;
+
+                    localStorage.removeItem('tb_signup_popup_seen');
+                    localStorage.removeItem('tb_signup_popup_elapsed');
+                } catch (e) {}
+                return false;
             },
             // Asking for details before someone has had a chance to use the
             // site is a bad first impression, so the pop-up only becomes
@@ -75,7 +101,7 @@
             },
             close() {
                 this.show = false;
-                try { localStorage.setItem('tb_signup_popup_seen', '1'); } catch (e) {}
+                try { localStorage.setItem('tb_signup_popup_seen', String(Date.now())); } catch (e) {}
             }
         }"
         x-show="show"

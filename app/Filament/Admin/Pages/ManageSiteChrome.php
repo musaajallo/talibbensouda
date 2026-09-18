@@ -63,7 +63,7 @@ class ManageSiteChrome extends SettingsPage
                 ]),
 
             Section::make('Sign-up pop-up')
-                ->description('Shown once per visitor, only once they have spent some time browsing (never on top of the cookie banner). Collects name, phone and an optional location — no email, no pre-ticked boxes.')
+                ->description('Shown only once a visitor has spent some time browsing, and left alone for a while after they close it (never on top of the cookie banner). Collects name, phone and an optional location — no email, no pre-ticked boxes.')
                 ->icon('heroicon-o-megaphone')
                 ->columns(2)
                 ->components([
@@ -83,6 +83,16 @@ class ManageSiteChrome extends SettingsPage
                         ->suffix('seconds')
                         ->default(120)
                         ->helperText('Active browsing time, added up across pages — it only counts while the visitor is actually on the site (scrolling, tapping or moving the mouse), not a tab left open in the background. 120 = two minutes. 0 = as soon as the cookie banner has been answered.'),
+                    TextInput::make('signup_popup_snooze_days')
+                        ->label('If dismissed, ask again after')
+                        ->numeric()
+                        ->integer()
+                        ->required()
+                        ->minValue(0)
+                        ->maxValue(365)
+                        ->suffix('days')
+                        ->default(14)
+                        ->helperText('A visitor who closes the pop-up is left alone for this long, then gets the full browsing delay above before it can appear again. 0 = never ask again. Someone who signs up is never asked again.'),
                 ]),
 
             Section::make('Footer')
