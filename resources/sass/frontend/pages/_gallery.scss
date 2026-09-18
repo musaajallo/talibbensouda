@@ -41,11 +41,24 @@
     [data-theme="dark"] &.is-active { background: $color-gold; border-color: $color-gold; color: $color-navy; }
 }
 
+// A second, secondary-weight tab row (All / Photos / Videos) directly below
+// the category tabs — smaller, since it's a finer-grained filter on top of
+// them, not an equal alternative. Pulls up into the category row's own
+// margin-bottom rather than stacking a second full gap under it.
+.gallery-filter--media {
+    margin-top: -32px;
+    margin-bottom: 20px;
+}
+
+.filter-tab--sm {
+    padding: 6px 16px;
+    font-size: 0.75rem;
+}
+
 .gallery-count {
     font-size: 0.8rem;
     color: var(--muted);
     text-align: center;
-    margin-top: -28px;
     margin-bottom: 36px;
     transition: color 0.25s;
 
@@ -151,6 +164,32 @@
     }
 
     &:hover &__zoom { opacity: 1; }
+
+    // Centred play button on a video tile — always visible, unlike __zoom
+    // (which only appears on hover), so a video reads as playable at a glance.
+    &__play {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 52px;
+        height: 52px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(2px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, transform 0.2s;
+        pointer-events: none;
+
+        svg { color: #fff; width: 20px; height: 20px; margin-left: 2px; }
+    }
+
+    &:hover &__play {
+        background: $color-gold;
+        transform: translate(-50%, -50%) scale(1.08);
+    }
 }
 
 // ── Pagination ───────────────────────────────────────────────────────────────
@@ -210,4 +249,15 @@
 
         [data-theme="dark"] &.is-active { background: $color-gold; border-color: $color-gold; color: $color-navy; }
     }
+}
+
+// ── Lightbox video (Gallery only — .lightbox itself is shared, see
+//    components/_lightbox.scss, but only this page ever has a video slide) ──
+
+.lightbox__video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 75vh;
+    border: 0;
+    display: block;
 }

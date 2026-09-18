@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    /*
+     * YouTube Data API v3 — powers the admin's "Import YouTube Videos" page
+     * (App\Filament\Admin\Pages\ImportYoutubeVideos / App\Support\YouTube\YouTubeChannelClient).
+     * Free API key from https://console.cloud.google.com — enable "YouTube
+     * Data API v3" on a project, then Credentials -> Create API key. No
+     * billing required at this volume. The import page shows a clear notice
+     * instead of erroring when the key is blank.
+     */
+    'youtube' => [
+        'api_key' => env('YOUTUBE_API_KEY'),
+        'channel_handle' => env('YOUTUBE_CHANNEL_HANDLE', '@talibforpresident'),
+    ],
+
 ];

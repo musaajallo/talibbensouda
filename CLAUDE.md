@@ -240,10 +240,45 @@ its collection, so a panel upload always wins and re-running it after adding mor
   `.forge/deploy.sh`; nobody's decided yet whether it should run on every deploy (like
   `ContentSeeder`) or once by hand.
 - **`docs/assets/gallery-video-2026-09-18.mp4`** (gitignored, staged 2026-09-18) — a
-  source clip intended for the Gallery page. Not wired up: `GalleryPhoto` and
-  `resources/views/gallery.blade.php` are photo-only today, no video collection/player
-  support exists yet. Check it against the doc's content before building anything, same as
-  the photo sources above.
+  local source clip, still not wired up. Superseded as the primary video path by
+  YouTube import (below) — this one would need its own native-upload treatment if it's
+  still wanted, since the Gallery's video support is YouTube-only.
+
+## Gallery videos (YouTube)
+
+`GalleryPhoto` holds both photos and YouTube videos (`type` column: `photo`/`video`;
+video rows carry `youtube_video_id`, no local media) — see the model's docblock for why
+this is one table rather than two. The public Gallery page (`/gallery`) filters by
+category as before, plus an independent All/Photos/Videos row that combines with it; a
+video tile shows a play-button overlay and opens the same lightbox, which embeds a
+`youtube-nocookie.com` iframe instead of an `<img>` (torn down via `x-if`, not just
+hidden via `x-show`, so navigating away or closing actually stops playback rather than
+leaving it running invisibly).
+
+- **Nothing is auto-published.** An admin picks videos one at a time, from
+  **Content → Import YouTube Videos** (`App\Filament\Admin\Pages\ImportYoutubeVideos`) —
+  browse/search the configured channel, "Add to Gallery" opens a modal for
+  category/caption/published, then it's a normal `GalleryPhoto` row. The channel is
+  never scanned or synced automatically.
+- **Needs `YOUTUBE_API_KEY`** (`.env`, free from Google Cloud Console — enable "YouTube
+  Data API v3", Credentials → Create API key). Without it, the import page shows a setup
+  notice instead of erroring — `App\Support\YouTube\YouTubeChannelClient::isConfigured()`
+  gates every call. `YOUTUBE_CHANNEL_HANDLE` defaults to `@talibforpresident`
+  (`config/services.php`).
+- **`YouTubeChannelClient`**: `channelId()`/`uploadsPlaylistId()` resolve the @handle to
+  IDs once and cache for 30 days (they never change) — `listVideos()` (1 quota unit,
+  the default/no-search browse) reads that uploads playlist page by page;
+  `searchVideos()` (**100 quota units** — only fires when the admin actually types a
+  search) hits `search.list` scoped to the channel. Free daily quota is 10,000 units, so
+  favour browsing over searching if that ever matters.
+- **`youtube_video_id` is unique** on `gallery_photos` — re-adding an already-imported
+  video is blocked both in the UI (`alreadyImported()` shows "Already in the Gallery"
+  instead of the add button) and in the action itself (checked again before insert, so a
+  duplicate-add can't slip through even if the picker's list is stale).
+- **Tests fake the HTTP calls** (`tests/Feature/Admin/ImportYoutubeVideosTest.php`,
+  `Http::fake([...])`) — there's no live API traffic in the suite, and nothing here has
+  ever been exercised against the real API in this codebase yet. If YouTube ever changes
+  a response shape, the fakes won't catch it.
 
 ## Gotchas
 
