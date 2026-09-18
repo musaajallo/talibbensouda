@@ -34,6 +34,14 @@ class SiteChromeSettings extends Settings
 
     public string $signup_popup_button_label = "I'm In";
 
+    /**
+     * Seconds of active browsing, totalled across pages, before the pop-up
+     * may appear — asking for details before someone has had a chance to use
+     * the site is a bad first impression. 0 = as soon as the cookie banner
+     * is out of the way.
+     */
+    public int $signup_popup_delay_seconds = 120;
+
     public static function group(): string
     {
         return 'site_chrome';

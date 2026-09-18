@@ -83,3 +83,25 @@ it('words validation errors for the visitor, not after the popup_* field names',
             'popup_phone' => 'The phone number field is required.',
         ]);
 });
+
+it('defaults the pop-up to two minutes of browsing before it can appear', function (): void {
+    expect(app(SiteChromeSettings::class)->signup_popup_delay_seconds)->toBe(120);
+
+    get('/')->assertOk()->assertSee('delaySeconds: 120', false);
+});
+
+it('renders whatever delay is set in the panel into the page', function (): void {
+    $chrome = app(SiteChromeSettings::class);
+    $chrome->signup_popup_delay_seconds = 45;
+    $chrome->save();
+
+    get('/')->assertOk()->assertSee('delaySeconds: 45', false);
+});
+
+it('never renders a negative delay', function (): void {
+    $chrome = app(SiteChromeSettings::class);
+    $chrome->signup_popup_delay_seconds = -30;
+    $chrome->save();
+
+    get('/')->assertOk()->assertSee('delaySeconds: 0', false);
+});

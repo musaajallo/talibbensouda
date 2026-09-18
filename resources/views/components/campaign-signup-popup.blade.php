@@ -10,6 +10,7 @@
     <div
         x-data="{
             show: false,
+            delaySeconds: {{ max(0, (int) $chrome->signup_popup_delay_seconds) }},
             submitted: {{ session('campaign_signup_success') ? 'true' : 'false' }},
             hasErrors: {{ $popupErrors->any() ? 'true' : 'false' }},
             init() {
@@ -24,17 +25,48 @@
                 try { seen = localStorage.getItem('tb_signup_popup_seen') === '1'; } catch (e) {}
                 if (seen) return;
 
-                // Never stack with the cookie banner (layouts/app.blade.php) —
-                // it sits above this dialog (z-index 9000) and would cover
-                // half the form. A first-time visitor hasn't answered it yet,
-                // so wait for its 'cookie-consent-saved' event instead of
-                // guessing with a timer; a returning visitor already has, so
-                // the plain delay applies.
+                this.startEngagementClock();
+            },
+            // Asking for details before someone has had a chance to use the
+            // site is a bad first impression, so the pop-up only becomes
+            // eligible after `delaySeconds` of ENGAGED time, totalled across
+            // pages in localStorage (a per-page timer would restart on every
+            // navigation and almost never fire). A second only counts while
+            // the tab is visible and the visitor has scrolled, tapped, typed
+            // or moved the mouse in the last 30 seconds, so a tab left open
+            // in the background isn't 'browsing'.
+            startEngagementClock() {
+                const KEY = 'tb_signup_popup_elapsed';
+                let elapsed = 0;
+                try { elapsed = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) {}
+                if (elapsed >= this.delaySeconds) { this.whenBannerCleared(); return; }
+
+                let lastActive = Date.now();
+                const markActive = () => { lastActive = Date.now(); };
+                ['scroll', 'pointermove', 'pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
+                    window.addEventListener(evt, markActive, { passive: true });
+                });
+
+                const timer = setInterval(() => {
+                    if (document.visibilityState !== 'visible' || Date.now() - lastActive > 30000) return;
+                    elapsed += 1;
+                    try { localStorage.setItem(KEY, String(elapsed)); } catch (e) {}
+                    if (elapsed >= this.delaySeconds) {
+                        clearInterval(timer);
+                        this.whenBannerCleared();
+                    }
+                }, 1000);
+            },
+            // Never stack with the cookie banner (layouts/app.blade.php) — it
+            // sits above this dialog (z-index 9000) and would cover half the
+            // form. If it's still unanswered, wait for its
+            // 'cookie-consent-saved' event.
+            whenBannerCleared() {
                 let answered = true;
                 try { answered = !!localStorage.getItem('tb_cookie_consent'); } catch (e) {}
 
                 if (answered) {
-                    setTimeout(() => { this.show = true; }, 6000);
+                    this.show = true;
                 } else {
                     window.addEventListener('cookie-consent-saved', () => {
                         setTimeout(() => { this.show = true; }, 1500);
