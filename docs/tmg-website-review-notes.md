@@ -55,11 +55,19 @@ money, or legal exposure — not a code change to make unilaterally:
   cost-of-living attack lines) — these are the candidate's actual public
   positions on a live political site; they need the campaign's explicit
   wording and sign-off, not text lifted from a strategist's draft brief.
-- **Entry pop-up for data capture** and a standalone **volunteer sign-up
-  form** — straightforward to build, but they create a new persistent
-  supporter list; want confirmation on what's collected, retention, and who
-  it notifies before adding another public form (the existing
-  `throttle:public-forms` + `AdminAlert` pattern would carry over).
+- **Entry pop-up for data capture** — **built 2026-09-18, on explicit
+  sign-off** (see the top-level `CLAUDE.md`'s "Sign-up pop-up" section for the
+  implementation). Two deliberate departures from the memo's exact spec, both
+  decided at build time rather than asked about again: no Voter Number field
+  (collecting voter-roll data publicly was judged too sensitive without its
+  own separate, more deliberate decision), and the consent checkbox is
+  unchecked by default rather than pre-ticked (a pre-ticked box is a dark
+  pattern, and inconsistent with the explicit-consent approach the rest of
+  the site already uses).
+- A standalone **volunteer sign-up form** (a different ask from the pop-up
+  above — ongoing role-based volunteering, not a one-time lead capture) is
+  still not built — same open questions (what's collected, retention, who it
+  notifies) apply.
 - **Donation flow** — the memo itself says "the treasurer and legal team must
   approve donor eligibility checks, required declarations and arrangements
   for donations from abroad before launch." Not something to scaffold ahead

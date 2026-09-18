@@ -25,6 +25,15 @@ class SiteChromeSettings extends Settings
     /** Date only (Y-m-d) — treated as UTC midnight, same as the events ICS export. */
     public string $election_date = '2026-12-04';
 
+    // Site-wide sign-up pop-up (resources/views/components/campaign-signup-popup.blade.php)
+    public bool $signup_popup_enabled = true;
+
+    public string $signup_popup_heading = "Join Talib's Campaign";
+
+    public string $signup_popup_body = "We can win this, but we need your help. Leave your details and we'll keep you posted on how to get involved.";
+
+    public string $signup_popup_button_label = "I'm In";
+
     public static function group(): string
     {
         return 'site_chrome';

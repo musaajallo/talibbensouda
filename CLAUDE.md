@@ -469,10 +469,44 @@ top-level route is added, since neither derives from the other.
 `docs/tmg-website-review-notes.md` reviews `docs/TMG Gambia - Website Review - September
 2026.pdf` (gitignored, confidential — a campaign consultancy's website-restructure memo).
 Verdict: keep the current record-of-delivery information architecture, don't adopt the
-memo's proposed page structure or attack-messaging copy; a few UX ideas from it (event
-"get directions" links, a single supporter database, brand-colour consistency) are noted
-as future additions, and specific policy-position copy / donation flow / entry pop-up are
-explicitly flagged as needing the campaign's sign-off before any of them get built.
+memo's proposed page structure or attack-messaging copy. The memo's entry pop-up (below)
+has since been built, on explicit sign-off; specific policy-position copy and a donation
+flow remain explicitly out of scope until the campaign signs off on those separately.
+
+## Sign-up pop-up
+
+A site-wide pop-up (`resources/views/components/campaign-signup-popup.blade.php`,
+included once in `layouts/app.blade.php`) collects **name + phone + optional
+location/"Geography"** and writes to its own `CampaignSignup` inbox
+(`Submissions → Pop-up sign-ups` in the panel) — a separate model from `ContactMessage`
+on purpose, since it collects no email and doesn't fit that model's required-email shape.
+
+- **Two deliberate departures from the TMG memo's original spec**, both on privacy
+  grounds: no **Voter Number** field (collecting voter-roll data publicly was judged too
+  sensitive to build without a much more deliberate, separate decision — see the review
+  doc), and the "send me updates" consent checkbox is **unchecked by default** rather
+  than the memo's suggested pre-ticked box — a pre-ticked box is a dark pattern and
+  directly at odds with the explicit-consent approach the whole rest of the site
+  (cookie banner, analytics gate) already uses.
+- **Shows once per visitor** (`localStorage` `tb_signup_popup_seen`), after a 6-second
+  delay chosen specifically to land *after* the cookie banner's own 900ms appearance —
+  the two are never meant to stack. Re-opens immediately (bypassing both the delay and
+  the "already seen" check) on a real submission (to show the thank-you state) or on a
+  validation error, driven by `session('campaign_signup_success')` /
+  `$errors->campaignSignup` respectively.
+- **Submittable from any page** (`POST /campaign-signup`, `CampaignSignupController`) —
+  a plain form POST that redirects back to wherever the visitor was (`redirect()->back()`),
+  since there's no single "signup page" this belongs to. Uses a **named error bag**
+  (`validateWithBag('campaignSignup', …)`) and **prefixed field names** (`popup_name`,
+  `popup_phone`, …) specifically so a validation failure here can never collide with
+  another form's `name`/`phone` fields on the same page (e.g. the contact page).
+- **Copy is admin-editable**: `SiteChromeSettings::$signup_popup_*` via *System → Header
+  & footer* (it's chrome, not page content — shown everywhere, not tied to one page).
+  `signup_popup_enabled` is a full kill switch.
+- `App\Support\Notifications\AdminAlert` (shared with the contact/event-registration
+  inboxes) now tolerates the admin/super-admin roles not existing yet — building this
+  surfaced a latent bug where any of these three forms would 500 on a fresh environment
+  before `RolesAndPermissionsSeeder` had ever run (`tests/Feature/AdminAlertTest.php`).
 
 ## Release
 

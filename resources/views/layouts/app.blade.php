@@ -234,6 +234,8 @@
         </div>
     </div>
 
+    <x-campaign-signup-popup />
+
     {{-- Scroll to top --}}
     <button
         x-data="{ show: false }"

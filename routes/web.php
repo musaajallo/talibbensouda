@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignSignupController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventFlyerPlaceholderController;
@@ -67,6 +68,11 @@ Route::post('/contact', [ContactController::class, 'store'])
 Route::post('/contact/join', [ContactController::class, 'join'])
     ->middleware('throttle:public-forms')
     ->name('contact.join');
+// The site-wide sign-up pop-up (resources/views/components/campaign-signup-popup.blade.php)
+// — submittable from any page, so it redirects back rather than to a fixed route.
+Route::post('/campaign-signup', [CampaignSignupController::class, 'store'])
+    ->middleware('throttle:public-forms')
+    ->name('campaign-signup.store');
 Route::get('/testimonials/submit/{token}', [TestimonialSubmissionController::class, 'show'])->name('testimonials.submit');
 Route::post('/testimonials/submit/{token}', [TestimonialSubmissionController::class, 'store'])
     ->middleware('throttle:public-forms')

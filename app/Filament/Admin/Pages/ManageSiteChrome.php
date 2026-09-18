@@ -6,6 +6,7 @@ use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
 use App\Settings\SiteChromeSettings;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
@@ -59,6 +60,19 @@ class ManageSiteChrome extends SettingsPage
                         ->displayFormat('D j M Y')
                         ->closeOnDateSelection()
                         ->helperText('Counts down to midnight (Gambia time) on this date.'),
+                ]),
+
+            Section::make('Sign-up pop-up')
+                ->description('Shown once per visitor, a few seconds after they land on any page (never on top of the cookie banner). Collects name, phone and an optional location — no email, no pre-ticked boxes.')
+                ->icon('heroicon-o-megaphone')
+                ->columns(2)
+                ->components([
+                    Toggle::make('signup_popup_enabled')
+                        ->label('Show the pop-up')
+                        ->columnSpanFull(),
+                    TextInput::make('signup_popup_heading')->required()->maxLength(80)->columnSpanFull(),
+                    Textarea::make('signup_popup_body')->required()->rows(2)->maxLength(400)->columnSpanFull(),
+                    TextInput::make('signup_popup_button_label')->required()->maxLength(40),
                 ]),
 
             Section::make('Footer')
