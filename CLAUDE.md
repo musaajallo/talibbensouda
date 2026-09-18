@@ -104,8 +104,8 @@ disk. Modelled on the sibling `umc` project.
   `styles` picks the route CSS bundle (`resources/sass/frontend/pages-entry/<route>.scss`,
   also a Vite input) loaded on top of `core.scss`; `description` / `ogImage` feed
   `resources/views/partials/seo.blade.php` (meta, canonical, OG, Twitter card, JSON-LD
-  Person + WebSite). Layout also `@include`s `partials/analytics` (inert until
-  `PLAUSIBLE_DOMAIN` is set).
+  Person + WebSite). See **Analytics** below for how page views are tracked — no
+  script tag in the layout at all, it's server-side only.
 - **Any component used on more than one route must live under
   `resources/sass/frontend/components/` and be `@use`d from `core.scss`** — not declared
   inside a single page's `pages/_<route>.scss`. `.section`, `.section-header`, `.cta-banner`,
@@ -311,6 +311,71 @@ signed-in user.
 - **Toggle/inspect**: `RESPONSE_CACHE_ENABLED`, `RESPONSE_CACHE_LIFETIME` (default
   86400 s); `php artisan responsecache:clear`. Debug headers (`X-Cache-Status`)
   show when `APP_DEBUG` is on.
+
+## Analytics
+
+**`fomvasss/laravel-visits`** — self-hosted, first-party analytics (replaced the
+Plausible-compatible cookieless-script setup in 2026-09; nothing under that name
+remains — no `PLAUSIBLE_*` env, no `partials/analytics.blade.php`, no
+`services.analytics` config). Tracking is entirely server-side (no client
+script needed for basic page views); dashboard at `/analytics` (the package's
+own default is `/visits` — renamed via `config('visits.dashboard.path')` /
+`VISITS_DASHBOARD_PATH`, and `visits.whoami.path` to match, `/analytics/whoami`).
+
+- **Consent-gated, on purpose.** The cookie-consent banner
+  (`layouts/app.blade.php`) already had an "analytics" toggle with nothing
+  reading it — Plausible was cookieless, so it never needed one. This package
+  sets a durable identity cookie, so it does. `config('visits.consent')` is
+  `require_consent = true` with `App\Support\Analytics\CookieConsentResolver`
+  as the resolver, which checks a plain `tb_analytics_consent` cookie
+  (`1`/`0`) the banner's `save()` sets via `document.cookie` alongside its
+  existing `localStorage` write — `TrackVisit` only tracks once that cookie
+  says yes. **That cookie must stay in `EncryptCookies`'s `except` list**
+  (`bootstrap/app.php`) — it's plain JS-set, not Laravel-encrypted, so without
+  the exception `EncryptCookies` treats it as tampered and silently nulls it
+  on every request, and consent-based tracking stops working entirely with no
+  visible error.
+- **Middleware order fights the response cache — read this before touching
+  either.** `config/visits.auto_track` is `false` and `'track-visits'` is
+  attached to the `web` group by hand in `bootstrap/app.php`, positioned
+  *before* `CacheResponse`. Left on `auto_track = true` (the package
+  default), the package's own service provider *always* appends itself last
+  (deliberately, per its own doc comment — "the last word"), which lands it
+  *after* `CacheResponse`. Since `CacheResponse` returns immediately on a
+  cache hit without calling further middleware, that would mean only the
+  first (uncached) visit to any given page ever gets tracked — everyone
+  after that, until the 24h cache entry expires, silently isn't. `TrackVisit`
+  itself still respects `exclude_paths` regardless of how it's attached (that
+  check lives inside the middleware, not the auto-registration), so this
+  reordering doesn't change what's excluded.
+- **The dashboard has no auth upstream — do not remove the gate.**
+  `config('visits.dashboard.middleware')` includes
+  `App\Http\Middleware\EnsureCanViewAnalyticsDashboard` (same admin/super-admin
+  role check as the Filament panel — this site has no other auth system).
+  Without it, `/analytics/sessions` publicly lists every visitor's IP,
+  approximate location and device.
+- **The dashboard also can't run under this site's CSP.** It's a third-party,
+  pre-built UI (CDN Tailwind runtime, unpkg for Leaflet, jsdelivr for
+  Chart.js, inline scripts with no nonce) — incompatible with the strict
+  nonce policy the rest of the site runs under. Since it's registered inside
+  the `web` group (unlike `/admin`, which is a separate Filament panel stack
+  entirely outside `web` and so never sees this CSP at all),
+  `App\Http\Middleware\ScopeCspForAnalyticsDashboard` (appended *after*
+  `AddCspHeaders`) sets its own scoped-down policy for `/analytics/*` before
+  `AddCspHeaders` gets a chance to overwrite it with the site's default —
+  see the class docblock for exactly how that ordering trick works.
+- **Pruning is scheduled, aggregation/session-closing aren't (by us).**
+  `visits:close-stale-sessions` and `visits:aggregate` self-register on a
+  fixed schedule (`config('visits.schedule.enabled')`, on by default — no
+  `routes/console.php` entry needed). `visits:prune` is deliberately never
+  auto-scheduled by the package itself; `routes/console.php` schedules it
+  weekly, respecting `visits.retention_days` (90 by default).
+- **Geo lookups call an external HTTP API per (uncached) IP by default**
+  (`stevebauman/location`'s default driver) — fine for this site's traffic
+  volume, but means Plausible's "cookieless, calls nobody" property is gone.
+  Switch to the local MaxMind/GeoLite2 driver (see the package's README) if
+  that becomes a concern; not done here since it needs a free MaxMind account
+  and a scheduled `location:update`.
 
 ## SEO / sitemap
 

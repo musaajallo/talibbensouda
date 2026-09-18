@@ -38,25 +38,16 @@ class AppPreset implements Preset
             ->add(Directive::FRAME, 'https://www.youtube-nocookie.com')
             ->add(Directive::FRAME, 'https://www.youtube.com');
 
-        // Cookieless analytics — only opened up when a domain is configured
-        // (see config/services.php + resources/views/partials/analytics.blade.php).
-        if ($src = config('services.analytics.domain') ? config('services.analytics.src') : null) {
-            $origin = parse_url($src, PHP_URL_SCHEME).'://'.parse_url($src, PHP_URL_HOST);
-
-            $policy
-                ->add(Directive::SCRIPT, $origin)
-                ->add(Directive::CONNECT, $origin);
-        }
+        // First-party analytics (fomvasss/laravel-visits) needs no CSP origins
+        // here — page-view tracking is server-side only (no client script),
+        // same-origin. Its /analytics dashboard is a separate case: see
+        // App\Http\Middleware\ScopeCspForAnalyticsDashboard.
 
         // Examples — uncomment as you add integrations:
         //
         // Bunny Fonts (privacy-friendly Google Fonts mirror)
         // $policy->add(Directive::STYLE, 'https://fonts.bunny.net');
         // $policy->add(Directive::FONT,  'https://fonts.bunny.net');
-        //
-        // Plausible / Fathom analytics
-        // $policy->add(Directive::SCRIPT,  'https://plausible.io');
-        // $policy->add(Directive::CONNECT, 'https://plausible.io');
         //
         // Stripe
         // $policy->add(Directive::SCRIPT,  'https://js.stripe.com');

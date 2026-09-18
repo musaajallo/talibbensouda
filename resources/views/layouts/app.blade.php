@@ -33,7 +33,6 @@
     <link rel="preload" as="font" type="font/woff2" href="{{ asset('fonts/montserrat-latin.woff2') }}" crossorigin>
     <script @cspNonce>document.documentElement.classList.add('js');document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light')</script>
     @vite(array_filter(['resources/sass/frontend/core.scss', $styleEntry(), 'resources/js/frontend.js']))
-    @include('partials.analytics')
     @stack('head')
 </head>
 <body>
@@ -139,7 +138,15 @@
             analytics: false,
             init() {
                 const stored = localStorage.getItem('tb_cookie_consent');
-                if (!stored) {
+                if (stored) {
+                    // Already decided in an earlier visit — honour it (and keep
+                    // the analytics cookie below in sync) without showing the
+                    // banner again.
+                    try {
+                        this.analytics = !!JSON.parse(stored).analytics;
+                    } catch (e) {}
+                    this.syncConsentCookie(this.analytics);
+                } else {
                     setTimeout(() => this.show = true, 900);
                 }
                 document.addEventListener('reopen-cookie-settings', () => {
@@ -158,7 +165,16 @@
             },
             save(prefs) {
                 localStorage.setItem('tb_cookie_consent', JSON.stringify({ v: 1, ...prefs }));
+                this.syncConsentCookie(prefs.analytics);
                 this.show = false;
+            },
+            syncConsentCookie(analyticsAllowed) {
+                // Mirrors the analytics choice into a plain, JS-readable cookie —
+                // localStorage can't be read server-side, and the analytics
+                // consent gate (App\Support\Analytics\CookieConsentResolver)
+                // needs a real per-request signal to decide whether to track.
+                const maxAge = 60 * 60 * 24 * 365; // 1 year
+                document.cookie = `tb_analytics_consent=${analyticsAllowed ? '1' : '0'};path=/;max-age=${maxAge};SameSite=Lax`;
             }
         }"
         x-show="show"

@@ -98,12 +98,6 @@ it('includes events in the sitemap with a lastmod date', function (): void {
         ->toContain('<lastmod>'.$event->updated_at->toAtomString().'</lastmod>');
 });
 
-it('ships no analytics script until a domain is configured', function (): void {
-    get('/')->assertDontSee('data-domain', false);
-
-    config(['services.analytics.domain' => 'talibahmedbensouda.com']);
-
-    get('/')
-        ->assertSee('data-domain="talibahmedbensouda.com"', false)
-        ->assertSee('plausible.io/js/script.js', false);
+it('ships no client-side analytics beacon — page-view tracking is server-side only', function (): void {
+    get('/')->assertDontSee('data-domain', false)->assertDontSee('plausible', false);
 });

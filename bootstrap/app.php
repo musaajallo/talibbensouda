@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\MaintenanceMode;
+use App\Http\Middleware\ScopeCspForAnalyticsDashboard;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,6 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
 
+        // The cookie banner sets this with plain `document.cookie` (see
+        // layouts/app.blade.php) so App\Support\Analytics\CookieConsentResolver
+        // can read it server-side — EncryptCookies would otherwise treat that
+        // as tampered/undecryptable and silently null it out on every request.
+        $middleware->encryptCookies(except: ['tb_analytics_consent']);
+
         // The strict, nonce-based CSP is appended to the `web` group, which
         // covers the public site. Filament's panel routes run on their own
         // middleware stack (see AdminPanelProvider) and are deliberately left
@@ -41,11 +48,21 @@ return Application::configure(basePath: dirname(__DIR__))
         // the cached HTML is replayed with its matching header instead of a
         // fresh, mismatched one. On a miss the response is stored with both in
         // sync. See App\Support\ResponseCache\CachePublicPages for what's cached.
+        //
+        // 'track-visits' (fomvasss/laravel-visits) sits *before* CacheResponse
+        // on purpose, for the opposite reason: it must run on every real
+        // request, including ones a cache hit would otherwise serve without
+        // ever reaching later middleware. auto_track is off in config/visits.php
+        // so the package doesn't also append itself (which would always land
+        // after CacheResponse, silently under-counting almost every page view
+        // once the cache warms up).
         $middleware->web(append: [
             MaintenanceMode::class,
             ProtectAgainstSpam::class,
+            'track-visits',
             CacheResponse::class,
             AddCspHeaders::class,
+            ScopeCspForAnalyticsDashboard::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
