@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * The `/visits` dashboard (fomvasss/laravel-visits) ships with no auth by
- * default — anyone could otherwise browse every visitor's IP, approximate
- * location and device. Gated behind the same admin/super-admin roles that
- * guard the Filament panel, since this site has no other auth system.
+ * The `/analytics` dashboard (fomvasss/laravel-visits, mounted at a renamed
+ * path — see config/visits.php) ships with no auth by default — anyone could
+ * otherwise browse every visitor's IP, approximate location and device.
+ * Gated behind the same admin/super-admin roles that guard the Filament
+ * panel, since this site has no other auth system.
  */
-class EnsureCanViewVisitsDashboard
+class EnsureCanViewAnalyticsDashboard
 {
     public function handle(Request $request, Closure $next): Response
     {

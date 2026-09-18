@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Http\Middleware\EnsureCanViewVisitsDashboard;
+use App\Http\Middleware\EnsureCanViewAnalyticsDashboard;
 use App\Support\Analytics\CookieConsentResolver;
 use Fomvasss\Visits\Models\Event;
 use Fomvasss\Visits\Models\Session;
@@ -458,11 +458,11 @@ return [
 
     'dashboard' => [
         'enabled' => env('VISITS_DASHBOARD_ENABLED', true),
-        'path' => env('VISITS_DASHBOARD_PATH', 'visits'),
+        'path' => env('VISITS_DASHBOARD_PATH', 'analytics'),
         // No auth by default upstream — every visitor's IP/geo/device would
         // otherwise be public. Gated behind the same admin/super-admin roles
-        // as the Filament panel (see EnsureCanViewVisitsDashboard).
-        'middleware' => ['web', EnsureCanViewVisitsDashboard::class],
+        // as the Filament panel (see EnsureCanViewAnalyticsDashboard).
+        'middleware' => ['web', EnsureCanViewAnalyticsDashboard::class],
         'per_page' => env('VISITS_DASHBOARD_PER_PAGE', 50),
         // Overview/Campaigns date range when no ?from=/?to= is given.
         'default_range_days' => env('VISITS_DASHBOARD_DEFAULT_RANGE_DAYS', 30),
@@ -532,7 +532,7 @@ return [
 
     'whoami' => [
         'enabled' => env('VISITS_WHOAMI_ENABLED', true),
-        'path' => env('VISITS_WHOAMI_PATH', 'visits/whoami'),
+        'path' => env('VISITS_WHOAMI_PATH', 'analytics/whoami'),
         'middleware' => ['web'],
     ],
 

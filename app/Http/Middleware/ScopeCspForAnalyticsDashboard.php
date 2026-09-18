@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * The `/visits` dashboard (fomvasss/laravel-visits) is a third-party, pre-built
- * UI running under the `web` group — a CDN-loaded Tailwind runtime, unpkg
- * (Leaflet) and jsdelivr (Chart.js), plus inline scripts with no nonce.
- * Entirely incompatible with this app's strict nonce-based CSP, same as
- * Filament's admin panel (see AppPreset) — except the panel gets its own
- * middleware stack outside the `web` group entirely, while this dashboard is
- * registered inside it, so it can't be excluded from AddCspHeaders that way.
+ * The `/analytics` dashboard (fomvasss/laravel-visits, mounted at a renamed
+ * path — see config/visits.php) is a third-party, pre-built UI running under
+ * the `web` group — a CDN-loaded Tailwind runtime, unpkg (Leaflet) and
+ * jsdelivr (Chart.js), plus inline scripts with no nonce. Entirely
+ * incompatible with this app's strict nonce-based CSP, same as Filament's
+ * admin panel (see AppPreset) — except the panel gets its own middleware
+ * stack outside the `web` group entirely, while this dashboard is registered
+ * inside it, so it can't be excluded from AddCspHeaders that way.
  *
  * Appended to the `web` group AFTER AddCspHeaders: on the way back out, this
  * runs first (it's the more deeply nested middleware) and sets an explicit,
@@ -21,16 +22,16 @@ use Symfony\Component\HttpFoundation\Response;
  * policy already present (its own `hasCspHeader()` escape hatch, intended for
  * exactly this "a middleware further down already set one" case) and leaves
  * it alone instead of overwriting it with the site's default strict policy.
- * The dashboard is auth-gated (EnsureCanViewVisitsDashboard) — not worth
+ * The dashboard is auth-gated (EnsureCanViewAnalyticsDashboard) — not worth
  * chasing third-party vendor markup for CSP compliance.
  */
-class ScopeCspForVisitsDashboard
+class ScopeCspForAnalyticsDashboard
 {
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
 
-        $dashboardPath = trim((string) config('visits.dashboard.path', 'visits'), '/');
+        $dashboardPath = trim((string) config('visits.dashboard.path', 'analytics'), '/');
 
         if ($request->is($dashboardPath) || $request->is($dashboardPath.'/*')) {
             $response->headers->set(

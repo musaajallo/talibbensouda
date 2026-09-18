@@ -50,18 +50,18 @@ it('still tracks a page view served from the response cache', function (): void 
     ResponseCache::clear();
 });
 
-it('redirects a guest away from the visits dashboard', function (): void {
-    get('/visits')->assertRedirect('/admin/login');
+it('redirects a guest away from the analytics dashboard', function (): void {
+    get('/analytics')->assertRedirect('/admin/login');
 });
 
-it('forbids a signed-in user without an admin role from the visits dashboard', function (): void {
-    actingAs(User::factory()->create())->get('/visits')->assertForbidden();
+it('forbids a signed-in user without an admin role from the analytics dashboard', function (): void {
+    actingAs(User::factory()->create())->get('/analytics')->assertForbidden();
 });
 
-it('lets an admin reach the visits dashboard', function (): void {
+it('lets an admin reach the analytics dashboard', function (): void {
     seed(RolesAndPermissionsSeeder::class);
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
-    actingAs($admin)->get('/visits')->assertSuccessful();
+    actingAs($admin)->get('/analytics')->assertSuccessful();
 });

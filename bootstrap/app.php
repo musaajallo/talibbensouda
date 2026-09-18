@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Middleware\MaintenanceMode;
-use App\Http\Middleware\ScopeCspForVisitsDashboard;
+use App\Http\Middleware\ScopeCspForAnalyticsDashboard;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -62,7 +62,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'track-visits',
             CacheResponse::class,
             AddCspHeaders::class,
-            ScopeCspForVisitsDashboard::class,
+            ScopeCspForAnalyticsDashboard::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

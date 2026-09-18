@@ -40,8 +40,8 @@ class AppPreset implements Preset
 
         // First-party analytics (fomvasss/laravel-visits) needs no CSP origins
         // here — page-view tracking is server-side only (no client script),
-        // same-origin. Its /visits dashboard is a separate case: see
-        // App\Http\Middleware\ScopeCspForVisitsDashboard.
+        // same-origin. Its /analytics dashboard is a separate case: see
+        // App\Http\Middleware\ScopeCspForAnalyticsDashboard.
 
         // Examples — uncomment as you add integrations:
         //

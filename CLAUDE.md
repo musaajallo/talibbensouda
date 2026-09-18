@@ -318,7 +318,9 @@ signed-in user.
 Plausible-compatible cookieless-script setup in 2026-09; nothing under that name
 remains — no `PLAUSIBLE_*` env, no `partials/analytics.blade.php`, no
 `services.analytics` config). Tracking is entirely server-side (no client
-script needed for basic page views); dashboard at `/visits`.
+script needed for basic page views); dashboard at `/analytics` (the package's
+own default is `/visits` — renamed via `config('visits.dashboard.path')` /
+`VISITS_DASHBOARD_PATH`, and `visits.whoami.path` to match, `/analytics/whoami`).
 
 - **Consent-gated, on purpose.** The cookie-consent banner
   (`layouts/app.blade.php`) already had an "analytics" toggle with nothing
@@ -348,9 +350,9 @@ script needed for basic page views); dashboard at `/visits`.
   reordering doesn't change what's excluded.
 - **The dashboard has no auth upstream — do not remove the gate.**
   `config('visits.dashboard.middleware')` includes
-  `App\Http\Middleware\EnsureCanViewVisitsDashboard` (same admin/super-admin
+  `App\Http\Middleware\EnsureCanViewAnalyticsDashboard` (same admin/super-admin
   role check as the Filament panel — this site has no other auth system).
-  Without it, `/visits/sessions` publicly lists every visitor's IP,
+  Without it, `/analytics/sessions` publicly lists every visitor's IP,
   approximate location and device.
 - **The dashboard also can't run under this site's CSP.** It's a third-party,
   pre-built UI (CDN Tailwind runtime, unpkg for Leaflet, jsdelivr for
@@ -358,8 +360,8 @@ script needed for basic page views); dashboard at `/visits`.
   nonce policy the rest of the site runs under. Since it's registered inside
   the `web` group (unlike `/admin`, which is a separate Filament panel stack
   entirely outside `web` and so never sees this CSP at all),
-  `App\Http\Middleware\ScopeCspForVisitsDashboard` (appended *after*
-  `AddCspHeaders`) sets its own scoped-down policy for `/visits/*` before
+  `App\Http\Middleware\ScopeCspForAnalyticsDashboard` (appended *after*
+  `AddCspHeaders`) sets its own scoped-down policy for `/analytics/*` before
   `AddCspHeaders` gets a chance to overwrite it with the site's default —
   see the class docblock for exactly how that ordering trick works.
 - **Pruning is scheduled, aggregation/session-closing aren't (by us).**
