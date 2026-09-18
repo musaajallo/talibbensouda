@@ -8,6 +8,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 
 class GalleryPhotoForm
@@ -15,7 +16,18 @@ class GalleryPhotoForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
+            // A YouTube-sourced entry has no file of its own — the video lives on
+            // YouTube — so it gets a player instead of the uploader (which would
+            // also demand a photo before it could be saved). Photo entries, and
+            // anything created by hand here, keep the uploader.
+            Section::make('Video')
+                ->visible(fn (?GalleryPhoto $record): bool => $record?->isVideo() ?? false)
+                ->components([
+                    View::make('filament.admin.resources.gallery-photos.youtube-video'),
+                ]),
+
             Section::make('Photo')
+                ->hidden(fn (?GalleryPhoto $record): bool => $record?->isVideo() ?? false)
                 ->components([
                     SpatieMediaLibraryFileUpload::make('photo')
                         ->collection('photo')

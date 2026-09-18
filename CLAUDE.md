@@ -271,6 +271,15 @@ leaving it running invisibly).
   `searchVideos()` (**100 quota units** — only fires when the admin actually types a
   search) hits `search.list` scoped to the channel. Free daily quota is 10,000 units, so
   favour browsing over searching if that ever matters.
+- **A YouTube entry is not edited like a photo.** It has no file of its own (the video
+  lives on YouTube), so `GalleryPhotoForm` / `GalleryPhotoInfolist` swap the required photo
+  uploader for a **Video** section (`filament/admin/resources/gallery-photos/youtube-video.blade.php`
+  — non-autoplaying embed, the video ID, an "Open on YouTube" link) whenever
+  `$record->isVideo()`; caption / category / published / sort order stay editable. Without
+  that, opening a video row showed an empty uploader and could not be saved (photo
+  `required`). The table shows `thumbnailUrl()` plus a Photo/YouTube type badge for the
+  same reason. Photo rows, and the Create page, keep the uploader. Direct video *upload*
+  is still not supported — Gallery video is YouTube-only.
 - **`youtube_video_id` is unique** on `gallery_photos` — re-adding an already-imported
   video is blocked both in the UI (`alreadyImported()` shows "Already in the Gallery"
   instead of the add button) and in the action itself (checked again before insert, so a

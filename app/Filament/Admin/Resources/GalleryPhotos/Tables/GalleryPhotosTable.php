@@ -2,13 +2,14 @@
 
 namespace App\Filament\Admin\Resources\GalleryPhotos\Tables;
 
+use App\Models\GalleryPhoto;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -21,11 +22,18 @@ class GalleryPhotosTable
             ->reorderable('sort_order')
             ->defaultSort('sort_order')
             ->columns([
-                SpatieMediaLibraryImageColumn::make('photo')
-                    ->collection('photo')
+                // The uploaded photo, or a YouTube entry's thumbnail — a video row
+                // has no media of its own, so a media-library column left it blank.
+                ImageColumn::make('thumbnail')
+                    ->state(fn (GalleryPhoto $record): ?string => $record->thumbnailUrl())
                     ->label('')
                     ->imageWidth(80)
                     ->imageHeight(56),
+                TextColumn::make('type')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => $state === GalleryPhoto::TYPE_VIDEO ? 'YouTube' : 'Photo')
+                    ->color(fn (string $state): string => $state === GalleryPhoto::TYPE_VIDEO ? 'danger' : 'gray')
+                    ->sortable(),
                 TextColumn::make('caption')
                     ->placeholder('—')
                     ->searchable()
