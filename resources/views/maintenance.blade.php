@@ -37,7 +37,7 @@
             font-weight: 700;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: #BD2038;
+            color: #F17689;
             margin-bottom: 16px;
         }
         .maintenance__title {
@@ -62,7 +62,7 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
-        .maintenance__contact:hover { border-color: #BD2038; color: #BD2038; }
+        .maintenance__contact:hover { border-color: #F17689; color: #F17689; }
         .maintenance__logo { height: 56px; width: auto; margin-bottom: 32px; }
         .maintenance__wordmark {
             display: block;

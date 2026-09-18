@@ -16,6 +16,10 @@
         letter-spacing: 0.15em;
         text-transform: uppercase;
         margin-bottom: $space-3;
+
+        // For use on a navy section (`.section--navy`) — $color-gold only
+        // clears ~3:1 directly against navy, under WCAG AA for text this size.
+        &--light { color: $color-gold-light; }
     }
 
     &__title {

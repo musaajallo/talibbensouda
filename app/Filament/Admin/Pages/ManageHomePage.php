@@ -160,6 +160,18 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('milestones_cta_label')->maxLength(60)->columnSpanFull(),
                 ]),
 
+            Section::make('National candidacy')
+                ->icon('heroicon-o-flag')
+                ->description('The BEN26 campaign logos in this section are fixed brand assets and aren\'t editable here.')
+                ->columns(2)
+                ->components([
+                    TextInput::make('candidacy_eyebrow')->maxLength(120),
+                    TextInput::make('candidacy_cta_label')->maxLength(60),
+                    Textarea::make('candidacy_headline')->rows(2)->maxLength(255)->columnSpanFull(),
+                    Textarea::make('candidacy_body')->rows(4)->maxLength(800)->columnSpanFull(),
+                    TextInput::make('candidacy_cta_url')->maxLength(255)->columnSpanFull(),
+                ]),
+
             Section::make('Closing call to action')
                 ->icon('heroicon-o-flag')
                 ->columns(2)

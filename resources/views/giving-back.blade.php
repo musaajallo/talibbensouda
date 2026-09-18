@@ -185,7 +185,7 @@
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">{{ $page->help_eyebrow }}</span>
+                <span class="section-header__eyebrow section-header__eyebrow--light">{{ $page->help_eyebrow }}</span>
                 <h2 class="section-header__title section-header__title--light">{{ $page->help_headline }}</h2>
                 <p class="section-header__lead section-header__lead--light">{{ $page->help_lead }}</p>
             </div>

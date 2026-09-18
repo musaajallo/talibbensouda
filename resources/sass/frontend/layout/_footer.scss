@@ -36,7 +36,7 @@
             font-size: 0.9rem;
             transition: color 0.15s;
 
-            &:hover { color: $color-gold; text-decoration: none; }
+            &:hover { color: $color-gold-light; text-decoration: none; }
         }
     }
 
@@ -48,7 +48,7 @@
             font-weight: 600;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: $color-gold;
+            color: $color-gold-light;
             margin-bottom: $space-2;
         }
 

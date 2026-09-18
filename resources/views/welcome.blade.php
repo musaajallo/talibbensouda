@@ -16,6 +16,18 @@
         '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>',
         '<path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>',
     ];
+
+    // BEN26 campaign logo variants, animated in the candidacy section — each
+    // carries the flat/gradient background it needs to stay fully legible
+    // (the white variant needs navy behind it, "white and blue" needs the
+    // navy/white split it was designed against).
+    $candidacyLogos = [
+        ['img' => asset('images/brand/ben26-full-colour.svg'), 'bg' => '#ffffff'],
+        ['img' => asset('images/brand/ben26-red.svg'), 'bg' => '#ffffff'],
+        ['img' => asset('images/brand/ben26-white-blue.svg'), 'bg' => 'linear-gradient(to bottom, #0B142E 0%, #0B142E 55%, #ffffff 55%, #ffffff 100%)'],
+        ['img' => asset('images/brand/ben26-blue.svg'), 'bg' => '#ffffff'],
+        ['img' => asset('images/brand/ben26-white.svg'), 'bg' => '#0B142E'],
+    ];
 @endphp
 
     {{-- Preload the first slide's image — it's the LCP element. Phones get the
@@ -257,7 +269,7 @@
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">{{ $home->milestones_eyebrow }}</span>
+                <span class="section-header__eyebrow section-header__eyebrow--light">{{ $home->milestones_eyebrow }}</span>
                 <h2 class="section-header__title section-header__title--light">{{ $home->milestones_headline }}</h2>
                 <p class="section-header__lead section-header__lead--light">{{ $home->milestones_lead }}</p>
             </div>
@@ -290,6 +302,45 @@
             <x-empty-state message="Recent openings and launches will be listed here soon." />
             @endif
 
+        </div>
+    </section>
+
+    {{-- ── National Candidacy ───────────────────────────────────────────────── --}}
+    <section class="section">
+        <div class="container">
+            <div class="candidacy-section">
+
+                <div data-reveal="fade-right">
+                    <span class="candidacy-section__eyebrow">{{ $home->candidacy_eyebrow }}</span>
+                    <h2 class="candidacy-section__title">{{ $home->candidacy_headline }}</h2>
+                    <p class="candidacy-section__desc">{{ $home->candidacy_body }}</p>
+                    @if ($home->candidacy_cta_label)
+                        <a href="{{ url($home->candidacy_cta_url) }}" class="btn btn--gold btn--lg">{{ $home->candidacy_cta_label }}</a>
+                    @endif
+                </div>
+
+                <div class="candidacy-logos"
+                    data-reveal="fade-left" data-reveal-delay="150"
+                    x-data="{
+                        logos: {{ Js::from($candidacyLogos) }},
+                        current: 0,
+                        timer: null,
+                        start() {
+                            if (this.logos.length < 2) return;
+                            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                            this.timer = setInterval(() => this.current = (this.current + 1) % this.logos.length, 2600);
+                        }
+                    }"
+                    x-init="start()"
+                >
+                    <template x-for="(logo, i) in logos" :key="i">
+                        <div class="candidacy-logos__slide" :class="{ 'is-active': i === current }" :style="`background: ${logo.bg}`">
+                            <img :src="logo.img" alt="BEN26 — Bensouda for President" class="candidacy-logos__img">
+                        </div>
+                    </template>
+                </div>
+
+            </div>
         </div>
     </section>
 
