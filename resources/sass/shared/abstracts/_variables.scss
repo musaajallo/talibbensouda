@@ -5,6 +5,10 @@ $color-navy:      #0B142E !default;
 $color-navy-dark: #080f20 !default;
 $color-gold:      #BD2038 !default;
 $color-gold-dark: #9B172B !default;
+// $color-gold as text directly on navy (or vice versa) is ~3:1 — under WCAG
+// AA for text this size. Use this lighter tint for accent-coloured text that
+// sits on a navy/dark background (footer, election countdown, navy sections).
+$color-gold-light: #F17689 !default;
 
 $color-bg:        #ffffff !default;
 $color-fg:        #1a1a1a !default;

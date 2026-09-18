@@ -37,7 +37,7 @@
         align-items: baseline;
         gap: 3px;
         font-family: $font-display;
-        color: $color-gold;
+        color: $color-gold-light;
 
         strong {
             font-size: 0.9rem;
@@ -49,7 +49,7 @@
         small {
             font-size: 0.65rem;
             font-weight: 600;
-            color: rgba($color-gold, 0.75);
+            color: rgba($color-gold-light, 0.75);
             text-transform: uppercase;
         }
     }

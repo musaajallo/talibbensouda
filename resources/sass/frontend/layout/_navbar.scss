@@ -112,6 +112,10 @@ body.has-menu-open {
         &:hover, &.is-active {
             color: $color-gold;
             text-decoration: none;
+
+            // The header background is a near-opaque navy in dark mode, and
+            // $color-gold (red) only clears ~3:1 against it — under WCAG AA.
+            [data-theme="dark"] & { color: $color-gold-light; }
         }
     }
 

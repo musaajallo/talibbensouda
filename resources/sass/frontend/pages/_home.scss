@@ -687,3 +687,72 @@
         border-left: 3px solid $color-gold;
     }
 }
+
+// ── National candidacy ──────────────────────────────────────────────────────────
+
+.candidacy-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+        gap: $space-8;
+    }
+
+    &__eyebrow {
+        display: inline-block;
+        color: $color-gold;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: $space-3;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--fg);
+        margin-bottom: $space-4;
+        line-height: 1.2;
+    }
+
+    &__desc {
+        color: var(--muted);
+        line-height: 1.8;
+        margin-bottom: $space-6;
+    }
+}
+
+.candidacy-logos {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    max-height: 380px;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+
+    &__slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: $space-8;
+        opacity: 0;
+        transition: opacity 0.7s ease;
+
+        &.is-active { opacity: 1; }
+    }
+
+    &__img {
+        max-width: 78%;
+        max-height: 60%;
+        width: auto;
+        height: auto;
+    }
+}

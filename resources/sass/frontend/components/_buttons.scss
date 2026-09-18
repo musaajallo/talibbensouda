@@ -20,7 +20,9 @@
 
     &--gold {
         background: $color-gold;
-        color: $color-navy;
+        // Navy text read fine against the old gold (7:1) but drops to ~3:1
+        // against the new red accent — under WCAG AA for text this size.
+        color: #fff;
         border-color: $color-gold;
 
         &:hover { background: $color-gold-dark; border-color: $color-gold-dark; opacity: 1; }

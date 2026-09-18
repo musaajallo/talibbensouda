@@ -92,6 +92,17 @@ class HomePageSettings extends Settings
 
     public string $milestones_cta_label = '';
 
+    // National candidacy
+    public string $candidacy_eyebrow = '';
+
+    public string $candidacy_headline = '';
+
+    public string $candidacy_body = '';
+
+    public string $candidacy_cta_label = '';
+
+    public string $candidacy_cta_url = '';
+
     // CTA banner
     public string $cta_headline = '';
 
