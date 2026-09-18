@@ -92,6 +92,15 @@ class HomePageSettings extends Settings
 
     public string $milestones_cta_label = '';
 
+    // Upcoming events (campaign trail — courtesy calls, rallies)
+    public string $upcoming_eyebrow = '';
+
+    public string $upcoming_headline = '';
+
+    public string $upcoming_lead = '';
+
+    public string $upcoming_cta_label = '';
+
     // National candidacy
     public string $candidacy_eyebrow = '';
 

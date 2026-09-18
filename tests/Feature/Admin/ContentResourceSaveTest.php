@@ -2,10 +2,12 @@
 
 use App\Filament\Admin\Resources\CommunityPhotos\Pages\CreateCommunityPhoto;
 use App\Filament\Admin\Resources\GivingProgrammes\Pages\CreateGivingProgramme;
+use App\Filament\Admin\Resources\Milestones\Pages\CreateMilestone;
 use App\Filament\Admin\Resources\Projects\Pages\CreateProject;
 use App\Filament\Admin\Resources\Testimonials\Pages\CreateTestimonial;
 use App\Models\CommunityPhoto;
 use App\Models\GivingProgramme;
+use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Models\User;
@@ -61,4 +63,18 @@ it('creates a community photo with only the required fields', function (): void 
         ->assertHasNoFormErrors();
 
     expect(CommunityPhoto::where('caption', 'New library opened in 2024.')->exists())->toBeTrue();
+});
+
+it('creates a milestone with only the required fields', function (): void {
+    Livewire::test(CreateMilestone::class)
+        ->fillForm([
+            'title' => 'Library Opened',
+            'slug' => 'library-opened',
+            'occurred_on' => '2024-12-01',
+            'description' => 'Municipal library inaugurated.',
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    expect(Milestone::where('title', 'Library Opened')->exists())->toBeTrue();
 });

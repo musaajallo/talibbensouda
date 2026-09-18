@@ -36,6 +36,8 @@ it('lets a super-admin reach the panel and its pages', function (string $path): 
 })->with([
     '/admin',
     '/admin/events',
+    '/admin/milestones',
+    '/admin/milestones/create',
     '/admin/gallery-photos',
     '/admin/gallery-photos/create',
     '/admin/projects',

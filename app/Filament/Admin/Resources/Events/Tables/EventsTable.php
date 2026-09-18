@@ -45,7 +45,7 @@ class EventsTable
                     ->searchable()
                     ->limit(40),
                 IconColumn::make('is_upcoming')
-                    ->label('Current')
+                    ->label('Published')
                     ->boolean(),
             ])
             ->filters([
@@ -53,7 +53,7 @@ class EventsTable
                     ->label('Type')
                     ->options(fn (): array => app(EventsPageSettings::class)->typeOptions()),
                 TernaryFilter::make('is_upcoming')
-                    ->label('Current milestones'),
+                    ->label('Published'),
             ])
             ->recordActions([
                 ViewAction::make(),

@@ -15,14 +15,14 @@ class EventInfolist
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Milestone')
+            Section::make('Event details')
                 ->columns(2)
                 ->components([
                     TextEntry::make('title'),
                     TextEntry::make('slug'),
                     TextEntry::make('badge')->label('Type')->badge(),
                     IconEntry::make('is_upcoming')
-                        ->label('Shown in current milestones')
+                        ->label('Published')
                         ->boolean(),
                 ]),
 

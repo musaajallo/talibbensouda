@@ -21,25 +21,57 @@ disk. Modelled on the sibling `umc` project.
 - **`APP_NAME` must be set in the Forge env** (`APP_NAME="Talib Bensouda"`) — the brand
   falls back to it, and Forge's default is `Laravel`.
 - Resources: `app/Filament/Admin/Resources/<Name>/…` (Resource + `Schemas/<Name>Form.php` +
-  `Tables/<Name>Table.php` + `Pages/*`). Content models: `Event`, `GalleryPhoto`,
+  `Tables/<Name>Table.php` + `Pages/*`). Content models: `Event`, `Milestone`, `GalleryPhoto`,
   `Project` (`summary` for the home card, full `description` + `metrics` for People's Mayor),
   `Testimonial`, `CommunityPhoto` (`group`: `municipality` = home + People's Mayor,
   `community-support` = Giving Back), `GivingProgramme`, plus the `ContactMessage` /
   `EventRegistration` inboxes. Seed-managed rows carry a stable `key` (or `slug`).
+- **`Event` vs. `Milestone` — separate resources, deliberately.** `Event` is something
+  scheduled that people can attend (a rally, a courtesy call) — it has a flyer, RSVP
+  ("Register Your Interest"), calendar export and a public `/events/<slug>` page.
+  `Milestone` is a past record-of-delivery fact (an opening, a launch, an election) — just
+  a title, date, place and description, no detail page, no scheduling machinery. They used
+  to be one `Event` table (badge `Kanifing` = milestone, `Campaign` = real event); split in
+  2026-09 (see `database/migrations/2026_09_18_100000_create_milestones_table.php` and
+  `..._100001_move_kmc_milestones_out_of_events_table.php`). Don't reintroduce a past,
+  non-RSVPable "milestone" as an `Event` row — it belongs in `Milestone`. Every place that
+  displays one or the other uses a **different UI component on purpose** — `.event-card`
+  (rich, flyer + CTAs) or `.event-row` (compact list, theme-aware, `components/_event-row.scss`)
+  for Events, `.milestone-card`/`.milestones-grid` (plain grid, no CTA,
+  `components/_milestone-card.scss`) for Milestones — so the two never look interchangeable.
 - **`Event` schedule**: the form only asks for one `event_date` + `start_time` / `end_time`
   (defaults 09:00–17:00). `App\Filament\Admin\Resources\Events\Concerns\HandlesEventSchedule`
   (used by `CreateEvent` + `EditEvent`) assembles those into the seven columns the model
   and the public pages actually read — `date_day`/`date_month`/`date_year` (display),
   `js_day`/`js_month` (0-indexed, feed the public calendar grid) and `ics_start`/`ics_end`
   (UTC `YYYYMMDDThhmmssZ`, the calendar export — The Gambia is UTC year-round, so no tz
-  math). Events always list newest-first by `ics_start`; there's no `sort_order` for them.
-  `badge` (the type pill) is a free label managed under `EventsPageSettings::event_types`,
-  not a hardcoded enum. `full_description` is a `RichEditor` (HTML); a model mutator wraps
-  any legacy plain text in `<p>` on write. Every event has a flyer image
-  (`Event::flyerImageUrl()`) — the real upload, or `App\Support\EventFlyerPlaceholder`
-  generates an on-brand SVG on the fly from the title/type/date when none is set.
-- **Content seeding:** `ContentSeeder` (projects, events, gallery, community photos,
-  testimonials, giving-back programmes + `HeroSlidesSeeder`) runs on every deploy via
+  math). `is_upcoming` is a **published/visibility toggle, not a chronology flag** — an
+  event stays `is_upcoming = true` after its date passes; whether it's actually upcoming or
+  past is worked out from `ics_end` vs. `now()` wherever it's queried (see below). `badge`
+  (the type pill) is a free label managed under `EventsPageSettings::event_types`, not a
+  hardcoded enum (currently `['Kanifing', 'Campaign']`). `full_description` is a
+  `RichEditor` (HTML); a model mutator wraps any legacy plain text in `<p>` on write. Every
+  event has a flyer image (`Event::flyerImageUrl()`) — the real upload, or
+  `App\Support\EventFlyerPlaceholder` generates an on-brand SVG on the fly from the
+  title/type/date when none is set. `date_day` is a free string, not an integer — multi-day
+  entries (courtesy-call weekends/weeks) use a range like `'16–20'`; `js_day`/`js_month` still
+  take the range's first day for the calendar grid.
+- **`/events` page** (`EventController::index`) splits `Event::where('is_upcoming', true)`
+  into `$upcoming` (`ics_end >= now()`, ascending — the rich `.event-card` list + calendar)
+  and `$past` (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP),
+  plus a wholly separate `$milestones` (`Milestone::published()`, descending by
+  `occurred_on`, `.milestone-card` grid). Same three-way split feeds the **homepage**:
+  "Upcoming Events" (`welcome.blade.php`, directly below The People's Mayor — hidden
+  entirely, no empty-state, when nothing qualifies) queries `Event` the same way as
+  `$upcoming` above; "Recent Milestones" further down the page queries `Milestone`. Copy for
+  the homepage section lives in `HomePageSettings::$upcoming_*` / `$milestones_*` via
+  `ManageHomePage`. The 2026 pre-nomination campaign itinerary (courtesy calls by region +
+  rallies) that populates `Event` lives in `EventSeeder::campaignItinerary()`, sourced from
+  `docs/assets/campaign-itinerary/pre-nomination-itinerary-2026-09-18.jpeg`; the KMC record
+  (openings, launches, elections, 2018–2026) that populates `Milestone` lives in
+  `MilestoneSeeder`.
+- **Content seeding:** `ContentSeeder` (events, milestones, projects, gallery, community
+  photos, testimonials, giving-back programmes + `HeroSlidesSeeder`) runs on every deploy via
   `.forge/deploy.sh`. All of them `firstOrCreate` on the key — a missing row is created,
   an existing one is **never** touched, so panel edits survive re-deploys. `HeroSlidesSeeder`
   copies `public/images/hero-*.webp` onto the media disk and fills `home_page.hero_slides`
@@ -279,6 +311,28 @@ signed-in user.
 - **Toggle/inspect**: `RESPONSE_CACHE_ENABLED`, `RESPONSE_CACHE_LIFETIME` (default
   86400 s); `php artisan responsecache:clear`. Debug headers (`X-Cache-Status`)
   show when `APP_DEBUG` is on.
+
+## SEO / sitemap
+
+`App\Http\Controllers\SitemapController` (`GET /sitemap.xml`) generates the Google-facing
+sitemap on every request via `spatie/laravel-sitemap` — static pages plus every `Event`
+(`route('events.show', $event)`), so a new seeded/panel-created event is picked up
+automatically with no manual sitemap edit. `public/robots.txt` already points crawlers at
+it (`Sitemap: https://talibahmedbensouda.com/sitemap.xml`) — that's the URL to paste into
+Google Search Console, there's no static file to generate or upload. There's a separate
+**human-facing** `/sitemap` page (`resources/views/sitemap-page.blade.php`, linked from the
+footer) that also lists every event dynamically — update both files together if a new
+top-level route is added, since neither derives from the other.
+
+## Campaign strategy review (2026-09)
+
+`docs/tmg-website-review-notes.md` reviews `docs/TMG Gambia - Website Review - September
+2026.pdf` (gitignored, confidential — a campaign consultancy's website-restructure memo).
+Verdict: keep the current record-of-delivery information architecture, don't adopt the
+memo's proposed page structure or attack-messaging copy; a few UX ideas from it (event
+"get directions" links, a single supporter database, brand-colour consistency) are noted
+as future additions, and specific policy-position copy / donation flow / entry pop-up are
+explicitly flagged as needing the campaign's sign-off before any of them get built.
 
 ## Release
 

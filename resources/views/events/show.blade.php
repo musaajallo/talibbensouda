@@ -234,7 +234,7 @@
             <div class="related-events" data-reveal>
 
                 <div class="related-events__header">
-                    <h2 class="related-events__title">More Milestones</h2>
+                    <h2 class="related-events__title">More Upcoming Events</h2>
                     <a href="{{ route('events.index') }}" class="btn btn--outline-navy btn--sm">View All</a>
                 </div>
 

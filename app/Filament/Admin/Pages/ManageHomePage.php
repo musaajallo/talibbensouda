@@ -158,6 +158,11 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('milestones_headline')->maxLength(160),
                     Textarea::make('milestones_lead')->rows(2)->maxLength(400)->columnSpanFull(),
                     TextInput::make('milestones_cta_label')->maxLength(60)->columnSpanFull(),
+
+                    TextInput::make('upcoming_eyebrow')->maxLength(120),
+                    TextInput::make('upcoming_headline')->maxLength(160),
+                    Textarea::make('upcoming_lead')->rows(2)->maxLength(400)->columnSpanFull(),
+                    TextInput::make('upcoming_cta_label')->maxLength(60)->columnSpanFull(),
                 ]),
 
             Section::make('National candidacy')

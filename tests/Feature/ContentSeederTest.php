@@ -3,6 +3,7 @@
 use App\Models\Event;
 use App\Models\GivingProgramme;
 use App\Models\HeroSlide;
+use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Models\User;
@@ -21,6 +22,7 @@ it('fills empty content tables on a fresh install', function (): void {
 
     expect(Project::query()->where('published', true)->count())->toBeGreaterThan(0)
         ->and(Event::count())->toBeGreaterThan(0)
+        ->and(Milestone::count())->toBeGreaterThan(0)
         ->and(Testimonial::count())->toBeGreaterThan(0)
         ->and(GivingProgramme::count())->toBeGreaterThan(0);
 });

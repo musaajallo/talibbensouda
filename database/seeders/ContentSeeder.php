@@ -18,6 +18,7 @@ class ContentSeeder extends Seeder
     {
         $this->call([
             EventSeeder::class,
+            MilestoneSeeder::class,
             GalleryPhotoSeeder::class,
             ProjectSeeder::class,
             TestimonialSeeder::class,
