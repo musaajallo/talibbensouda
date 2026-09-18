@@ -53,7 +53,10 @@
     &__image {
         height: 140px;
         background-size: cover;
-        background-position: center;
+        // Top, not centre: in hero-rally.webp the candidate stands up through the
+        // car's roof in the upper third of the frame, and a centred crop of this
+        // wide, short strip cuts his head and raised arms off.
+        background-position: center top;
         border-radius: $radius-md $radius-md 0 0;
     }
 
