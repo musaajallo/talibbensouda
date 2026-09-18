@@ -63,6 +63,9 @@ it('lists the channel\'s uploaded videos', function (): void {
 it('searches the channel by title', function (): void {
     fakeYoutubeChannelAndUploads();
     Http::fake([
+        // mount() browses the uploads playlist before the search is typed —
+        // unfaked, that's a real network call.
+        'https://www.googleapis.com/youtube/v3/playlistItems*' => Http::response(['items' => [], 'nextPageToken' => null]),
         'https://www.googleapis.com/youtube/v3/search*' => Http::response([
             'items' => [
                 ['id' => ['videoId' => 'xyz789'], 'snippet' => [
@@ -161,6 +164,10 @@ it('splits already-imported videos from ones still available to add', function (
     ]);
 
     $split = Livewire::test(ImportYoutubeVideos::class)
+        // every card, imported or not, links out to the video on YouTube
+        ->assertSeeHtml('href="https://www.youtube.com/watch?v=abc123"')
+        ->assertSeeHtml('href="https://www.youtube.com/watch?v=def456"')
+        ->assertSee('Open on YouTube')
         ->assertSee('Available to add')
         ->assertSee('Already in the Gallery')
         ->assertSee('Brand New Video')

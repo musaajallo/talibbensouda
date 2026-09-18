@@ -87,6 +87,8 @@
                                     >
                                         Add to Gallery
                                     </button>
+
+                                    @include('filament.admin.pages.partials.youtube-open-link', ['videoId' => $video['id']])
                                 </div>
                             </div>
                         @endforeach
@@ -131,6 +133,8 @@
                                             Edit entry
                                         </a>
                                     </div>
+
+                                    @include('filament.admin.pages.partials.youtube-open-link', ['videoId' => $video['id']])
                                 </div>
                             </div>
                         @endforeach
