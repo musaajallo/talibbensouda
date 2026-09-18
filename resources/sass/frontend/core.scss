@@ -30,6 +30,7 @@
 @use 'components/lightbox';
 @use 'components/event-row';
 @use 'components/milestone-card';
+@use 'components/hidden-events-teaser';
 
 // The inner-page hero/banner — every route except the home page.
 @use 'pages/inner';

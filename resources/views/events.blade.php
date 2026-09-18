@@ -12,17 +12,24 @@
                 <span class="page-hero__eyebrow">Events &amp; Milestones</span>
                 <h1 class="page-hero__title">Events &amp; Milestones</h1>
                 <p class="page-hero__subtitle">
-                    Where to meet Talib next, a record of past events, and the
-                    launches and openings that have marked his work as Lord Mayor
-                    of Kanifing.
+                    @if ($eventsHidden)
+                        The launches and openings that have marked his work as Lord
+                        Mayor of Kanifing.
+                    @else
+                        Where to meet Talib next, a record of past events, and the
+                        launches and openings that have marked his work as Lord Mayor
+                        of Kanifing.
+                    @endif
                 </p>
             </div>
         </div>
     </section>
 
     {{-- ── Upcoming events list / calendar ───────────────────────────────────── --}}
-    {{-- $upcoming and $calEvents are passed from EventController@index --}}
-
+    {{-- $upcoming and $calEvents are passed from EventController@index. Whole
+         section is skipped when EventsPageSettings::hide_events_sections is on
+         — $eventsHidden — not just left to render empty. --}}
+    @unless ($eventsHidden)
     <section
         class="section"
         x-data="{
@@ -189,6 +196,8 @@
                 @endforelse
             </div>
 
+            <x-hidden-events-teaser :count="$hiddenUpcomingCount" data-reveal />
+
             {{-- ── Calendar view ──────────────────────────────────────────────── --}}
             <div x-show="view === 'calendar'" x-transition x-cloak>
                 <div class="cal-wrap">
@@ -249,8 +258,12 @@
 
         </div>
     </section>
+    @endunless
 
     {{-- ── Past Events ──────────────────────────────────────────────────────── --}}
+    {{-- Hidden entirely when there's nothing past yet — no empty-state filler,
+         same reasoning as the homepage's "Upcoming Events" section. --}}
+    @if ($past->isNotEmpty())
     <section class="section section--grey">
         <div class="container">
 
@@ -262,7 +275,6 @@
                 </p>
             </div>
 
-            @if ($past->isNotEmpty())
             <div class="events-list">
                 @foreach ($past as $i => $event)
                 <div class="event-row" data-reveal data-reveal-delay="{{ $i * 80 }}">
@@ -280,12 +292,10 @@
                 </div>
                 @endforeach
             </div>
-            @else
-            <x-empty-state message="Past events will appear here once they've taken place." />
-            @endif
 
         </div>
     </section>
+    @endif
 
     {{-- ── Milestones ──────────────────────────────────────────────────────── --}}
     {{-- A different resource from Events entirely — past record-of-delivery

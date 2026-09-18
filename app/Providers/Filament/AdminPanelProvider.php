@@ -17,6 +17,7 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -70,6 +71,16 @@ class AdminPanelProvider extends PanelProvider
                 'Submissions',
                 'System',
             ])
+            ->navigationItems([
+                // fomvasss/laravel-visits's dashboard (App\Http\Middleware\EnsureCanViewAnalyticsDashboard
+                // gates it with the same admin/super-admin check) — a separate app/layout entirely, not a
+                // Filament page, so it opens in a new tab like the "Visit site" user-menu item does.
+                NavigationItem::make('Analytics')
+                    ->url(fn (): string => url('/analytics'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-chart-bar')
+                    ->group('System')
+                    ->sort(10),
+            ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
@@ -83,6 +94,10 @@ class AdminPanelProvider extends PanelProvider
                 LatestContactMessages::class,
                 LatestEventRegistrations::class,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): View => view('filament.admin.favicon-links'),
+            )
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 fn (): View => view('filament.admin.visit-site'),

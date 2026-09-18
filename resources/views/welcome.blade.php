@@ -9,11 +9,11 @@
         ->with('media')->orderBy('sort_order')->take(6)->get();
     $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->take(6)->get();
     $milestones = \App\Models\Milestone::published()->orderByDesc('occurred_on')->take(4)->get();
-    $upcomingEvents = \App\Models\Event::where('is_upcoming', true)
-        ->where('ics_end', '>=', now()->format('Ymd\THis\Z'))
-        ->orderBy('ics_start')
-        ->take(4)
-        ->get();
+    $eventsHidden = app(\App\Settings\EventsPageSettings::class)->hide_events_sections;
+    $upcomingEvents = $eventsHidden
+        ? collect()
+        : \App\Models\Event::visibleUpcoming()->orderBy('ics_start')->take(4)->get();
+    $hiddenUpcomingCount = $eventsHidden ? 0 : \App\Models\Event::hiddenUpcomingCount();
 
     // Decorative avatar shapes, cycled across recognition cards.
     $avatarIcons = [
@@ -217,9 +217,9 @@
     </section>
 
     {{-- ── Upcoming Events (campaign trail) ────────────────────────────────────── --}}
-    {{-- Hidden entirely when there's nothing genuinely upcoming — no empty-state
-         filler here, unlike most sections on this page. --}}
-    @if ($upcomingEvents->isNotEmpty())
+    {{-- Hidden entirely when there's nothing to say at all — no visible event
+         in the next week, and nothing further out to tease either. --}}
+    @if ($upcomingEvents->isNotEmpty() || $hiddenUpcomingCount > 0)
     <section class="section">
         <div class="container">
 
@@ -229,6 +229,7 @@
                 <p class="section-header__lead">{{ $home->upcoming_lead }}</p>
             </div>
 
+            @if ($upcomingEvents->isNotEmpty())
             <div class="events-list">
                 @foreach ($upcomingEvents as $i => $event)
                 <div class="event-row" data-reveal data-reveal-delay="{{ $i * 100 }}">
@@ -246,6 +247,11 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Nothing in the next week yet." />
+            @endif
+
+            <x-hidden-events-teaser :count="$hiddenUpcomingCount" data-reveal />
 
             @if ($home->upcoming_cta_label)
             <div style="text-align:center; margin-top:48px;" data-reveal data-reveal-delay="350">

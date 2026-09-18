@@ -56,17 +56,40 @@ disk. Modelled on the sibling `umc` project.
   title/type/date when none is set. `date_day` is a free string, not an integer — multi-day
   entries (courtesy-call weekends/weeks) use a range like `'16–20'`; `js_day`/`js_month` still
   take the range's first day for the calendar grid.
-- **`/events` page** (`EventController::index`) splits `Event::where('is_upcoming', true)`
-  into `$upcoming` (`ics_end >= now()`, ascending — the rich `.event-card` list + calendar)
-  and `$past` (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP),
-  plus a wholly separate `$milestones` (`Milestone::published()`, descending by
-  `occurred_on`, `.milestone-card` grid). Same three-way split feeds the **homepage**:
-  "Upcoming Events" (`welcome.blade.php`, directly below The People's Mayor — hidden
-  entirely, no empty-state, when nothing qualifies) queries `Event` the same way as
-  `$upcoming` above; "Recent Milestones" further down the page queries `Milestone`. Copy for
-  the homepage section lives in `HomePageSettings::$upcoming_*` / `$milestones_*` via
-  `ManageHomePage`. The 2026 pre-nomination campaign itinerary (courtesy calls by region +
-  rallies) that populates `Event` lives in `EventSeeder::campaignItinerary()`, sourced from
+- **One-week public-visibility rule** (`Event::scopeVisibleUpcoming()`, 2026-09) — a
+  scheduled event only appears *anywhere* on the site once `ics_start` is within a week of
+  now. Not a data rule: further-out events stay in the database, fully editable in the
+  panel, they just don't render publicly yet. This is the single source of truth for the
+  cutoff — `EventController::index()`'s `$upcoming` (and the calendar, built from it),
+  `show()`'s "related events", and the **homepage**'s "Upcoming Events" section
+  (`welcome.blade.php`) all call this same scope, so changing the window only ever means
+  editing one method. `Event::hiddenUpcomingCount()` is the companion query (events beyond
+  the window) that feeds the `<x-hidden-events-teaser :count="…">` component — a one-line
+  "+N more events already on the calendar — come back soon" nudge, shown on both `/events`
+  and the homepage section. Both the homepage section and the events page's "Past Events"
+  section hide entirely (no empty-state filler) when they'd have nothing to show *and*
+  nothing to tease — see the `@if` right above each one in the Blade for the exact
+  condition, since it's not simply "the list is empty" once the teaser is in play.
+- **Events kill switch**: `EventsPageSettings::$hide_events_sections` (Page content →
+  Events page → Visibility, 2026-09) hides Events everywhere on the public site — the
+  homepage's "Upcoming Events" section, and `/events`' upcoming list, calendar, and Past
+  Events section — leaving only Milestones visible on both. A display toggle only; no rows
+  are touched, and `/events/{slug}` detail pages stay directly reachable regardless. When
+  it's on, `EventController::index()` skips the Event queries entirely rather than running
+  them and hiding the result (`$upcoming`/`$past` come back as empty collections,
+  `$hiddenUpcomingCount` as `0`) — `$eventsHidden` is passed to the view either way, and the
+  page-hero subtitle on `/events` also switches copy so it doesn't reference events that
+  aren't shown.
+- **`/events` page** (`EventController::index`) splits events into `$upcoming` (the
+  scope above, ascending — the rich `.event-card` list + calendar) and `$past`
+  (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP), plus a
+  wholly separate `$milestones` (`Milestone::published()`, descending by `occurred_on`,
+  `.milestone-card` grid). Same idea feeds the **homepage**: "Upcoming Events" (directly
+  below The People's Mayor) queries `Event`; "Recent Milestones" further down queries
+  `Milestone`. Copy for the homepage section lives in `HomePageSettings::$upcoming_*` /
+  `$milestones_*` via `ManageHomePage`. The 2026 pre-nomination campaign itinerary
+  (courtesy calls by region + rallies) that populates `Event` lives in
+  `EventSeeder::campaignItinerary()`, sourced from
   `docs/assets/campaign-itinerary/pre-nomination-itinerary-2026-09-18.jpeg`; the KMC record
   (openings, launches, elections, 2018–2026) that populates `Milestone` lives in
   `MilestoneSeeder`.
@@ -216,6 +239,11 @@ its collection, so a panel upload always wins and re-running it after adding mor
 - **Still needs to run in production once this ships** — deliberately not wired into
   `.forge/deploy.sh`; nobody's decided yet whether it should run on every deploy (like
   `ContentSeeder`) or once by hand.
+- **`docs/assets/gallery-video-2026-09-18.mp4`** (gitignored, staged 2026-09-18) — a
+  source clip intended for the Gallery page. Not wired up: `GalleryPhoto` and
+  `resources/views/gallery.blade.php` are photo-only today, no video collection/player
+  support exists yet. Check it against the doc's content before building anything, same as
+  the photo sources above.
 
 ## Gotchas
 
@@ -232,6 +260,18 @@ its collection, so a panel upload always wins and re-running it after adding mor
   test — public pages that read settings work without extra seeding.
 - No public auth. There is no `/register`, `/login` (that's `/admin/login`), or user
   dashboard. Don't reintroduce `route('login')` in Blade.
+- **A dead `queue:work` worker fails silently — check the "App health" page (System nav
+  group) first if something queued (media conversions, analytics' `RecordVisitJob`) seems
+  to just never happen.** `App\Providers\HealthServiceProvider` registers
+  `QueueCheck::new()` (2026-09) specifically for this; it reads the heartbeat
+  `routes/console.php` already schedules every minute (`health:queue-check-heartbeat`) —
+  before this check existed, a dead worker had no visible symptom anywhere at all.
+- **Admin panel favicon**: `AdminPanelProvider::favicon()` only ever renders one
+  `<link rel="icon">` (`favicon.ico`); the render hook at `filament.admin.favicon-links`
+  adds the same `favicon.svg` + `apple-touch-icon.png` tags the public layout uses, so
+  browsers (which prefer an SVG icon when both are present) show an identical tab icon in
+  both places instead of a crisper one only on the public site. Keep both lists in sync if
+  the favicon ever changes.
 - **`composer run dev` (server + queue + pail + Vite via `concurrently --kill-others`) can
   crash entirely — server included — if Vite's file watcher hits the OS's file-watcher
   limit (`ENOSPC`).** This happened when a background agent's isolated git worktree (each

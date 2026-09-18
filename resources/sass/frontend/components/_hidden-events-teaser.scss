@@ -1,0 +1,19 @@
+@use '../../shared/abstracts' as *;
+
+// ── Hidden-events teaser (every route) ──────────────────────────────────────
+//
+// A one-line nudge that more events exist beyond the one-week visibility
+// window (see Event::scopeVisibleUpcoming) — used on the homepage's
+// "Upcoming Events" section and the events page.
+
+.hidden-events-teaser {
+    margin-top: $space-4;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+
+    strong {
+        color: $color-gold;
+        font-weight: 700;
+    }
+}

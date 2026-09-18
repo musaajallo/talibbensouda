@@ -4,40 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Milestone;
+use App\Settings\EventsPageSettings;
 
 class EventController extends Controller
 {
     public function index()
     {
-        $now = now()->format('Ymd\THis\Z');
+        $eventsHidden = app(EventsPageSettings::class)->hide_events_sections;
 
-        $upcoming = Event::where('is_upcoming', true)
-            ->where('ics_end', '>=', $now)
-            ->orderBy('ics_start')
-            ->get();
+        if ($eventsHidden) {
+            $upcoming = collect();
+            $past = collect();
+            $hiddenUpcomingCount = 0;
+            $calEvents = [];
+        } else {
+            $now = now()->format('Ymd\THis\Z');
 
-        $past = Event::where('is_upcoming', true)
-            ->where('ics_end', '<', $now)
-            ->orderByDesc('ics_start')
-            ->get();
+            $upcoming = Event::visibleUpcoming()->orderBy('ics_start')->get();
+
+            $past = Event::where('is_upcoming', true)
+                ->where('ics_end', '<', $now)
+                ->orderByDesc('ics_start')
+                ->get();
+
+            $hiddenUpcomingCount = Event::hiddenUpcomingCount();
+
+            $calEvents = $upcoming->merge($past)->map(fn ($e) => [
+                'day' => $e->js_day,
+                'jsMonth' => $e->js_month,
+                'year' => (int) $e->date_year,
+                'title' => $e->title,
+            ])->values()->all();
+        }
 
         $milestones = Milestone::published()->orderByDesc('occurred_on')->get();
 
-        $calEvents = $upcoming->merge($past)->map(fn ($e) => [
-            'day' => $e->js_day,
-            'jsMonth' => $e->js_month,
-            'year' => (int) $e->date_year,
-            'title' => $e->title,
-        ])->values()->all();
-
-        return view('events', compact('upcoming', 'past', 'milestones', 'calEvents'));
+        return view('events', compact('upcoming', 'past', 'milestones', 'calEvents', 'hiddenUpcomingCount', 'eventsHidden'));
     }
 
     public function show(Event $event)
     {
+        // Same one-week visibility rule as index() — a far-future event
+        // shouldn't leak into "related events" either.
         $related = Event::where('slug', '!=', $event->slug)
-            ->where('is_upcoming', true)
-            ->where('ics_end', '>=', now()->format('Ymd\THis\Z'))
+            ->visibleUpcoming()
             ->orderBy('ics_start')
             ->limit(3)
             ->get();
