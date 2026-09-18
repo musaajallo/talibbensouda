@@ -34,9 +34,17 @@ class AppPreset implements Preset
             // so no external font/style origins are needed.
 
             // YouTube embed on the home page's "featured video" section
-            // (only rendered when an editor sets a video ID).
+            // (only rendered when an editor sets a video ID) and the
+            // Gallery's video lightbox.
             ->add(Directive::FRAME, 'https://www.youtube-nocookie.com')
-            ->add(Directive::FRAME, 'https://www.youtube.com');
+            ->add(Directive::FRAME, 'https://www.youtube.com')
+
+            // Gallery video-tile thumbnails (GalleryPhoto::thumbnailUrl()) are
+            // hotlinked straight from YouTube's thumbnail CDN, not proxied —
+            // without this, img-src 'self' (Basic preset) silently blocks
+            // them and a video tile falls back to its plain background
+            // colour with no poster at all.
+            ->add(Directive::IMG, 'https://i.ytimg.com');
 
         // First-party analytics (fomvasss/laravel-visits) needs no CSP origins
         // here — page-view tracking is server-side only (no client script),

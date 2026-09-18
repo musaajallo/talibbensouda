@@ -136,3 +136,59 @@ it('refuses to add the same video twice', function (): void {
 
     expect(GalleryPhoto::where('youtube_video_id', 'abc123')->count())->toBe(1);
 });
+
+it('splits already-imported videos from ones still available to add', function (): void {
+    GalleryPhoto::create([
+        'caption' => 'Already here', 'category' => 'Events', 'type' => GalleryPhoto::TYPE_VIDEO,
+        'youtube_video_id' => 'abc123', 'published' => true, 'sort_order' => 0,
+    ]);
+
+    fakeYoutubeChannelAndUploads();
+    Http::fake([
+        'https://www.googleapis.com/youtube/v3/playlistItems*' => Http::response([
+            'items' => [
+                ['snippet' => [
+                    'title' => 'Already Imported Video', 'publishedAt' => '2026-08-01T10:00:00Z',
+                    'resourceId' => ['videoId' => 'abc123'], 'thumbnails' => ['medium' => ['url' => 'x']],
+                ]],
+                ['snippet' => [
+                    'title' => 'Brand New Video', 'publishedAt' => '2026-08-02T10:00:00Z',
+                    'resourceId' => ['videoId' => 'def456'], 'thumbnails' => ['medium' => ['url' => 'x']],
+                ]],
+            ],
+            'nextPageToken' => null,
+        ]),
+    ]);
+
+    $split = Livewire::test(ImportYoutubeVideos::class)
+        ->assertSee('Available to add')
+        ->assertSee('Already in the Gallery')
+        ->assertSee('Brand New Video')
+        ->assertSee('Already Imported Video')
+        ->instance()
+        ->splitAvailableAndImported();
+
+    expect(collect($split['available'])->pluck('id')->all())->toBe(['def456'])
+        ->and(collect($split['imported'])->pluck('id')->all())->toBe(['abc123']);
+});
+
+it('previews a video with an autoplaying embed and a link to watch it on YouTube', function (): void {
+    // mount() always calls loadVideos(), which resolves the channel/uploads
+    // playlist — fake it even though this test doesn't care about the list,
+    // or it falls through to a real, hanging network call.
+    fakeYoutubeChannelAndUploads();
+    Http::fake([
+        'https://www.googleapis.com/youtube/v3/playlistItems*' => Http::response(['items' => [], 'nextPageToken' => null]),
+    ]);
+
+    Livewire::test(ImportYoutubeVideos::class)
+        // mountAction + the modal assertions, not callAction/assertSee — the
+        // preview has no submit (calling it closes the modal again), and the
+        // modal body isn't part of the component's own html().
+        ->mountAction('preview', arguments: [
+            'videoId' => 'abc123',
+            'title' => 'Rally in Bakau',
+        ])
+        ->assertMountedActionModalSeeHtml('autoplay=1')
+        ->assertMountedActionModalSeeHtml('https://www.youtube.com/watch?v=abc123');
+});

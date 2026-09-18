@@ -718,3 +718,98 @@ body {
         animation: none;
     }
 }
+
+/* ============================================================
+   Import YouTube Videos — video tile card
+   ----------------------------------------------------------
+   Hand-built rather than <x-filament::card> (that component only
+   applies its background/border chrome around a heading/description
+   API it expects — passed arbitrary content, it renders unstyled).
+   ============================================================ */
+.youtube-video-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.75rem;
+    background-color: #ffffff;
+    box-shadow: 0 1px 0 0 rgb(0 0 0 / 0.02), 0 0 0 1px rgb(0 0 0 / 0.06);
+    overflow: hidden;
+}
+
+.dark .youtube-video-card {
+    background-color: rgb(255 255 255 / 0.04);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1);
+}
+
+.youtube-video-card--imported {
+    opacity: 0.85;
+}
+
+.youtube-video-card__thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: rgb(0 0 0 / 0.06);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.dark .youtube-video-card__thumb {
+    background-color: rgb(255 255 255 / 0.06);
+}
+
+.youtube-video-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.youtube-video-card__play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 150ms;
+}
+
+.youtube-video-card__thumb:hover .youtube-video-card__play {
+    background-color: rgb(0 0 0 / 0.15);
+}
+
+.youtube-video-card__play svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #fff;
+    filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.5));
+}
+
+.youtube-video-card__body {
+    padding: 0.875rem 1rem 1rem;
+}
+
+.youtube-video-card__title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(3 7 18);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.dark .youtube-video-card__title {
+    color: #ffffff;
+}
+
+.youtube-video-card__date {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: rgb(107 114 128);
+}
+
+.dark .youtube-video-card__date {
+    color: rgb(156 163 175);
+}

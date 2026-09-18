@@ -91,11 +91,17 @@ class GalleryPhoto extends Model implements HasMedia
         return $this->imageUrl();
     }
 
-    /** Privacy-enhanced embed URL for the gallery lightbox. Video rows only. */
+    /**
+     * Privacy-enhanced embed URL for the gallery lightbox. Video rows only.
+     * `autoplay=1` — opening the lightbox is itself the click/tap that starts
+     * it; the iframe's own `allow="autoplay"` (gallery.blade.php) is what
+     * actually lets the browser honour it. `playsinline=1` so it doesn't
+     * force fullscreen on iOS the moment it starts.
+     */
     public function youtubeEmbedUrl(): ?string
     {
         return $this->youtube_video_id
-            ? "https://www.youtube-nocookie.com/embed/{$this->youtube_video_id}"
+            ? "https://www.youtube-nocookie.com/embed/{$this->youtube_video_id}?autoplay=1&playsinline=1"
             : null;
     }
 }
