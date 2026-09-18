@@ -22,7 +22,7 @@ class EventForm
         $settings = app(EventsPageSettings::class);
 
         return $schema->components([
-            Section::make('Milestone')
+            Section::make('Event details')
                 ->description('The headline, the URL slug and where it shows on the site.')
                 ->columns(2)
                 ->components([
@@ -48,8 +48,8 @@ class EventForm
                         ->native(false)
                         ->helperText('Manage the list under Page content → Events page.'),
                     Toggle::make('is_upcoming')
-                        ->label('Show in the current milestones list')
-                        ->helperText('Turn off once the event has passed.')
+                        ->label('Published')
+                        ->helperText('Turn off to hide this event everywhere on the site (the events page, its calendar and any homepage listing) without deleting it. Independent of the date — a past event stays visible here until you turn this off.')
                         ->default(true),
                 ]),
 

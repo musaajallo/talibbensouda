@@ -8,15 +8,19 @@ use function Pest\Laravel\get;
 
 function flyerlessEvent(): Event
 {
+    // Dated in the future on purpose — the events page only gives the flyer
+    // treatment to genuinely upcoming events (see EventController::index);
+    // a past-dated fixture here would land in the compact "Past Events" row
+    // instead, which never shows a flyer.
     return Event::create([
         'slug' => 'no-flyer-event',
         'title' => 'Groundbreaking at Bakau',
         'badge' => 'Kanifing',
-        'date_day' => '12', 'date_month' => 'Aug', 'date_year' => '2025',
+        'date_day' => '12', 'date_month' => 'Aug', 'date_year' => '2027',
         'js_day' => 12, 'js_month' => 7,
         'location' => 'Bakau, Kanifing Municipality',
         'description' => 'A groundbreaking ceremony.',
-        'ics_start' => '20250812T090000Z', 'ics_end' => '20250812T110000Z',
+        'ics_start' => '20270812T090000Z', 'ics_end' => '20270812T110000Z',
         'is_upcoming' => true,
     ]);
 }

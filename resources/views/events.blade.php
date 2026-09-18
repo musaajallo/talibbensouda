@@ -12,14 +12,15 @@
                 <span class="page-hero__eyebrow">Events &amp; Milestones</span>
                 <h1 class="page-hero__title">Events &amp; Milestones</h1>
                 <p class="page-hero__subtitle">
-                    A record of the launches, openings and gatherings that have marked
-                    Talib Bensouda's work as Lord Mayor of Kanifing.
+                    Where to meet Talib next, a record of past events, and the
+                    launches and openings that have marked his work as Lord Mayor
+                    of Kanifing.
                 </p>
             </div>
         </div>
     </section>
 
-    {{-- ── Milestones list / calendar ──────────────────────────────────────── --}}
+    {{-- ── Upcoming events list / calendar ───────────────────────────────────── --}}
     {{-- $upcoming and $calEvents are passed from EventController@index --}}
 
     <section
@@ -80,11 +81,11 @@
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">The Record</span>
-                <h2 class="section-header__title">Milestones</h2>
+                <span class="section-header__eyebrow">On the Campaign Trail</span>
+                <h2 class="section-header__title">Upcoming Events</h2>
                 <p class="section-header__lead">
-                    Browse as a list, or switch to the calendar to see when each
-                    milestone landed.
+                    Browse as a list, or switch to the calendar to see when
+                    each one lands.
                 </p>
             </div>
 
@@ -184,7 +185,7 @@
 
                 </div>
                 @empty
-                <x-empty-state message="Upcoming events will be listed here soon. Check back shortly." />
+                <x-empty-state message="No events are scheduled right now. Check back shortly." />
                 @endforelse
             </div>
 
@@ -242,51 +243,87 @@
                 {{-- Legend --}}
                 <div style="display:flex; align-items:center; gap:8px; margin-top:16px; font-size:0.78rem; color:var(--muted);">
                     <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#BD2038;"></span>
-                    Milestone on this date — click to jump to details
+                    Event on this date — click to jump to details
                 </div>
             </div>
 
         </div>
     </section>
 
-    {{-- ── Earlier milestones ───────────────────────────────────────────────── --}}
+    {{-- ── Past Events ──────────────────────────────────────────────────────── --}}
     <section class="section section--grey">
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow">Earlier</span>
-                <h2 class="section-header__title">2018 – 2023</h2>
+                <span class="section-header__eyebrow">Already Happened</span>
+                <h2 class="section-header__title">Past Events</h2>
                 <p class="section-header__lead">
-                    The elections, launches and groundworks that set the term in motion.
+                    Courtesy calls and rallies that have already taken place.
                 </p>
             </div>
 
-            @php
-            $past = [
-                ['May 2018', 'Elected Lord Mayor of Kanifing',            'Kanifing Municipal Council'],
-                ['2019',     'Mbalit Project Launched',                   'Kanifing Municipality'],
-                ['2021',     'Kanifing Environmental Transformation Programme Begins', 'KMC & Peterborough City Council'],
-                ['Jul 2021', 'WasteAid Composting Pilot Launched',        'Bakau & Abuko'],
-                ['Aug 2022', 'Municipal Library Foundation Stone Laid',   'Kanifing Municipality'],
-                ['Dec 2022', 'End-of-Term Awards Night',                  'Kanifing Municipal Council'],
-                ['May 2023', 'Re-elected Lord Mayor of Kanifing',         'Kanifing Municipal Council'],
-            ];
-            @endphp
-
-            <div class="past-events-grid">
-                @foreach($past as $i => [$date, $title, $loc])
-                <div class="past-event" data-reveal data-reveal-delay="{{ $i * 60 }}">
-                    <div class="past-event__date">{{ $date }}</div>
-                    <div class="past-event__title">{{ $title }}</div>
-                    <div class="past-event__location">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                        </svg>
-                        {{ $loc }}
+            @if ($past->isNotEmpty())
+            <div class="events-list">
+                @foreach ($past as $i => $event)
+                <div class="event-row" data-reveal data-reveal-delay="{{ $i * 80 }}">
+                    <div class="event-row__date">
+                        <div class="event-row__date-day">{{ $event->date_day }}</div>
+                        <div class="event-row__date-month">{{ $event->date_month }} {{ $event->date_year }}</div>
+                    </div>
+                    <div class="event-row__info">
+                        <div class="event-row__title">{{ $event->title }}</div>
+                        <div class="event-row__meta">{{ $event->location }}</div>
+                    </div>
+                    <div class="event-row__cta">
+                        <a href="{{ route('events.show', $event) }}" class="btn btn--outline-navy btn--sm">Details</a>
                     </div>
                 </div>
                 @endforeach
             </div>
+            @else
+            <x-empty-state message="Past events will appear here once they've taken place." />
+            @endif
+
+        </div>
+    </section>
+
+    {{-- ── Milestones ──────────────────────────────────────────────────────── --}}
+    {{-- A different resource from Events entirely — past record-of-delivery
+         facts, not attendable happenings — so a different UI on purpose
+         (`.milestone-card` grid, no CTA), to keep the two from blurring
+         together. --}}
+    <section class="section">
+        <div class="container">
+
+            <div class="section-header" data-reveal>
+                <span class="section-header__eyebrow">The Record</span>
+                <h2 class="section-header__title">Milestones</h2>
+                <p class="section-header__lead">
+                    The elections, launches and openings that mark the term's progress.
+                </p>
+            </div>
+
+            @if ($milestones->isNotEmpty())
+            <div class="milestones-grid">
+                @foreach ($milestones as $i => $milestone)
+                <div class="milestone-card" data-reveal data-reveal-delay="{{ $i * 60 }}">
+                    <div class="milestone-card__date">{{ $milestone->occurred_on->format('M Y') }}</div>
+                    <div class="milestone-card__title">{{ $milestone->title }}</div>
+                    @if ($milestone->location)
+                    <div class="milestone-card__location">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        {{ $milestone->location }}
+                    </div>
+                    @endif
+                    <p class="milestone-card__desc">{{ $milestone->description }}</p>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <x-empty-state message="The record of milestones will be published here soon." />
+            @endif
 
         </div>
     </section>

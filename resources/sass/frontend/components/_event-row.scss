@@ -1,0 +1,81 @@
+@use '../../shared/abstracts' as *;
+
+// ── Compact event row (every route) ─────────────────────────────────────────
+//
+// A theme-aware compact list row for an `Event` — the homepage's "Upcoming
+// Events" section and the events page's "Past Events" section. Distinct on
+// purpose from `.event-card` (the rich card used for the full upcoming list
+// on /events) and from `.milestone-card` (the Milestone display) — see
+// top-level CLAUDE.md for why these three don't share a look.
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+}
+
+.event-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: $space-6;
+    align-items: center;
+    padding: $space-6;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: $radius-md;
+    transition: border-color 0.15s, background 0.25s;
+
+    &:hover { border-color: $color-gold; }
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 80px 1fr auto;
+        gap: $space-4;
+        padding: $space-4;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        gap: $space-3 $space-4;
+        align-items: start;
+
+        // Button drops to its own row, aligned with the body (not the date).
+        .event-row__cta {
+            grid-column: 2 / -1;
+        }
+    }
+
+    &__date {
+        text-align: center;
+
+        &-day {
+            font-family: $font-display;
+            font-size: 2rem;
+            font-weight: 900;
+            color: $color-gold;
+            line-height: 1;
+        }
+        &-month {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+    }
+
+    &__info { min-width: 0; }
+
+    &__title {
+        font-weight: 600;
+        color: var(--fg);
+        margin-bottom: 4px;
+    }
+
+    &__meta {
+        font-size: 0.85rem;
+        color: var(--muted);
+    }
+
+    &__cta {}
+}

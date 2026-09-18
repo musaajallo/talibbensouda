@@ -8,7 +8,12 @@
         ->group(\App\Models\CommunityPhoto::GROUP_MUNICIPALITY)
         ->with('media')->orderBy('sort_order')->take(6)->get();
     $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->take(6)->get();
-    $milestones = \App\Models\Event::where('is_upcoming', true)->orderByDesc('ics_start')->take(4)->get();
+    $milestones = \App\Models\Milestone::published()->orderByDesc('occurred_on')->take(4)->get();
+    $upcomingEvents = \App\Models\Event::where('is_upcoming', true)
+        ->where('ics_end', '>=', now()->format('Ymd\THis\Z'))
+        ->orderBy('ics_start')
+        ->take(4)
+        ->get();
 
     // Decorative avatar shapes, cycled across recognition cards.
     $avatarIcons = [
@@ -211,6 +216,47 @@
         </div>
     </section>
 
+    {{-- ── Upcoming Events (campaign trail) ────────────────────────────────────── --}}
+    {{-- Hidden entirely when there's nothing genuinely upcoming — no empty-state
+         filler here, unlike most sections on this page. --}}
+    @if ($upcomingEvents->isNotEmpty())
+    <section class="section">
+        <div class="container">
+
+            <div class="section-header" data-reveal>
+                <span class="section-header__eyebrow">{{ $home->upcoming_eyebrow }}</span>
+                <h2 class="section-header__title">{{ $home->upcoming_headline }}</h2>
+                <p class="section-header__lead">{{ $home->upcoming_lead }}</p>
+            </div>
+
+            <div class="events-list">
+                @foreach ($upcomingEvents as $i => $event)
+                <div class="event-row" data-reveal data-reveal-delay="{{ $i * 100 }}">
+                    <div class="event-row__date">
+                        <div class="event-row__date-day">{{ $event->date_day }}</div>
+                        <div class="event-row__date-month">{{ $event->date_month }} {{ $event->date_year }}</div>
+                    </div>
+                    <div class="event-row__info">
+                        <div class="event-row__title">{{ $event->title }}</div>
+                        <div class="event-row__meta">{{ $event->description }}</div>
+                    </div>
+                    <div class="event-row__cta">
+                        <a href="{{ route('events.show', $event) }}" class="btn btn--gold btn--sm">Details</a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            @if ($home->upcoming_cta_label)
+            <div style="text-align:center; margin-top:48px;" data-reveal data-reveal-delay="350">
+                <a href="{{ url('/events') }}" class="btn btn--outline-navy">{{ $home->upcoming_cta_label }}</a>
+            </div>
+            @endif
+
+        </div>
+    </section>
+    @endif
+
     {{-- ── In the Community ──────────────────────────────────────────────────── --}}
     <section class="section">
         <div class="container">
@@ -263,37 +309,40 @@
     </section>
 
     {{-- ── Recent Milestones ────────────────────────────────────────────────── --}}
-    <section class="section section--navy">
+    {{-- Deliberately a different component from "Upcoming Events" above
+         (`.milestone-card` grid vs. `.event-row` list) — Milestones are past,
+         non-actionable record entries, not something to RSVP to. --}}
+    <section class="section">
         <div class="container">
 
             <div class="section-header" data-reveal>
-                <span class="section-header__eyebrow section-header__eyebrow--light">{{ $home->milestones_eyebrow }}</span>
-                <h2 class="section-header__title section-header__title--light">{{ $home->milestones_headline }}</h2>
-                <p class="section-header__lead section-header__lead--light">{{ $home->milestones_lead }}</p>
+                <span class="section-header__eyebrow">{{ $home->milestones_eyebrow }}</span>
+                <h2 class="section-header__title">{{ $home->milestones_headline }}</h2>
+                <p class="section-header__lead">{{ $home->milestones_lead }}</p>
             </div>
 
             @if ($milestones->isNotEmpty())
-            <div class="events-list">
-                @foreach ($milestones as $i => $event)
-                <div class="event-row" data-reveal data-reveal-delay="{{ $i * 100 }}">
-                    <div class="event-row__date">
-                        <div class="event-row__date-day">{{ $event->date_day }}</div>
-                        <div class="event-row__date-month">{{ $event->date_month }} {{ $event->date_year }}</div>
+            <div class="milestones-grid">
+                @foreach ($milestones as $i => $milestone)
+                <div class="milestone-card" data-reveal data-reveal-delay="{{ $i * 80 }}">
+                    <div class="milestone-card__date">{{ $milestone->occurred_on->format('M Y') }}</div>
+                    <div class="milestone-card__title">{{ $milestone->title }}</div>
+                    @if ($milestone->location)
+                    <div class="milestone-card__location">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        {{ $milestone->location }}
                     </div>
-                    <div class="event-row__info">
-                        <div class="event-row__title">{{ $event->title }}</div>
-                        <div class="event-row__meta">{{ $event->description }}</div>
-                    </div>
-                    <div class="event-row__cta">
-                        <a href="{{ route('events.show', $event) }}" class="btn btn--gold btn--sm">Details</a>
-                    </div>
+                    @endif
+                    <p class="milestone-card__desc">{{ $milestone->description }}</p>
                 </div>
                 @endforeach
             </div>
 
             @if ($home->milestones_cta_label)
             <div style="text-align:center; margin-top:48px;" data-reveal data-reveal-delay="350">
-                <a href="{{ url('/events') }}" class="btn btn--outline-white">{{ $home->milestones_cta_label }}</a>
+                <a href="{{ url('/events') }}" class="btn btn--outline-navy">{{ $home->milestones_cta_label }}</a>
             </div>
             @endif
             @else

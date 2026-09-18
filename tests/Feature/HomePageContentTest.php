@@ -3,6 +3,7 @@
 use App\Models\CommunityPhoto;
 use App\Models\Event;
 use App\Models\HeroSlide;
+use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Settings\HomePageSettings;
@@ -35,16 +36,26 @@ it('renders projects, testimonials and community photos from their models', func
         ->assertSee('Library opened 2024');
 });
 
-it('pulls recent milestones from upcoming events', function (): void {
-    Event::create([
-        'slug' => 'library-hub', 'title' => 'Municipal Library Hub', 'badge' => 'Kanifing',
-        'date_day' => '01', 'date_month' => 'Dec', 'date_year' => '2024',
-        'js_day' => 1, 'js_month' => 11, 'location' => 'Kanifing',
-        'description' => 'D45m library inaugurated.', 'ics_start' => '20241201T090000Z', 'ics_end' => '20241201T160000Z',
-        'is_upcoming' => true,
+it('pulls recent milestones from the Milestone model', function (): void {
+    Milestone::create([
+        'slug' => 'library-hub', 'title' => 'Municipal Library Hub',
+        'occurred_on' => '2024-12-01', 'location' => 'Kanifing',
+        'description' => 'D45m library inaugurated.', 'published' => true,
     ]);
 
     get('/')->assertOk()->assertSee('Municipal Library Hub');
+});
+
+it('shows genuinely upcoming events, not past ones, on the home page', function (): void {
+    Event::create([
+        'slug' => 'past-rally', 'title' => 'Past Rally Should Be Hidden', 'badge' => 'Campaign',
+        'date_day' => '01', 'date_month' => 'Jan', 'date_year' => '2020',
+        'js_day' => 1, 'js_month' => 0, 'location' => 'Kanifing',
+        'description' => 'Long over.', 'ics_start' => '20200101T090000Z', 'ics_end' => '20200101T160000Z',
+        'is_upcoming' => true,
+    ]);
+
+    get('/')->assertOk()->assertDontSee('Past Rally Should Be Hidden');
 });
 
 it('renders with every content model empty', function (): void {
