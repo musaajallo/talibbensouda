@@ -7,6 +7,7 @@ use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Settings\HomePageSettings;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\get;
@@ -56,6 +57,38 @@ it('shows genuinely upcoming events, not past ones, on the home page', function 
     ]);
 
     get('/')->assertOk()->assertDontSee('Past Rally Should Be Hidden');
+});
+
+/** Create an Event on a given date, with every derived column filled in correctly. */
+function homepageEventOn(Carbon $date, string $slug): Event
+{
+    return Event::create([
+        'slug' => $slug, 'title' => $slug, 'badge' => 'Campaign',
+        'date_day' => $date->format('j'), 'date_month' => $date->format('M'), 'date_year' => $date->format('Y'),
+        'js_day' => (int) $date->format('j'), 'js_month' => (int) $date->format('n') - 1,
+        'location' => 'Kanifing',
+        'description' => 'An event.',
+        'ics_start' => $date->format('Ymd').'T090000Z', 'ics_end' => $date->format('Ymd').'T160000Z',
+        'is_upcoming' => true,
+    ]);
+}
+
+it('only shows an upcoming event on the home page once it is within a week of happening', function (): void {
+    homepageEventOn(now()->addDays(3), 'soon-on-home');
+    homepageEventOn(now()->addDays(20), 'far-off-on-home');
+
+    get('/')->assertOk()->assertSee('soon-on-home')->assertDontSee('far-off-on-home');
+});
+
+it('teases the count of events hidden beyond the one-week window on the home page', function (): void {
+    homepageEventOn(now()->addDays(20), 'far-off-1');
+    homepageEventOn(now()->addDays(25), 'far-off-2');
+
+    get('/')->assertOk()->assertSee('+2')->assertSee('come back soon');
+});
+
+it('hides the home page upcoming-events section entirely when there is nothing to tease', function (): void {
+    get('/')->assertOk()->assertDontSee('come back soon');
 });
 
 it('renders with every content model empty', function (): void {

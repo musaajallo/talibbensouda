@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\Media\ResolvesPublicMediaUrl;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -35,6 +36,37 @@ class Event extends Model implements HasMedia
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Public-visibility rule (2026-09): a scheduled event only appears
+     * anywhere on the site once it's within a week of happening — the
+     * events page, its calendar, "related events", and the homepage's
+     * "Upcoming Events" section all use this same scope, so the window can
+     * only ever be changed in one place. `is_upcoming` is unrelated — that's
+     * a published/visibility toggle (see the admin form), not a chronology
+     * check; this scope is the chronology check.
+     */
+    public function scopeVisibleUpcoming(Builder $query): Builder
+    {
+        $now = now()->format('Ymd\THis\Z');
+        $visibleFrom = now()->addWeek()->format('Ymd\THis\Z');
+
+        return $query->where('is_upcoming', true)
+            ->where('ics_end', '>=', $now)
+            ->where('ics_start', '<=', $visibleFrom);
+    }
+
+    /**
+     * Scheduled events that exist and are published but sit beyond the
+     * one-week visibility window above — i.e. "still coming, not shown yet".
+     * Used for the homepage/events-page teaser count.
+     */
+    public static function hiddenUpcomingCount(): int
+    {
+        return static::where('is_upcoming', true)
+            ->where('ics_start', '>', now()->addWeek()->format('Ymd\THis\Z'))
+            ->count();
     }
 
     public function registerMediaCollections(): void

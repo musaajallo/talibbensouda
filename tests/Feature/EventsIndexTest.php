@@ -30,6 +30,20 @@ it('only shows an upcoming event once it is within a week of happening', functio
     get('/events')->assertOk()->assertSee('soon')->assertDontSee('far-off');
 });
 
+it('teases the count of events hidden beyond the one-week window', function (): void {
+    eventOn(now()->addDays(20)->toDateString(), 'far-off-1');
+    eventOn(now()->addDays(25)->toDateString(), 'far-off-2');
+    eventOn(now()->addDays(30)->toDateString(), 'far-off-3');
+
+    get('/events')->assertOk()->assertSee('+3')->assertSee('come back soon');
+});
+
+it('hides the Past Events section entirely when nothing has happened yet', function (): void {
+    eventOn(now()->addDays(3)->toDateString(), 'only-upcoming');
+
+    get('/events')->assertOk()->assertDontSee('Past Events');
+});
+
 it('lists events newest-first regardless of creation order', function (): void {
     // Created oldest-first, on purpose, so only date ordering could produce
     // the expected sequence.

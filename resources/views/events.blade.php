@@ -189,6 +189,8 @@
                 @endforelse
             </div>
 
+            <x-hidden-events-teaser :count="$hiddenUpcomingCount" data-reveal />
+
             {{-- ── Calendar view ──────────────────────────────────────────────── --}}
             <div x-show="view === 'calendar'" x-transition x-cloak>
                 <div class="cal-wrap">
@@ -251,6 +253,9 @@
     </section>
 
     {{-- ── Past Events ──────────────────────────────────────────────────────── --}}
+    {{-- Hidden entirely when there's nothing past yet — no empty-state filler,
+         same reasoning as the homepage's "Upcoming Events" section. --}}
+    @if ($past->isNotEmpty())
     <section class="section section--grey">
         <div class="container">
 
@@ -262,7 +267,6 @@
                 </p>
             </div>
 
-            @if ($past->isNotEmpty())
             <div class="events-list">
                 @foreach ($past as $i => $event)
                 <div class="event-row" data-reveal data-reveal-delay="{{ $i * 80 }}">
@@ -280,12 +284,10 @@
                 </div>
                 @endforeach
             </div>
-            @else
-            <x-empty-state message="Past events will appear here once they've taken place." />
-            @endif
 
         </div>
     </section>
+    @endif
 
     {{-- ── Milestones ──────────────────────────────────────────────────────── --}}
     {{-- A different resource from Events entirely — past record-of-delivery

@@ -10,16 +10,8 @@ class EventController extends Controller
     public function index()
     {
         $now = now()->format('Ymd\THis\Z');
-        // Public visibility rule: an event only appears once it's within a
-        // week of happening — further out, the row exists (admin-editable,
-        // seeded) but isn't shown. Doesn't affect $past or the homepage.
-        $visibleFrom = now()->addWeek()->format('Ymd\THis\Z');
 
-        $upcoming = Event::where('is_upcoming', true)
-            ->where('ics_end', '>=', $now)
-            ->where('ics_start', '<=', $visibleFrom)
-            ->orderBy('ics_start')
-            ->get();
+        $upcoming = Event::visibleUpcoming()->orderBy('ics_start')->get();
 
         $past = Event::where('is_upcoming', true)
             ->where('ics_end', '<', $now)
@@ -28,6 +20,8 @@ class EventController extends Controller
 
         $milestones = Milestone::published()->orderByDesc('occurred_on')->get();
 
+        $hiddenUpcomingCount = Event::hiddenUpcomingCount();
+
         $calEvents = $upcoming->merge($past)->map(fn ($e) => [
             'day' => $e->js_day,
             'jsMonth' => $e->js_month,
@@ -35,7 +29,7 @@ class EventController extends Controller
             'title' => $e->title,
         ])->values()->all();
 
-        return view('events', compact('upcoming', 'past', 'milestones', 'calEvents'));
+        return view('events', compact('upcoming', 'past', 'milestones', 'calEvents', 'hiddenUpcomingCount'));
     }
 
     public function show(Event $event)
@@ -43,9 +37,7 @@ class EventController extends Controller
         // Same one-week visibility rule as index() — a far-future event
         // shouldn't leak into "related events" either.
         $related = Event::where('slug', '!=', $event->slug)
-            ->where('is_upcoming', true)
-            ->where('ics_end', '>=', now()->format('Ymd\THis\Z'))
-            ->where('ics_start', '<=', now()->addWeek()->format('Ymd\THis\Z'))
+            ->visibleUpcoming()
             ->orderBy('ics_start')
             ->limit(3)
             ->get();

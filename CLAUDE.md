@@ -56,25 +56,30 @@ disk. Modelled on the sibling `umc` project.
   title/type/date when none is set. `date_day` is a free string, not an integer — multi-day
   entries (courtesy-call weekends/weeks) use a range like `'16–20'`; `js_day`/`js_month` still
   take the range's first day for the calendar grid.
-- **`/events` page** (`EventController::index`) splits `Event::where('is_upcoming', true)`
-  into `$upcoming` (`ics_end >= now()`, ascending — the rich `.event-card` list + calendar)
-  and `$past` (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP),
-  plus a wholly separate `$milestones` (`Milestone::published()`, descending by
-  `occurred_on`, `.milestone-card` grid). **`$upcoming` additionally requires
-  `ics_start <= now()->addWeek()`** — a public-visibility rule (2026-09), not a data
-  rule: an event only appears once it's within a week of happening (the calendar and
-  `show()`'s "related events" inherit this too, since they're built from `$upcoming`/the
-  same query). Further-out events stay in the database, fully editable in the panel — they
-  just don't render anywhere public yet. This is scoped to `/events` only; the homepage's
-  own "Upcoming Events" section (below) runs its own query and does **not** apply this
-  1-week cutoff — ask if that's meant to be consistent before assuming either way. Same
-  three-way split feeds the **homepage**:
-  "Upcoming Events" (`welcome.blade.php`, directly below The People's Mayor — hidden
-  entirely, no empty-state, when nothing qualifies) queries `Event` the same way as
-  `$upcoming` above; "Recent Milestones" further down the page queries `Milestone`. Copy for
-  the homepage section lives in `HomePageSettings::$upcoming_*` / `$milestones_*` via
-  `ManageHomePage`. The 2026 pre-nomination campaign itinerary (courtesy calls by region +
-  rallies) that populates `Event` lives in `EventSeeder::campaignItinerary()`, sourced from
+- **One-week public-visibility rule** (`Event::scopeVisibleUpcoming()`, 2026-09) — a
+  scheduled event only appears *anywhere* on the site once `ics_start` is within a week of
+  now. Not a data rule: further-out events stay in the database, fully editable in the
+  panel, they just don't render publicly yet. This is the single source of truth for the
+  cutoff — `EventController::index()`'s `$upcoming` (and the calendar, built from it),
+  `show()`'s "related events", and the **homepage**'s "Upcoming Events" section
+  (`welcome.blade.php`) all call this same scope, so changing the window only ever means
+  editing one method. `Event::hiddenUpcomingCount()` is the companion query (events beyond
+  the window) that feeds the `<x-hidden-events-teaser :count="…">` component — a one-line
+  "+N more events already on the calendar — come back soon" nudge, shown on both `/events`
+  and the homepage section. Both the homepage section and the events page's "Past Events"
+  section hide entirely (no empty-state filler) when they'd have nothing to show *and*
+  nothing to tease — see the `@if` right above each one in the Blade for the exact
+  condition, since it's not simply "the list is empty" once the teaser is in play.
+- **`/events` page** (`EventController::index`) splits events into `$upcoming` (the
+  scope above, ascending — the rich `.event-card` list + calendar) and `$past`
+  (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP), plus a
+  wholly separate `$milestones` (`Milestone::published()`, descending by `occurred_on`,
+  `.milestone-card` grid). Same idea feeds the **homepage**: "Upcoming Events" (directly
+  below The People's Mayor) queries `Event`; "Recent Milestones" further down queries
+  `Milestone`. Copy for the homepage section lives in `HomePageSettings::$upcoming_*` /
+  `$milestones_*` via `ManageHomePage`. The 2026 pre-nomination campaign itinerary
+  (courtesy calls by region + rallies) that populates `Event` lives in
+  `EventSeeder::campaignItinerary()`, sourced from
   `docs/assets/campaign-itinerary/pre-nomination-itinerary-2026-09-18.jpeg`; the KMC record
   (openings, launches, elections, 2018–2026) that populates `Milestone` lives in
   `MilestoneSeeder`.
