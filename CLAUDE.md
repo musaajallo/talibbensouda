@@ -60,7 +60,15 @@ disk. Modelled on the sibling `umc` project.
   into `$upcoming` (`ics_end >= now()`, ascending — the rich `.event-card` list + calendar)
   and `$past` (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP),
   plus a wholly separate `$milestones` (`Milestone::published()`, descending by
-  `occurred_on`, `.milestone-card` grid). Same three-way split feeds the **homepage**:
+  `occurred_on`, `.milestone-card` grid). **`$upcoming` additionally requires
+  `ics_start <= now()->addWeek()`** — a public-visibility rule (2026-09), not a data
+  rule: an event only appears once it's within a week of happening (the calendar and
+  `show()`'s "related events" inherit this too, since they're built from `$upcoming`/the
+  same query). Further-out events stay in the database, fully editable in the panel — they
+  just don't render anywhere public yet. This is scoped to `/events` only; the homepage's
+  own "Upcoming Events" section (below) runs its own query and does **not** apply this
+  1-week cutoff — ask if that's meant to be consistent before assuming either way. Same
+  three-way split feeds the **homepage**:
   "Upcoming Events" (`welcome.blade.php`, directly below The People's Mayor — hidden
   entirely, no empty-state, when nothing qualifies) queries `Event` the same way as
   `$upcoming` above; "Recent Milestones" further down the page queries `Milestone`. Copy for
@@ -216,6 +224,11 @@ its collection, so a panel upload always wins and re-running it after adding mor
 - **Still needs to run in production once this ships** — deliberately not wired into
   `.forge/deploy.sh`; nobody's decided yet whether it should run on every deploy (like
   `ContentSeeder`) or once by hand.
+- **`docs/assets/gallery-video-2026-09-18.mp4`** (gitignored, staged 2026-09-18) — a
+  source clip intended for the Gallery page. Not wired up: `GalleryPhoto` and
+  `resources/views/gallery.blade.php` are photo-only today, no video collection/player
+  support exists yet. Check it against the doc's content before building anything, same as
+  the photo sources above.
 
 ## Gotchas
 
@@ -232,6 +245,18 @@ its collection, so a panel upload always wins and re-running it after adding mor
   test — public pages that read settings work without extra seeding.
 - No public auth. There is no `/register`, `/login` (that's `/admin/login`), or user
   dashboard. Don't reintroduce `route('login')` in Blade.
+- **A dead `queue:work` worker fails silently — check the "App health" page (System nav
+  group) first if something queued (media conversions, analytics' `RecordVisitJob`) seems
+  to just never happen.** `App\Providers\HealthServiceProvider` registers
+  `QueueCheck::new()` (2026-09) specifically for this; it reads the heartbeat
+  `routes/console.php` already schedules every minute (`health:queue-check-heartbeat`) —
+  before this check existed, a dead worker had no visible symptom anywhere at all.
+- **Admin panel favicon**: `AdminPanelProvider::favicon()` only ever renders one
+  `<link rel="icon">` (`favicon.ico`); the render hook at `filament.admin.favicon-links`
+  adds the same `favicon.svg` + `apple-touch-icon.png` tags the public layout uses, so
+  browsers (which prefer an SVG icon when both are present) show an identical tab icon in
+  both places instead of a crisper one only on the public site. Keep both lists in sync if
+  the favicon ever changes.
 - **`composer run dev` (server + queue + pail + Vite via `concurrently --kill-others`) can
   crash entirely — server included — if Vite's file watcher hits the OS's file-watcher
   limit (`ENOSPC`).** This happened when a background agent's isolated git worktree (each

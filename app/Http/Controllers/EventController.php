@@ -10,9 +10,14 @@ class EventController extends Controller
     public function index()
     {
         $now = now()->format('Ymd\THis\Z');
+        // Public visibility rule: an event only appears once it's within a
+        // week of happening — further out, the row exists (admin-editable,
+        // seeded) but isn't shown. Doesn't affect $past or the homepage.
+        $visibleFrom = now()->addWeek()->format('Ymd\THis\Z');
 
         $upcoming = Event::where('is_upcoming', true)
             ->where('ics_end', '>=', $now)
+            ->where('ics_start', '<=', $visibleFrom)
             ->orderBy('ics_start')
             ->get();
 
@@ -35,9 +40,12 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        // Same one-week visibility rule as index() — a far-future event
+        // shouldn't leak into "related events" either.
         $related = Event::where('slug', '!=', $event->slug)
             ->where('is_upcoming', true)
             ->where('ics_end', '>=', now()->format('Ymd\THis\Z'))
+            ->where('ics_start', '<=', now()->addWeek()->format('Ymd\THis\Z'))
             ->orderBy('ics_start')
             ->limit(3)
             ->get();

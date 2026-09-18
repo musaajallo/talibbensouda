@@ -23,6 +23,13 @@ function eventOn(string $isoDate, string $slug): Event
     ]);
 }
 
+it('only shows an upcoming event once it is within a week of happening', function (): void {
+    eventOn(now()->addDays(3)->toDateString(), 'soon');
+    eventOn(now()->addDays(20)->toDateString(), 'far-off');
+
+    get('/events')->assertOk()->assertSee('soon')->assertDontSee('far-off');
+});
+
 it('lists events newest-first regardless of creation order', function (): void {
     // Created oldest-first, on purpose, so only date ordering could produce
     // the expected sequence.
