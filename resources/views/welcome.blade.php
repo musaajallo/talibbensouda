@@ -9,8 +9,11 @@
         ->with('media')->orderBy('sort_order')->take(6)->get();
     $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->take(6)->get();
     $milestones = \App\Models\Milestone::published()->orderByDesc('occurred_on')->take(4)->get();
-    $upcomingEvents = \App\Models\Event::visibleUpcoming()->orderBy('ics_start')->take(4)->get();
-    $hiddenUpcomingCount = \App\Models\Event::hiddenUpcomingCount();
+    $eventsHidden = app(\App\Settings\EventsPageSettings::class)->hide_events_sections;
+    $upcomingEvents = $eventsHidden
+        ? collect()
+        : \App\Models\Event::visibleUpcoming()->orderBy('ics_start')->take(4)->get();
+    $hiddenUpcomingCount = $eventsHidden ? 0 : \App\Models\Event::hiddenUpcomingCount();
 
     // Decorative avatar shapes, cycled across recognition cards.
     $avatarIcons = [

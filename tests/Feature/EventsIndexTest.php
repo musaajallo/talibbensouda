@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Event;
+use App\Models\Milestone;
+use App\Settings\EventsPageSettings;
 use Carbon\CarbonImmutable;
 
 use function Pest\Laravel\get;
@@ -42,6 +44,28 @@ it('hides the Past Events section entirely when nothing has happened yet', funct
     eventOn(now()->addDays(3)->toDateString(), 'only-upcoming');
 
     get('/events')->assertOk()->assertDontSee('Past Events');
+});
+
+it('hides Events entirely and shows only Milestones when the settings kill switch is on', function (): void {
+    eventOn(now()->addDays(3)->toDateString(), 'switched-off-upcoming');
+    eventOn(now()->subDays(3)->toDateString(), 'switched-off-past');
+    Milestone::create([
+        'slug' => 'library-hub', 'title' => 'Milestone Should Still Show',
+        'occurred_on' => '2024-12-01', 'location' => 'Kanifing',
+        'description' => 'D45m library inaugurated.', 'published' => true,
+    ]);
+
+    $settings = app(EventsPageSettings::class);
+    $settings->hide_events_sections = true;
+    $settings->save();
+
+    get('/events')
+        ->assertOk()
+        ->assertDontSee('switched-off-upcoming')
+        ->assertDontSee('switched-off-past')
+        ->assertDontSee('Upcoming Events')
+        ->assertDontSee('Past Events')
+        ->assertSee('Milestone Should Still Show');
 });
 
 it('lists events newest-first regardless of creation order', function (): void {

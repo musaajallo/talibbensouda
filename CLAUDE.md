@@ -70,6 +70,16 @@ disk. Modelled on the sibling `umc` project.
   section hide entirely (no empty-state filler) when they'd have nothing to show *and*
   nothing to tease — see the `@if` right above each one in the Blade for the exact
   condition, since it's not simply "the list is empty" once the teaser is in play.
+- **Events kill switch**: `EventsPageSettings::$hide_events_sections` (Page content →
+  Events page → Visibility, 2026-09) hides Events everywhere on the public site — the
+  homepage's "Upcoming Events" section, and `/events`' upcoming list, calendar, and Past
+  Events section — leaving only Milestones visible on both. A display toggle only; no rows
+  are touched, and `/events/{slug}` detail pages stay directly reachable regardless. When
+  it's on, `EventController::index()` skips the Event queries entirely rather than running
+  them and hiding the result (`$upcoming`/`$past` come back as empty collections,
+  `$hiddenUpcomingCount` as `0`) — `$eventsHidden` is passed to the view either way, and the
+  page-hero subtitle on `/events` also switches copy so it doesn't reference events that
+  aren't shown.
 - **`/events` page** (`EventController::index`) splits events into `$upcoming` (the
   scope above, ascending — the rich `.event-card` list + calendar) and `$past`
   (`ics_end < now()`, descending — the compact `.event-row` list, no flyer/RSVP), plus a

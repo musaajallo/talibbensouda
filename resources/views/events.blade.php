@@ -12,17 +12,24 @@
                 <span class="page-hero__eyebrow">Events &amp; Milestones</span>
                 <h1 class="page-hero__title">Events &amp; Milestones</h1>
                 <p class="page-hero__subtitle">
-                    Where to meet Talib next, a record of past events, and the
-                    launches and openings that have marked his work as Lord Mayor
-                    of Kanifing.
+                    @if ($eventsHidden)
+                        The launches and openings that have marked his work as Lord
+                        Mayor of Kanifing.
+                    @else
+                        Where to meet Talib next, a record of past events, and the
+                        launches and openings that have marked his work as Lord Mayor
+                        of Kanifing.
+                    @endif
                 </p>
             </div>
         </div>
     </section>
 
     {{-- ── Upcoming events list / calendar ───────────────────────────────────── --}}
-    {{-- $upcoming and $calEvents are passed from EventController@index --}}
-
+    {{-- $upcoming and $calEvents are passed from EventController@index. Whole
+         section is skipped when EventsPageSettings::hide_events_sections is on
+         — $eventsHidden — not just left to render empty. --}}
+    @unless ($eventsHidden)
     <section
         class="section"
         x-data="{
@@ -251,6 +258,7 @@
 
         </div>
     </section>
+    @endunless
 
     {{-- ── Past Events ──────────────────────────────────────────────────────── --}}
     {{-- Hidden entirely when there's nothing past yet — no empty-state filler,

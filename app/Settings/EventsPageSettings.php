@@ -13,6 +13,13 @@ class EventsPageSettings extends Settings
     /** Flat list of type labels; the first is the default for new events. */
     public array $event_types = [];
 
+    /**
+     * Kill switch: hides the Events sections on the home page and the events
+     * page entirely (upcoming, past, the calendar) — only Milestones stays
+     * visible. Rows aren't touched; this is purely a display toggle.
+     */
+    public bool $hide_events_sections = false;
+
     public static function group(): string
     {
         return 'events_page';

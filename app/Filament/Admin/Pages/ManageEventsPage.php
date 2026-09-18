@@ -7,6 +7,7 @@ use App\Settings\EventsPageSettings;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -32,6 +33,14 @@ class ManageEventsPage extends SettingsPage
     public function form(Schema $schema): Schema
     {
         return $schema->components([
+            Section::make('Visibility')
+                ->description('An emergency switch — hides Events everywhere on the public site (home page and the events page: upcoming, past, and the calendar) without deleting anything. Milestones keep showing on both.')
+                ->components([
+                    Toggle::make('hide_events_sections')
+                        ->label('Hide Events sections, show only Milestones')
+                        ->default(false),
+                ]),
+
             Section::make('Event types')
                 ->description('The pill shown on each event card and page. Pick one per event when adding it. The first row is the default for new events.')
                 ->components([

@@ -6,6 +6,7 @@ use App\Models\HeroSlide;
 use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\Testimonial;
+use App\Settings\EventsPageSettings;
 use App\Settings\HomePageSettings;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -89,6 +90,25 @@ it('teases the count of events hidden beyond the one-week window on the home pag
 
 it('hides the home page upcoming-events section entirely when there is nothing to tease', function (): void {
     get('/')->assertOk()->assertDontSee('come back soon');
+});
+
+it('hides the home page Upcoming Events section when the settings kill switch is on', function (): void {
+    homepageEventOn(now()->addDays(3), 'switched-off-home-event');
+    Milestone::create([
+        'slug' => 'library-hub', 'title' => 'Milestone Should Still Show On Home',
+        'occurred_on' => '2024-12-01', 'location' => 'Kanifing',
+        'description' => 'D45m library inaugurated.', 'published' => true,
+    ]);
+
+    $settings = app(EventsPageSettings::class);
+    $settings->hide_events_sections = true;
+    $settings->save();
+
+    get('/')
+        ->assertOk()
+        ->assertDontSee('switched-off-home-event')
+        ->assertDontSee('come back soon')
+        ->assertSee('Milestone Should Still Show On Home');
 });
 
 it('renders with every content model empty', function (): void {
