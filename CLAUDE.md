@@ -280,6 +280,20 @@ leaving it running invisibly).
   `required`). The table shows `thumbnailUrl()` plus a Photo/YouTube type badge for the
   same reason. Photo rows, and the Create page, keep the uploader. Direct video *upload*
   is still not supported — Gallery video is YouTube-only.
+- **Home page video slider** (`<x-video-slider>`, `resources/views/components/video-slider.blade.php`,
+  directly below "Across the Municipality" in `welcome.blade.php`) shows the **published
+  YouTube videos from the Gallery** — same `type = video` + `published` rows, same order
+  (`sort_order`, then `id`; reorder them in the Gallery list), capped at 12. Nothing to
+  curate separately: publish/unpublish/reorder in the Gallery and the strip follows (the
+  response cache is already flushed on any `GalleryPhoto` save). The whole section hides
+  while there are none. It's a native scroll-snap strip (swipe / arrows / Tab), **no
+  autoplay**, and a click opens the shared `.lightbox` with the `youtube-nocookie` embed
+  (`x-if`, so closing tears the iframe down). Two gotchas: keep `data-reveal` **off** the
+  component's wrapper — a transformed ancestor breaks the lightbox's `position: fixed` —
+  and `.lightbox__video` now lives in `components/_lightbox.scss` (it's shared between the
+  Gallery and Home). Section copy (`videos_*`) is in `HomePageSettings` / *Page content →
+  Home page*. Its "Browse All Videos" button links to `/gallery?media=Videos`, which the
+  Gallery reads on load (`?media=Photos` works too) to pre-select the media-type filter.
 - **`youtube_video_id` is unique** on `gallery_photos` — re-adding an already-imported
   video is blocked both in the UI (`alreadyImported()` shows "Already in the Gallery"
   instead of the add button) and in the action itself (checked again before insert, so a

@@ -7,6 +7,10 @@
     $communityPhotos = \App\Models\CommunityPhoto::published()
         ->group(\App\Models\CommunityPhoto::GROUP_MUNICIPALITY)
         ->with('media')->orderBy('sort_order')->take(6)->get();
+    // Published YouTube videos from the Gallery, in the Gallery's own order.
+    $homeVideos = \App\Models\GalleryPhoto::published()
+        ->where('type', \App\Models\GalleryPhoto::TYPE_VIDEO)
+        ->orderBy('sort_order')->orderBy('id')->take(12)->get();
     $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->take(6)->get();
     $milestones = \App\Models\Milestone::published()->orderByDesc('occurred_on')->take(4)->get();
     $eventsHidden = app(\App\Settings\EventsPageSettings::class)->hide_events_sections;
@@ -277,6 +281,23 @@
 
         </div>
     </section>
+
+    {{-- ── Video slider — published Gallery videos; hidden while there are none ── --}}
+    @if ($homeVideos->isNotEmpty())
+    <section class="section section--navy">
+        <div class="container">
+
+            <div class="section-header" data-reveal>
+                <span class="section-header__eyebrow section-header__eyebrow--light">{{ $home->videos_eyebrow }}</span>
+                <h2 class="section-header__title section-header__title--light">{{ $home->videos_headline }}</h2>
+                <p class="section-header__lead section-header__lead--light">{{ $home->videos_lead }}</p>
+            </div>
+
+            <x-video-slider :videos="$homeVideos" :cta-label="$home->videos_cta_label" :cta-url="url('/gallery?media=Videos')" />
+
+        </div>
+    </section>
+    @endif
 
     {{-- ── Recognition ─────────────────────────────────────────────────────── --}}
     <section class="section section--grey">

@@ -139,3 +139,13 @@
         white-space: nowrap;
     }
 }
+
+// ── Video slide (YouTube embed) — Gallery + the home page's video slider ──────
+
+.lightbox__video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 75vh;
+    border: 0;
+    display: block;
+}

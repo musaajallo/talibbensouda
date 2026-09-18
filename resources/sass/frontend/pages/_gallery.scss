@@ -258,14 +258,3 @@
         [data-theme="dark"] &.is-active { background: $color-gold; border-color: $color-gold; color: $color-navy; }
     }
 }
-
-// ── Lightbox video (Gallery only — .lightbox itself is shared, see
-//    components/_lightbox.scss, but only this page ever has a video slide) ──
-
-.lightbox__video {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    max-height: 75vh;
-    border: 0;
-    display: block;
-}

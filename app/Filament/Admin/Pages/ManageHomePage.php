@@ -150,6 +150,12 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('community_headline')->maxLength(160),
                     Textarea::make('community_lead')->rows(2)->maxLength(400)->columnSpanFull(),
 
+                    TextInput::make('videos_eyebrow')->maxLength(120),
+                    TextInput::make('videos_headline')->maxLength(160),
+                    Textarea::make('videos_lead')->rows(2)->maxLength(400)->columnSpanFull(),
+                    TextInput::make('videos_cta_label')->maxLength(60)->columnSpanFull()
+                        ->helperText('Videos come from the Gallery — publish or reorder them there. The section hides itself while none are published.'),
+
                     TextInput::make('recognition_eyebrow')->maxLength(120),
                     TextInput::make('recognition_headline')->maxLength(160),
                     Textarea::make('recognition_lead')->rows(2)->maxLength(400)->columnSpanFull(),

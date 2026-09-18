@@ -53,7 +53,8 @@
             categories: ['All', 'Projects', 'Community', 'Events', 'Partners'],
             mediaTypes: ['All', 'Photos', 'Videos'],
             active: 'All',
-            activeMedia: 'All',
+            // ?media=Videos / ?media=Photos (the home page's video slider links here)
+            activeMedia: (() => { const m = new URLSearchParams(location.search).get('media'); return ['Photos', 'Videos'].includes(m) ? m : 'All'; })(),
             lightboxOpen: false,
             current: 0,
             page: 1,
