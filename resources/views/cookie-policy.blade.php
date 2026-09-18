@@ -37,15 +37,16 @@
             {{-- ── Main content ── --}}
             <article class="policy-content" data-reveal>
 
-                <p class="policy-content__updated">Last updated: 21 June 2026</p>
+                <p class="policy-content__updated">Last updated: 18 September 2026</p>
 
                 {{-- Quick summary --}}
                 <section class="policy-section" id="quick-summary">
                     <h2 class="policy-section__heading">Quick summary</h2>
                     <div class="policy-summary">
                         <strong>In short.</strong> We use a small number of essential cookies to keep the site working —
-                        sign-in sessions, security tokens, and your theme preference. We don't currently run analytics
-                        or marketing cookies. If we ever add analytics, we'll ask first and you can decline.
+                        sign-in sessions, security tokens, and your theme preference. We also run our own,
+                        self-hosted analytics (no third party involved) to see which pages get read — but only
+                        once you say yes in the cookie banner. We don't run marketing or advertising cookies.
                     </div>
                 </section>
 
@@ -82,10 +83,12 @@
 
                     <h3 class="policy-section__subheading">Analytics cookies — opt-in</h3>
                     <p>
-                        Analytics cookies would help us understand which pages people read, which events
-                        drive the most interest, and where the site is hard to use. <strong>We don't currently use any
-                        analytics service.</strong> If we add one, it will be opt-in: you'll see a clear consent prompt and
-                        the cookie will not be set unless you accept.
+                        We run our own analytics, hosted on our own server — we don't hand your data to Google,
+                        Meta or any other third party. It records the pages you visit, the general area you're
+                        browsing from (city-level, from your IP address — never a precise location), your device
+                        type and browser, and how you arrived at the site (a search engine, a link, a social post).
+                        This only happens once you accept analytics cookies below; declining, or choosing
+                        "Essential only", means none of it is recorded for you.
                     </p>
 
                     <h3 class="policy-section__subheading">Marketing cookies — we don't use any</h3>
@@ -121,7 +124,7 @@
                         <li><strong>Right to access.</strong> Ask us for a copy of the data we hold about you.</li>
                         <li><strong>Right to rectification.</strong> Ask us to correct data that's wrong or out of date.</li>
                         <li><strong>Right to erasure.</strong> Ask us to delete your data, subject to lawful retention.</li>
-                        <li><strong>Right to withdraw consent.</strong> Where we rely on your consent (e.g. analytics if added), you can withdraw it at any time.</li>
+                        <li><strong>Right to withdraw consent.</strong> Where we rely on your consent (analytics), you can withdraw it at any time — see "Managing cookies" below.</li>
                         <li><strong>Right to object.</strong> Object to processing for direct marketing or where we rely on legitimate interests.</li>
                         <li><strong>Right to portability.</strong> Receive your data in a machine-readable format.</li>
                     </ul>
