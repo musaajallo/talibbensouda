@@ -23,6 +23,12 @@ class CampaignSignupController extends Controller
             'popup_phone' => ['required', 'string', 'max:30'],
             'popup_location' => ['nullable', 'string', 'max:150'],
             'popup_wants_updates' => ['nullable', 'boolean'],
+        ], [], [
+            // Public-facing wording — without these the errors read
+            // "The popup name field is required."
+            'popup_name' => 'full name',
+            'popup_phone' => 'phone number',
+            'popup_location' => 'town or area',
         ]);
 
         CampaignSignup::create([

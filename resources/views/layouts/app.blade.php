@@ -167,6 +167,8 @@
                 localStorage.setItem('tb_cookie_consent', JSON.stringify({ v: 1, ...prefs }));
                 this.syncConsentCookie(prefs.analytics);
                 this.show = false;
+                // Lets the sign-up pop-up hold off until the banner is out of the way.
+                window.dispatchEvent(new CustomEvent('cookie-consent-saved'));
             },
             syncConsentCookie(analyticsAllowed) {
                 // Mirrors the analytics choice into a plain, JS-readable cookie —

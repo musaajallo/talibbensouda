@@ -22,11 +22,23 @@
                 }
                 let seen = false;
                 try { seen = localStorage.getItem('tb_signup_popup_seen') === '1'; } catch (e) {}
-                if (!seen) {
-                    // Delayed well past the cookie banner's own 900ms appearance
-                    // (layouts/app.blade.php) so the two never stack on top of
-                    // each other on a first visit.
+                if (seen) return;
+
+                // Never stack with the cookie banner (layouts/app.blade.php) —
+                // it sits above this dialog (z-index 9000) and would cover
+                // half the form. A first-time visitor hasn't answered it yet,
+                // so wait for its 'cookie-consent-saved' event instead of
+                // guessing with a timer; a returning visitor already has, so
+                // the plain delay applies.
+                let answered = true;
+                try { answered = !!localStorage.getItem('tb_cookie_consent'); } catch (e) {}
+
+                if (answered) {
                     setTimeout(() => { this.show = true; }, 6000);
+                } else {
+                    window.addEventListener('cookie-consent-saved', () => {
+                        setTimeout(() => { this.show = true; }, 1500);
+                    }, { once: true });
                 }
             },
             close() {

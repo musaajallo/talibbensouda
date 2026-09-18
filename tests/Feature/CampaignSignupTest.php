@@ -75,3 +75,11 @@ it('shows the success message after a real submission', function (): void {
 
     get('/')->assertOk()->assertSee('Thanks, Jane Doe');
 });
+
+it('words validation errors for the visitor, not after the popup_* field names', function (): void {
+    post(route('campaign-signup.store'), [])
+        ->assertSessionHasErrorsIn('campaignSignup', [
+            'popup_name' => 'The full name field is required.',
+            'popup_phone' => 'The phone number field is required.',
+        ]);
+});
