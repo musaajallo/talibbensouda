@@ -42,6 +42,13 @@ class SiteChromeSettings extends Settings
      */
     public int $signup_popup_delay_seconds = 120;
 
+    /**
+     * Days a dismissed pop-up stays away before it may ask again ("not now",
+     * not "never"). 0 = never again. Someone who actually signs up is never
+     * asked again either way.
+     */
+    public int $signup_popup_snooze_days = 14;
+
     public static function group(): string
     {
         return 'site_chrome';

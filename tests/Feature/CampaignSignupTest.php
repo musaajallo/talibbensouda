@@ -105,3 +105,22 @@ it('never renders a negative delay', function (): void {
 
     get('/')->assertOk()->assertSee('delaySeconds: 0', false);
 });
+
+it('defaults a dismissed pop-up to a two-week snooze', function (): void {
+    expect(app(SiteChromeSettings::class)->signup_popup_snooze_days)->toBe(14);
+
+    get('/')->assertOk()->assertSee('snoozeDays: 14', false);
+});
+
+it('renders the snooze length set in the panel, and never a negative one', function (): void {
+    $chrome = app(SiteChromeSettings::class);
+    $chrome->signup_popup_snooze_days = 30;
+    $chrome->save();
+
+    get('/')->assertOk()->assertSee('snoozeDays: 30', false);
+
+    $chrome->signup_popup_snooze_days = -3;
+    $chrome->save();
+
+    get('/')->assertOk()->assertSee('snoozeDays: 0', false);
+});
