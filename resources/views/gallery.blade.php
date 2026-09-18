@@ -36,7 +36,9 @@
             'category' => $photo->category,
             'caption'  => $photo->caption,
             'wide'     => (bool) $photo->wide,
-            'file'     => $photo->imageUrl(),
+            'isVideo'  => $photo->isVideo(),
+            'file'     => $photo->thumbnailUrl(),
+            'embedUrl' => $photo->youtubeEmbedUrl(),
             'bg'       => $palette[$i % count($palette)],
         ])
         ->all();
@@ -49,7 +51,9 @@
         class="section"
         x-data="{
             categories: ['All', 'Projects', 'Community', 'Events', 'Partners'],
+            mediaTypes: ['All', 'Photos', 'Videos'],
             active: 'All',
+            activeMedia: 'All',
             lightboxOpen: false,
             current: 0,
             page: 1,
@@ -57,8 +61,10 @@
             photos: {{ Js::from($photos) }},
 
             get filtered() {
-                if (this.active === 'All') return this.photos.map((p, i) => ({ ...p, i }));
-                return this.photos.map((p, i) => ({ ...p, i })).filter(p => p.category === this.active);
+                return this.photos
+                    .map((p, i) => ({ ...p, i }))
+                    .filter(p => this.active === 'All' || p.category === this.active)
+                    .filter(p => this.activeMedia === 'All' || (this.activeMedia === 'Videos') === p.isVideo);
             },
 
             // Each item also carries its position within `filtered` (`fi`) so a
@@ -75,6 +81,7 @@
             },
 
             setCategory(cat) { this.active = cat; this.page = 1; },
+            setMediaType(type) { this.activeMedia = type; this.page = 1; },
             goToPage(p) { this.page = p; this.$refs.galleryTop.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
 
             open(idx) { this.current = idx; this.lightboxOpen = true; document.body.style.overflow = 'hidden'; },
@@ -101,9 +108,23 @@
                 </template>
             </div>
 
+            {{-- Media-type tabs — independent of category, combines with it --}}
+            <div class="gallery-filter gallery-filter--media" data-reveal data-reveal-delay="40">
+                <template x-for="type in mediaTypes" :key="type">
+                    <button
+                        class="filter-tab filter-tab--sm"
+                        :class="{ 'is-active': activeMedia === type }"
+                        :aria-pressed="(activeMedia === type).toString()"
+                        @click="setMediaType(type)"
+                        x-text="type"
+                    ></button>
+                </template>
+            </div>
+
             {{-- Photo count --}}
             <p class="gallery-count" data-reveal data-reveal-delay="80">
-                Showing <span x-text="filtered.length"></span> photos
+                Showing <span x-text="filtered.length"></span>
+                <span x-text="activeMedia === 'Videos' ? 'videos' : (activeMedia === 'Photos' ? 'photos' : 'items')"></span>
                 <span x-show="active !== 'All'" x-cloak> in <span x-text="active"></span></span>
             </p>
 
@@ -115,7 +136,7 @@
                         @click="open(photo.fi)"
                         :style="`background-color: ${photo.bg}`"
                         role="button"
-                        :aria-label="`Open photo: ${photo.caption}`"
+                        :aria-label="`${photo.isVideo ? 'Play video' : 'Open photo'}: ${photo.caption}`"
                         tabindex="0"
                         @keydown.enter="open(photo.fi)"
                         @keydown.space.prevent="open(photo.fi)"
@@ -129,11 +150,15 @@
                             </svg>
                         </div>
 
-                        <div class="gallery-item__zoom">
+                        <div class="gallery-item__zoom" x-show="!photo.isVideo">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
                                 <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
                             </svg>
+                        </div>
+
+                        <div class="gallery-item__play" x-show="photo.isVideo" x-cloak>
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                         </div>
 
                         <div class="gallery-item__overlay">
@@ -222,11 +247,25 @@
             {{-- Stage --}}
             <div class="lightbox__stage">
                 <div class="lightbox__media" x-show="filtered.length > 0">
-                    <img x-show="filtered[current] && filtered[current].file"
+                    {{-- Video: an x-if (not x-show) so the iframe node is fully
+                         torn down on a non-video slide or on close, rather than
+                         just hidden — otherwise the video keeps playing,
+                         invisibly, in the background. --}}
+                    <template x-if="filtered[current] && filtered[current].isVideo">
+                        <iframe
+                            class="lightbox__video"
+                            :src="lightboxOpen ? filtered[current].embedUrl : ''"
+                            title="YouTube video player"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen
+                        ></iframe>
+                    </template>
+                    <img x-show="filtered[current] && filtered[current].file && !filtered[current].isVideo"
                          :src="filtered[current] ? filtered[current].file : ''"
                          :alt="filtered[current] ? filtered[current].caption : ''">
                     <div class="lightbox__placeholder"
-                         x-show="!filtered[current] || !filtered[current].file"
+                         x-show="!filtered[current] || (!filtered[current].file && !filtered[current].isVideo)"
                          :style="{ backgroundColor: filtered[current] ? filtered[current].bg : '' }">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="18" height="18" rx="2"/>
