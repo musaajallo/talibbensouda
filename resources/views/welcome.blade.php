@@ -18,13 +18,11 @@
     ];
 
     // BEN26 campaign logo variants, animated in the candidacy section — each
-    // carries the flat/gradient background it needs to stay fully legible
-    // (the white variant needs navy behind it, "white and blue" needs the
-    // navy/white split it was designed against).
+    // carries the background it needs to stay fully legible (the white
+    // variant needs navy behind it).
     $candidacyLogos = [
         ['img' => asset('images/brand/ben26-full-colour.svg'), 'bg' => '#ffffff'],
         ['img' => asset('images/brand/ben26-red.svg'), 'bg' => '#ffffff'],
-        ['img' => asset('images/brand/ben26-white-blue.svg'), 'bg' => 'linear-gradient(to bottom, #0B142E 0%, #0B142E 55%, #ffffff 55%, #ffffff 100%)'],
         ['img' => asset('images/brand/ben26-blue.svg'), 'bg' => '#ffffff'],
         ['img' => asset('images/brand/ben26-white.svg'), 'bg' => '#0B142E'],
     ];
