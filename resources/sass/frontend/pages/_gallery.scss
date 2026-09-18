@@ -2,16 +2,29 @@
 @use '../../shared/abstracts' as *;
 
 // ── Filter bar ─────────────────────────────────────────────────────────────────
+//
+// Category tabs on the left, the media-type tabs (All/Photos/Videos) on the
+// right — two independent filters that combine, kept visually distinct (a
+// complementary blue active state, not the category tabs' red/gold) so they
+// don't read as one long list of equal choices.
+
+.gallery-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3 $space-4;
+    margin-bottom: 48px;
+
+    @media (max-width: $breakpoint-sm) { margin-bottom: 32px; }
+}
 
 .gallery-filter {
     display: flex;
     align-items: center;
     gap: $space-2;
     flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 48px;
-
-    @media (max-width: $breakpoint-sm) { margin-bottom: 32px; }
+    justify-content: flex-start;
 }
 
 .filter-tab {
@@ -41,18 +54,13 @@
     [data-theme="dark"] &.is-active { background: $color-gold; border-color: $color-gold; color: $color-navy; }
 }
 
-// A second, secondary-weight tab row (All / Photos / Videos) directly below
-// the category tabs — smaller, since it's a finer-grained filter on top of
-// them, not an equal alternative. Pulls up into the category row's own
-// margin-bottom rather than stacking a second full gap under it.
-.gallery-filter--media {
-    margin-top: -32px;
-    margin-bottom: 20px;
-}
-
-.filter-tab--sm {
-    padding: 6px 16px;
-    font-size: 0.75rem;
+// Same size as .filter-tab — only the active colour differs (a blue,
+// unrelated to the red/gold family used for category tabs and everything
+// else on the site, so the two pill groups are unmistakably separate).
+.filter-tab--media.is-active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
 }
 
 .gallery-count {

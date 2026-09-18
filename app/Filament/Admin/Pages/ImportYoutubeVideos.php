@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Resources\GalleryPhotos\GalleryPhotoResource;
 use App\Models\GalleryPhoto;
 use App\Support\YouTube\YouTubeChannelClient;
 use BackedEnum;
@@ -25,9 +26,9 @@ class ImportYoutubeVideos extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedVideoCamera;
 
-    protected static ?string $navigationLabel = 'Import YouTube Videos';
+    protected static ?string $navigationLabel = 'YouTube Videos';
 
-    protected static ?string $title = 'Import YouTube Videos';
+    protected static ?string $title = 'YouTube Videos';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
@@ -92,9 +93,48 @@ class ImportYoutubeVideos extends Page
         $this->nextPageToken = $result['next_page_token'];
     }
 
-    public function alreadyImported(string $videoId): bool
+    /**
+     * One query for every video currently on screen, rather than
+     * alreadyImported() querying per-card in a loop — avoids N+1s and is
+     * what splitAvailableAndImported() uses to divide the grid in two.
+     *
+     * @return array<string, GalleryPhoto>
+     */
+    protected function importedVideosById(): array
     {
-        return GalleryPhoto::where('youtube_video_id', $videoId)->exists();
+        $ids = collect($this->videos)->pluck('id')->all();
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        return GalleryPhoto::query()
+            ->where('type', GalleryPhoto::TYPE_VIDEO)
+            ->whereIn('youtube_video_id', $ids)
+            ->get()
+            ->keyBy('youtube_video_id')
+            ->all();
+    }
+
+    /**
+     * @return array{available: list<array<string, mixed>>, imported: list<array<string, mixed>>}
+     */
+    public function splitAvailableAndImported(): array
+    {
+        $imported = $this->importedVideosById();
+
+        $available = [];
+        $inGallery = [];
+
+        foreach ($this->videos as $video) {
+            if (isset($imported[$video['id']])) {
+                $inGallery[] = [...$video, 'galleryPhoto' => $imported[$video['id']]];
+            } else {
+                $available[] = $video;
+            }
+        }
+
+        return ['available' => $available, 'imported' => $inGallery];
     }
 
     public function addToGalleryAction(): Action
@@ -144,5 +184,25 @@ class ImportYoutubeVideos extends Page
                     ->success()
                     ->send();
             });
+    }
+
+    /** An info-only modal: embeds the video and links out to YouTube — no form, nothing is saved. */
+    public function previewAction(): Action
+    {
+        return Action::make('preview')
+            ->label('Preview')
+            ->modalHeading(fn (array $arguments): string => $arguments['title'] ?? 'Preview')
+            ->modalContent(fn (array $arguments) => view('filament.admin.pages.partials.youtube-preview', [
+                'videoId' => $arguments['videoId'] ?? null,
+                'watchUrl' => 'https://www.youtube.com/watch?v='.($arguments['videoId'] ?? ''),
+            ]))
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close')
+            ->modalWidth('2xl');
+    }
+
+    public function getGalleryEditUrl(GalleryPhoto $photo): string
+    {
+        return GalleryPhotoResource::getUrl('edit', ['record' => $photo]);
     }
 }

@@ -95,30 +95,34 @@
     >
         <div class="container">
 
-            {{-- Filter tabs --}}
-            <div class="gallery-filter" data-reveal x-ref="galleryTop">
-                <template x-for="cat in categories" :key="cat">
-                    <button
-                        class="filter-tab"
-                        :class="{ 'is-active': active === cat }"
-                        :aria-pressed="(active === cat).toString()"
-                        @click="setCategory(cat)"
-                        x-text="cat"
-                    ></button>
-                </template>
-            </div>
+            {{-- Filter tabs — category on the left, media type on the right --}}
+            <div class="gallery-filter-row" data-reveal x-ref="galleryTop">
+                <div class="gallery-filter">
+                    <template x-for="cat in categories" :key="cat">
+                        <button
+                            class="filter-tab"
+                            :class="{ 'is-active': active === cat }"
+                            :aria-pressed="(active === cat).toString()"
+                            @click="setCategory(cat)"
+                            x-text="cat"
+                        ></button>
+                    </template>
+                </div>
 
-            {{-- Media-type tabs — independent of category, combines with it --}}
-            <div class="gallery-filter gallery-filter--media" data-reveal data-reveal-delay="40">
-                <template x-for="type in mediaTypes" :key="type">
-                    <button
-                        class="filter-tab filter-tab--sm"
-                        :class="{ 'is-active': activeMedia === type }"
-                        :aria-pressed="(activeMedia === type).toString()"
-                        @click="setMediaType(type)"
-                        x-text="type"
-                    ></button>
-                </template>
+                {{-- Independent of category, combines with it — a different
+                     (complementary blue) active colour on purpose, so the two
+                     pill groups read as separate controls at a glance. --}}
+                <div class="gallery-filter gallery-filter--media">
+                    <template x-for="type in mediaTypes" :key="type">
+                        <button
+                            class="filter-tab filter-tab--media"
+                            :class="{ 'is-active': activeMedia === type }"
+                            :aria-pressed="(activeMedia === type).toString()"
+                            @click="setMediaType(type)"
+                            x-text="type"
+                        ></button>
+                    </template>
+                </div>
             </div>
 
             {{-- Photo count --}}
