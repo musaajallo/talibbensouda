@@ -4,19 +4,47 @@
 // ── Filter bar ─────────────────────────────────────────────────────────────────
 //
 // Category tabs on the left, the media-type tabs (All/Photos/Videos) on the
-// right — two independent filters that combine, kept visually distinct (a
-// complementary blue active state, not the category tabs' red/gold) so they
-// don't read as one long list of equal choices.
+// right — two independent filters that combine, each with a small caption
+// saying what it is, and kept visually distinct (a complementary blue active
+// state, not the category tabs' red/gold) so they don't read as one long list
+// of equal choices.
 
 .gallery-filter-row {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: $space-3 $space-4;
+    gap: $space-6 $space-4;
     margin-bottom: 48px;
 
+    @media (max-width: $breakpoint-lg) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     @media (max-width: $breakpoint-sm) { margin-bottom: 32px; }
+}
+
+.gallery-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    // The type filter hugs the right edge on wide screens; below lg the two
+    // groups stack, left-aligned.
+    &--media {
+        align-items: flex-end;
+
+        @media (max-width: $breakpoint-lg) { align-items: flex-start; }
+    }
+}
+
+.gallery-filter-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
 }
 
 .gallery-filter {
@@ -25,6 +53,8 @@
     gap: $space-2;
     flex-wrap: wrap;
     justify-content: flex-start;
+
+    &--media { justify-content: flex-end; @media (max-width: $breakpoint-lg) { justify-content: flex-start; } }
 }
 
 .filter-tab {
@@ -57,7 +87,11 @@
 // Same size as .filter-tab — only the active colour differs (a blue,
 // unrelated to the red/gold family used for category tabs and everything
 // else on the site, so the two pill groups are unmistakably separate).
-.filter-tab--media.is-active {
+.filter-tab--media.is-active,
+// The dark-theme rule above (`[data-theme="dark"] .filter-tab.is-active`) is
+// more specific than the line above and turned these red/gold in dark mode —
+// identical to the category tabs — so it needs its own dark override.
+[data-theme="dark"] .filter-tab--media.is-active {
     background: #2563eb;
     border-color: #2563eb;
     color: #fff;

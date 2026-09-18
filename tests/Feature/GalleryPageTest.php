@@ -47,3 +47,12 @@ it('allows YouTube thumbnails through the CSP so a video poster actually loads',
 
     expect($response->headers->get('Content-Security-Policy'))->toContain('i.ytimg.com');
 });
+
+it('labels the two filter groups so it is clear what each one does', function (): void {
+    get('/gallery')
+        ->assertOk()
+        ->assertSee('Categories')
+        ->assertSee('Filter by type')
+        ->assertSee('aria-labelledby="gallery-categories-label"', false)
+        ->assertSee('aria-labelledby="gallery-type-label"', false);
+});
