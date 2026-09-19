@@ -87,6 +87,13 @@ class HomePageSettings extends Settings
 
     public string $videos_cta_label = '';
 
+    /**
+     * GalleryPhoto ids in the order the FEATURED videos appear in the video section
+     * (edited by dragging on the Home page content screen). Videos featured later
+     * aren't listed yet and simply follow the listed ones.
+     */
+    public array $videos_order = [];
+
     public string $recognition_eyebrow = '';
 
     public string $recognition_headline = '';

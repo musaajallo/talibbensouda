@@ -292,8 +292,20 @@ leaving it running invisibly).
   a video's edit form; videos only, "Featured" badge in the Gallery list): once **any
   published** video is featured, the section shows *only* those; with none featured it shows
   every published video. A featured-but-unpublished video deliberately doesn't count — it
-  can't show, and letting it flip the section to "featured only" would leave it empty. The
-  public Gallery is unaffected. The whole section hides
+  can't show, and letting it flip the section to "featured only" would leave it empty. **Order:**
+  the featured ones are put in order by dragging (or the arrows) in the **Home page videos**
+  section on *Page content → Home page* — its own always-visible section, because the copy
+  fields live in the *collapsed* "Section headers" and an order list hidden in there was
+  effectively undiscoverable. The order is `HomePageSettings::$videos_order` (Gallery ids,
+  top = first); `GalleryPhoto::featuredOnHome()` applies it, and both the home page and that
+  list call it so they can't disagree. A video featured *after* the last save isn't in the
+  list yet, so it follows the listed ones (and shows at the end of the admin list); stale ids
+  (un-featured/unpublished/deleted) are simply ignored. The list is rebuilt from the live
+  featured videos in `mutateFormDataBeforeFill` and reduced back to ids in
+  `mutateFormDataBeforeSave` (which aliases the `NormalisesSettingsData` trait's version). It
+  only orders **featured** videos — the "nothing featured" fallback stays in the Gallery's
+  order. The order is edited on that page and saved with **Save changes**. The public Gallery
+  is unaffected. The whole section hides
   while there are none. It's a native scroll-snap strip (swipe / arrows / Tab), **no
   autoplay**, with the arrows in gutters either side of the strip, vertically centred on the
   *thumbnails* (a `cqw` calc — `top` can't reference a width otherwise; overlaid on the

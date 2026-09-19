@@ -3,16 +3,22 @@
 namespace App\Filament\Admin\Pages;
 
 use App\Filament\Admin\Pages\Concerns\NormalisesSettingsData;
+use App\Models\GalleryPhoto;
 use App\Settings\HomePageSettings;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\SettingsPage;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Image;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\HtmlString;
@@ -20,7 +26,9 @@ use UnitEnum;
 
 class ManageHomePage extends SettingsPage
 {
-    use NormalisesSettingsData;
+    use NormalisesSettingsData {
+        mutateFormDataBeforeSave as protected normaliseSettingsData;
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
 
@@ -33,6 +41,46 @@ class ManageHomePage extends SettingsPage
     protected static string|UnitEnum|null $navigationGroup = 'Page content';
 
     protected static ?int $navigationSort = 10;
+
+    /**
+     * The Order list is built from the live featured videos (not just the saved ids), so a
+     * video featured since the last save shows up — at the end — and one un-featured or
+     * unpublished drops out.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['videos_order'] = GalleryPhoto::featuredOnHome()
+            ->map(fn (GalleryPhoto $video): array => [
+                'id' => $video->id,
+                'caption' => $video->caption ?: 'Video',
+                'category' => $video->category,
+                'thumb' => (string) $video->thumbnailUrl(),
+            ])
+            ->all();
+
+        return $data;
+    }
+
+    /**
+     * The list's items are display rows; what's stored is just their ids, in order.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['videos_order'] = collect($data['videos_order'] ?? [])
+            ->pluck('id')
+            ->filter()
+            ->map(fn ($id): int => (int) $id)
+            ->values()
+            ->all();
+
+        return $this->normaliseSettingsData($data);
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -135,6 +183,38 @@ class ManageHomePage extends SettingsPage
                         ->columnSpanFull(),
                 ]),
 
+            Section::make('Home page videos')
+                ->icon('heroicon-o-video-camera')
+                ->description('The videos in the home page\'s video slider. Feature videos in the Gallery (or with “Add videos by link”); the heading and intro text of this section are under “Section headers” → Videos.')
+                ->columnSpanFull()
+                ->components([
+                    // The featured videos, as a list to drag into order. Nothing is added or
+                    // removed here — that's done by featuring/unfeaturing in the Gallery.
+                    Text::make('No videos are featured yet, so the home page shows every published video in the Gallery\'s order. Feature some in the Gallery (or with “Add videos by link”) and they will appear here to put in order.')
+                        ->color('gray')
+                        ->columnSpanFull()
+                        ->hidden(fn (Get $get): bool => filled($get('videos_order'))),
+                    Repeater::make('videos_order')
+                        ->label('Order of the featured videos')
+                        ->helperText('Drag a video (or use the arrows) to change where it appears — the top one shows first in the home page slider. Videos you feature later are added at the end.')
+                        ->addable(false)
+                        ->deletable(false)
+                        ->cloneable(false)
+                        ->reorderableWithButtons()
+                        ->itemLabel(fn (array $state): ?string => $state['caption'] ?? null)
+                        ->columnSpanFull()
+                        ->hidden(fn (Get $get): bool => blank($get('videos_order')))
+                        ->schema([
+                            Hidden::make('id'),
+                            Flex::make([
+                                Image::make(fn (Get $get): string => (string) $get('thumb'), fn (Get $get): string => (string) $get('caption'))
+                                    ->imageHeight(72)
+                                    ->grow(false),
+                                Text::make(fn (Get $get): string => (string) $get('category'))->color('gray'),
+                            ]),
+                        ]),
+                ]),
+
             Section::make('Section headers')
                 ->icon('heroicon-o-bars-3')
                 ->columns(2)
@@ -154,7 +234,7 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('videos_headline')->maxLength(160),
                     Textarea::make('videos_lead')->rows(2)->maxLength(400)->columnSpanFull(),
                     TextInput::make('videos_cta_label')->maxLength(60)->columnSpanFull()
-                        ->helperText('Videos come from the Gallery — publish, reorder or feature them there. If any video is marked “Feature on home page”, only those show here; otherwise all published videos do. The section hides itself while none are published.'),
+                        ->helperText('Videos come from the Gallery — publish or feature them there, and put the featured ones in order in “Home page videos” above. If any video is marked “Feature on home page”, only those show here; otherwise all published videos do. The section hides itself while none are published.'),
 
                     TextInput::make('recognition_eyebrow')->maxLength(120),
                     TextInput::make('recognition_headline')->maxLength(160),
