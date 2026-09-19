@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Settings\HomePageSettings;
 use App\Support\Media\ResolvesPublicMediaUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -79,25 +80,47 @@ class GalleryPhoto extends Model implements HasMedia
     }
 
     /**
-     * The videos for the home page's video slider, in the Gallery's own order.
+     * The published videos marked "feature on home page", in the order the editor set on
+     * the Home page content screen (HomePageSettings::$videos_order). Any not listed there —
+     * newly featured ones — follow, in the Gallery's own order. One place decides the order
+     * so the admin list and the home page can never disagree.
      *
-     * If any PUBLISHED video is marked "feature on home page", only those show.
-     * If none is, every published video does — so the section never goes empty
+     * @return Collection<int, static>
+     */
+    public static function featuredOnHome(): Collection
+    {
+        $position = array_flip(array_map('intval', app(HomePageSettings::class)->videos_order));
+
+        return static::query()
+            ->published()->videos()->where('featured_on_home', true)
+            ->orderBy('sort_order')->orderBy('id')
+            ->get()
+            // sortBy is stable, so unlisted videos keep the Gallery order among themselves.
+            ->sortBy(fn (self $video): int => $position[$video->id] ?? PHP_INT_MAX)
+            ->values();
+    }
+
+    /**
+     * The videos for the home page's video slider.
+     *
+     * If any PUBLISHED video is marked "feature on home page", only those show, in the
+     * order set on the Home page content screen (see featuredOnHome()). If none is, every
+     * published video does, in the Gallery's own order — so the section never goes empty
      * just because nothing has been featured yet. (A featured video that's been
-     * unpublished doesn't count: it can't show, and it shouldn't silently switch
-     * the section to "featured only" with nothing in it.)
+     * unpublished doesn't count: it can't show, and it shouldn't silently switch the
+     * section to "featured only" with nothing in it.)
      *
      * @return Collection<int, static>
      */
     public static function forHomeSlider(int $limit = 12): Collection
     {
-        $published = static::query()->published()->videos();
+        $featured = static::featuredOnHome();
 
-        $query = (clone $published)->where('featured_on_home', true)->exists()
-            ? (clone $published)->where('featured_on_home', true)
-            : $published;
+        if ($featured->isNotEmpty()) {
+            return $featured->take($limit);
+        }
 
-        return $query->orderBy('sort_order')->orderBy('id')->take($limit)->get();
+        return static::query()->published()->videos()->orderBy('sort_order')->orderBy('id')->take($limit)->get();
     }
 
     public function isVideo(): bool
