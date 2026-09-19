@@ -58,10 +58,18 @@ $FORGE_PHP artisan optimize:clear
 $FORGE_PHP artisan optimize
 $FORGE_PHP artisan filament:cache-components || true
 
-# Blade/content may have changed — drop the full-page response cache so the
-# new markup is served immediately rather than after the 24h TTL.
-$FORGE_PHP artisan responsecache:clear
-
 $ACTIVATE_RELEASE()
+
+# Blade/content may have changed — drop the full-page response cache so the new
+# markup is served immediately rather than after the 24h TTL.
+#
+# This MUST run AFTER $ACTIVATE_RELEASE(), not before. storage/ (and so the
+# response cache) is shared between releases, and until the `current` symlink
+# swaps the OLD release is still serving visitors — a clear before that point is
+# immediately refilled by the old release with pages that reference the old
+# build's hashed CSS/JS, which the new release then replays with 404 stylesheets.
+# (CachePublicPages also puts a build fingerprint in every cache key, so this is
+# now belt-and-braces — but it keeps stale entries from lingering for 24h.)
+$FORGE_PHP artisan responsecache:clear
 
 $RESTART_QUEUES()

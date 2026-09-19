@@ -21,6 +21,13 @@ use Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests;
  *  - health / sitemap endpoints that must reflect live state;
  *  - any request from a signed-in user (an admin previewing the site).
  *
+ * Every cache key carries a fingerprint of the current asset build (see
+ * useCacheNameSuffix()), so a page cached by one release can never be served by
+ * another. Without it, a zero-downtime deploy can leave the OLD release's home
+ * page in the shared cache, pointing at hashed CSS/JS files the new build no
+ * longer has: 404 stylesheets, an unstyled page — only for visitors whose browser
+ * hasn't already cached the old file (typically a phone).
+ *
  * The CSRF token and CSP nonce are NOT a problem here: CsrfTokenReplacer swaps
  * the token per request, and CacheResponse sits outside AddCspHeaders in the
  * middleware stack so a hit replays the nonce that is baked into the cached
@@ -76,6 +83,29 @@ class CachePublicPages extends CacheAllSuccessfulGetRequests
         $session = $request->session();
 
         return $session->has('campaign_signup_success') || $session->has('errors');
+    }
+
+    /**
+     * Mixed into every cache key by the hasher (on top of the signed-in user id
+     * the parent adds). The fingerprint is the build manifest's hash, which
+     * changes whenever ANY hashed asset filename does — i.e. on any deploy that
+     * rebuilds the front end — so each release reads and writes its own
+     * entries. Old ones just age out with the TTL.
+     */
+    public function useCacheNameSuffix(Request $request): string
+    {
+        return parent::useCacheNameSuffix($request).static::buildFingerprint();
+    }
+
+    /**
+     * Read fresh each time (a ~3 KB file): a long-lived PHP-FPM worker that
+     * outlives a `current` symlink swap must not keep using a stale value.
+     */
+    public static function buildFingerprint(): string
+    {
+        $manifest = public_path('build/manifest.json');
+
+        return is_file($manifest) ? substr((string) md5_file($manifest), 0, 12) : 'nobuild';
     }
 
     public function shouldCacheRequest(Request $request): bool
