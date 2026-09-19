@@ -94,8 +94,8 @@ disk. Modelled on the sibling `umc` project.
   (openings, launches, elections, 2018–2026) that populates `Milestone` lives in
   `MilestoneSeeder`.
 - **Content seeding:** `ContentSeeder` (events, milestones, projects, gallery, community
-  photos, testimonials, giving-back programmes + `HeroSlidesSeeder`) runs on every deploy via
-  `.forge/deploy.sh`. All of them `firstOrCreate` on the key — a missing row is created,
+  photos, testimonials, giving-back programmes + `HeroSlidesSeeder`) is meant to run on every deploy via
+  `.forge/deploy.sh` (**the script Forge actually runs doesn't — see Release**). All of them `firstOrCreate` on the key — a missing row is created,
   an existing one is **never** touched, so panel edits survive re-deploys. `HeroSlidesSeeder`
   copies `public/images/hero-*.webp` onto the media disk and fills `home_page.hero_slides`
   so the slider is editable in the panel; it no-ops once slides are configured.
@@ -202,7 +202,7 @@ php artisan make:filament-settings-page ManageThingPage "App\Settings\ThingPageS
 - **Optimiser binaries are required** or `spatie/laravel-image-optimizer` silently no-ops:
   `sudo apt install jpegoptim optipng pngquant gifsicle webp`.
 - Conversions / responsive images run on the **queue** — a `queue:work` worker must be
-  running (systemd or Supervisor). Deploy runs `queue:restart`.
+  running (systemd or Supervisor). `.forge/deploy.sh` restarts the queue on deploy, but the script Forge actually runs doesn't (see Release) — restart the workers by hand after a deploy that changes queued code.
 - HTTPS: `AppServiceProvider::boot()` calls `URL::forceScheme('https')` and re-points
   `filesystems.disks.public.url` at `secure_asset('storage')` in production;
   `bootstrap/app.php` trusts all proxies. Model URL accessors additionally rebuild media
@@ -364,7 +364,7 @@ leaving it running invisibly).
 
 ## Admin login
 
-`AdminUserSeeder` runs on every deploy but creates the account only on the **first** one
+`AdminUserSeeder` is meant to run on every deploy (not in Forge's current script — see Release) but creates the account only on the **first** one
 (it no-ops once any user has the `admin`/`super-admin` role — a panel password change is
 never clobbered). Defaults: `admin@talibahmedbensouda.com` / `password` — override with
 `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` in the Forge env. Change the password from
@@ -416,17 +416,20 @@ a cached page would freeze the honeypot's encrypted timestamp and hide flash
 messages), the health and sitemap endpoints, and anything requested by a
 signed-in user.
 
-- **Cache keys carry a build fingerprint** (`CachePublicPages::useCacheNameSuffix()` →
-  hash of `public/build/manifest.json`). Incident (2026-09-19): production served `/` with
-  a stylesheet 404 — the cached home page named `home-<old hash>.css`, a file the current
-  build no longer had — so the page was unstyled for anyone whose browser hadn't already
-  cached the old file, typically a phone. Cause: the deploy ran `responsecache:clear`
-  *before* `$ACTIVATE_RELEASE()`; the old release, still serving, refilled the shared cache
-  with its own page, and the new release replayed it. Fixed twice: the fingerprint means a
-  release can only ever read its own entries, and `responsecache:clear` now runs *after*
-  activation in `.forge/deploy.sh` (**the Forge UI copy of the script must be updated by
-  hand**). If a page ever looks unstyled on production: fetch it and check its
-  `build/assets/*.css` links return 200, and compare with `/build/manifest.json`.
+- **Cache keys carry a per-deploy fingerprint** (`CachePublicPages::useCacheNameSuffix()` →
+  hash of the release directory + `public/build/manifest.json`). Incident (2026-09-19):
+  production served `/` with a stylesheet 404 — the cached home page named
+  `home-<old hash>.css`, a file the current build no longer had — so it was unstyled for
+  anyone whose browser hadn't already cached the old file, typically a phone. Cause: **the
+  script Forge actually runs never clears the response cache** (see *Release* — it is much
+  shorter than `.forge/deploy.sh`), so a page cached before a deploy kept being served for
+  up to 24 h with the old build's asset names; only `/` showed it because it was the only
+  page whose CSS hash changed. Fix: the fingerprint means a release only ever reads its own
+  entries — the release directory (unique per zero-downtime release) makes even a
+  Blade/PHP-only deploy start clean, the manifest hash covers a same-directory rebuild — so
+  no `responsecache:clear` is needed on deploy. If a page ever looks unstyled on production:
+  fetch it and check its `build/assets/*.css` links return 200, and compare with
+  `/build/manifest.json`.
 - **Middleware order matters.** `CacheResponse` is appended to the `web` group
   *before* `AddCspHeaders` (`bootstrap/app.php`), so a cache hit returns before
   the CSP middleware runs and the nonce baked into the cached HTML is replayed
@@ -435,8 +438,9 @@ signed-in user.
 - **Invalidation** is automatic: `AppServiceProvider::flushResponseCacheOnContentChange()`
   calls `ResponseCache::clear()` (best-effort — wrapped so a cache hiccup never fails
   the save) on any content-model `saved`/`deleted`, any `SettingsSaved`, and media
-  add/clear events. `.forge/deploy.sh` also runs `responsecache:clear` so template
-  changes ship immediately.
+  add/clear events. `.forge/deploy.sh` also runs `responsecache:clear`, but the script Forge
+  actually runs doesn't — the per-deploy fingerprint above is what makes template changes ship
+  immediately.
 - **Tests**: disabled globally via `RESPONSE_CACHE_ENABLED=false` in `phpunit.xml`;
   `tests/Feature/ResponseCacheTest.php` re-enables it against an `array` store.
 - **Toggle/inspect**: `RESPONSE_CACHE_ENABLED`, `RESPONSE_CACHE_LIFETIME` (default
@@ -593,4 +597,15 @@ on purpose, since it collects no email and doesn't fit that model's required-ema
 ## Release
 
 `main` is the deploy target; Forge auto-deploys on push. Open a PR into `main`, merge,
-Forge runs `.forge/deploy.sh`.
+Forge runs **the Deploy Script stored in Forge** (site → Deployments) — **not** the tracked
+`.forge/deploy.sh`, which is what it was *meant* to be. As of 2026-09-19 the Forge copy is
+only: `$CREATE_RELEASE()`, `composer install`, `npm ci || npm install`, `npm run build`,
+`artisan optimize`, `storage:link`, `migrate --force` (which also runs the
+`database/settings` migrations), `$ACTIVATE_RELEASE()`. It does **not** run
+`filament:assets`, `shield:generate`, any seeder (so new `ContentSeeder`/`ProjectSeeder` rows
+and new Shield permissions never reach production on their own), `optimize:clear`,
+`responsecache:clear`, or `$RESTART_QUEUES()`. Consequences to remember: new seed content
+must be seeded by hand (`php artisan db:seed --class=…`); after adding a Filament resource
+run `shield:generate --all --panel=admin` on the server, or non-super-admin roles can't see
+it; queue workers keep running the old code until restarted. Bring the Forge script in line
+with `.forge/deploy.sh` (or edit both) if any of that should be automatic.

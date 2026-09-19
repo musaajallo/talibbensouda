@@ -21,12 +21,12 @@ use Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests;
  *  - health / sitemap endpoints that must reflect live state;
  *  - any request from a signed-in user (an admin previewing the site).
  *
- * Every cache key carries a fingerprint of the current asset build (see
+ * Every cache key carries a fingerprint of the current deploy (see
  * useCacheNameSuffix()), so a page cached by one release can never be served by
- * another. Without it, a zero-downtime deploy can leave the OLD release's home
- * page in the shared cache, pointing at hashed CSS/JS files the new build no
- * longer has: 404 stylesheets, an unstyled page — only for visitors whose browser
- * hasn't already cached the old file (typically a phone).
+ * another. Without it, a page cached before a deploy keeps being served
+ * afterwards, pointing at hashed CSS/JS files the new build no longer has: 404
+ * stylesheets, an unstyled page — only for visitors whose browser hasn't already
+ * cached the old file (typically a phone).
  *
  * The CSRF token and CSP nonce are NOT a problem here: CsrfTokenReplacer swaps
  * the token per request, and CacheResponse sits outside AddCspHeaders in the
@@ -87,10 +87,8 @@ class CachePublicPages extends CacheAllSuccessfulGetRequests
 
     /**
      * Mixed into every cache key by the hasher (on top of the signed-in user id
-     * the parent adds). The fingerprint is the build manifest's hash, which
-     * changes whenever ANY hashed asset filename does — i.e. on any deploy that
-     * rebuilds the front end — so each release reads and writes its own
-     * entries. Old ones just age out with the TTL.
+     * the parent adds), so a release only ever reads and writes its own entries;
+     * older ones simply age out with the TTL. See buildFingerprint().
      */
     public function useCacheNameSuffix(Request $request): string
     {
@@ -98,14 +96,26 @@ class CachePublicPages extends CacheAllSuccessfulGetRequests
     }
 
     /**
+     * Identifies THIS deploy: the release directory plus the asset manifest.
+     *
+     *  - The release directory (`base_path()` is `dirname(__DIR__)`, a real path)
+     *    is unique per zero-downtime release, so every deploy — including one that
+     *    only touches Blade or PHP — starts with an empty cache. The deploy script
+     *    on the server does NOT clear the response cache, so this is what makes
+     *    new markup show immediately instead of after the 24h TTL.
+     *  - The manifest hash covers a same-directory deploy that rebuilds assets:
+     *    it changes whenever any hashed CSS/JS filename does, which is exactly
+     *    what turns a stale cached page into 404 stylesheets.
+     *
      * Read fresh each time (a ~3 KB file): a long-lived PHP-FPM worker that
      * outlives a `current` symlink swap must not keep using a stale value.
      */
-    public static function buildFingerprint(): string
+    public static function buildFingerprint(?string $releasePath = null): string
     {
         $manifest = public_path('build/manifest.json');
+        $build = is_file($manifest) ? (string) md5_file($manifest) : 'nobuild';
 
-        return is_file($manifest) ? substr((string) md5_file($manifest), 0, 12) : 'nobuild';
+        return substr(md5(($releasePath ?? base_path()).'|'.$build), 0, 12);
     }
 
     public function shouldCacheRequest(Request $request): bool
