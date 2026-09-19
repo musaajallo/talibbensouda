@@ -304,6 +304,18 @@ leaving it running invisibly).
   Gallery and Home). Section copy (`videos_*`) is in `HomePageSettings` / *Page content →
   Home page*. Its "Browse All Videos" button links to `/gallery?media=Videos`, which the
   Gallery reads on load (`?media=Photos` works too) to pre-select the media-type filter.
+- **The home video slider auto-advances** (`x-data` in `video-slider.blade.php`): one slide
+  every 4 s (`interval`), in order left to right, looping back to the start. Never moves
+  under the visitor: it's *held* — and the countdown restarts — while a **mouse** hovers
+  (`pointerenter` with a `pointerType === 'mouse'` check: touch fires an emulated
+  `mouseenter` with no `mouseleave`, which left it "hovered" and stopped for good after one
+  tap on a phone), a slide has **keyboard** focus (`:focus-visible` only — a mouse click's
+  focus must not stick), a finger is on it or was 1.5 s ago (also covers swipe momentum),
+  the lightbox is open, the section is off-screen, or the tab is hidden. Off entirely when
+  everything already fits, and for `prefers-reduced-motion`. A **pause/play button** beside
+  "Browse All Videos" is the non-hover way to stop it (WCAG 2.2.2). The interval isn't a
+  panel setting; change `interval` in the component. Tested with a headless-browser script
+  (not in the suite) — its synthetic touch can't reproduce a real phone cancelling a swipe.
 - **`youtube_video_id` is unique** on `gallery_photos` — re-adding an already-imported
   video is blocked both in the UI (`alreadyImported()` shows "Already in the Gallery"
   instead of the add button) and in the action itself (checked again before insert, so a

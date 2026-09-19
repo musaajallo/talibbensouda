@@ -29,9 +29,54 @@
             atStart: true,
             atEnd: true, // arrows stay hidden until update() proves there's overflow
 
+            // Auto-advance: one slide every `interval` ms, left to right, looping
+            // back to the start. Held (and the idle count reset) while the visitor
+            // is interacting, so it never moves under a cursor or a finger.
+            // Hover is read from MOUSE pointers only: a touch fires an emulated
+            // mouseenter with no matching mouseleave, which left it 'hovered' —
+            // and stopped for good — after a single tap on a phone.
+            interval: 4000,
+            idle: 0,
+            hovering: false,
+            focused: false,
+            touching: false,
+            touchedAt: 0, // last touch, or scroll driven by one (a swipe cancels the touch events)
+            inView: false,
+            userPaused: false,
+            calm: false, // prefers-reduced-motion: never auto-advance
+
             init() {
                 this.$nextTick(() => this.update());
                 window.addEventListener('resize', () => this.update());
+
+                this.calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                new IntersectionObserver(([entry]) => { this.inView = entry.isIntersecting; }, { threshold: 0.35 })
+                    .observe(this.$root.querySelector('.video-slider'));
+                setInterval(() => this.tick(), 500);
+            },
+            // Nothing to advance when every video already fits on screen.
+            get autoplays() { return !this.calm && !(this.atStart && this.atEnd); },
+            get held() {
+                return this.hovering || this.focused || this.touching || this.lightboxOpen
+                    || this.userPaused || !this.inView || document.hidden
+                    || Date.now() - this.touchedAt < 1500;
+            },
+            tick() {
+                if (!this.autoplays) return;
+                if (this.held) { this.idle = 0; return; }
+                this.idle += 500;
+                if (this.idle >= this.interval) { this.idle = 0; this.advance(); }
+            },
+            advance() {
+                const t = this.$refs.track;
+                const slides = t.querySelectorAll('.video-slide');
+                if (slides.length < 2) return;
+                const step = slides[1].offsetLeft - slides[0].offsetLeft; // one slide + the gap
+                const max = t.scrollWidth - t.clientWidth;
+                const target = t.scrollLeft >= max - 4
+                    ? 0 // reached the end: loop back to the first video
+                    : Math.min(max, (Math.round(t.scrollLeft / step) + 1) * step);
+                t.scrollTo({ left: target, behavior: 'smooth' });
             },
             update() {
                 const t = this.$refs.track;
@@ -39,6 +84,7 @@
                 this.atEnd = t.scrollLeft + t.clientWidth >= t.scrollWidth - 4;
             },
             slide(dir) {
+                this.idle = 0; // a manual move restarts the countdown
                 const t = this.$refs.track;
                 const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 t.scrollBy({ left: dir * t.clientWidth * 0.85, behavior: calm ? 'auto' : 'smooth' });
@@ -53,7 +99,11 @@
         @keydown.arrow-left.window="if (lightboxOpen) prev()"
         @keydown.arrow-right.window="if (lightboxOpen) next()"
     >
-        <div class="video-slider" data-reveal>
+        <div class="video-slider" data-reveal
+             @pointerenter="hovering = $event.pointerType === 'mouse'" @pointerleave="hovering = false"
+             @focusin="focused = $event.target.matches(':focus-visible')" @focusout="focused = false"
+             @touchstart.passive="touching = true; touchedAt = Date.now()" @touchmove.passive="touchedAt = Date.now()"
+             @touchend="touching = false; touchedAt = Date.now()" @touchcancel="touching = false; touchedAt = Date.now()">
             <div class="video-slider__stage">
                 <button type="button" class="video-slider__arrow video-slider__arrow--prev"
                         x-show="!(atStart && atEnd)" x-cloak
@@ -61,7 +111,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
 
-                <div class="video-slider__track" x-ref="track" @scroll.passive="update()">
+                <div class="video-slider__track" x-ref="track" @scroll.passive="update(); if (Date.now() - touchedAt < 1500) touchedAt = Date.now()">
                     @foreach ($items as $i => $video)
                         <button
                             type="button"
@@ -92,11 +142,21 @@
                 </button>
             </div>
 
-            @if ($ctaLabel && $ctaUrl)
-                <div class="video-slider__controls">
+            {{-- Pause / play: hover only helps a mouse, and moving content the visitor
+                 can't stop is an accessibility problem (WCAG 2.2.2). Hidden when
+                 nothing auto-advances (everything fits, or reduced motion). --}}
+            <div class="video-slider__controls" x-show="autoplays || {{ $ctaLabel && $ctaUrl ? 'true' : 'false' }}" x-cloak>
+                <button type="button" class="video-slider__pause" x-show="autoplays" x-cloak
+                        @click="userPaused = !userPaused" :aria-pressed="userPaused.toString()"
+                        :aria-label="userPaused ? 'Resume automatic slideshow' : 'Pause automatic slideshow'">
+                    <svg x-show="!userPaused" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                    <svg x-show="userPaused" x-cloak viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+
+                @if ($ctaLabel && $ctaUrl)
                     <a href="{{ $ctaUrl }}" class="btn btn--gold">{{ $ctaLabel }}</a>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
 
         {{-- ── Lightbox ──────────────────────────────────────────────────────── --}}
