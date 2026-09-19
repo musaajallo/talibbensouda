@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Support\YouTube\AddVideosByLink;
 use App\Support\YouTube\YouTubeUrl;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Filament\Notifications\Livewire\Notifications;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
@@ -204,6 +206,35 @@ describe('adding them', function (): void {
         expect($result['unavailable'])->toBe(['aaaaaaaaaaa'])
             ->and($result['unchecked'])->toBe([])   // retrying would not help
             ->and(GalleryPhoto::count())->toBe(0);
+    });
+
+    it('lets a clean "Added" toast fade, but keeps one that names problem links on screen', function (): void {
+        fakeOEmbed(['o1pslItZX2k' => null]);
+        // Read the way Filament's own assertNotified() does: through its Notifications component.
+        $lastToast = function (): Notification {
+            $component = new Notifications;
+            $component->mount();
+
+            return $component->notifications->last();
+        };
+
+        Livewire::test(ListGalleryPhotos::class)
+            ->callAction('addYoutubeVideosByLink', data: [
+                'links' => 'https://youtu.be/6_sAiP0dJPU', 'category' => 'Projects', 'published' => true, 'featured_on_home' => false,
+            ]);
+        $clean = $lastToast();
+
+        Livewire::test(ListGalleryPhotos::class)
+            ->callAction('addYoutubeVideosByLink', data: [
+                'links' => 'https://youtu.be/o1pslItZX2k', 'category' => 'Projects', 'published' => true, 'featured_on_home' => false,
+            ]);
+        $withProblem = $lastToast();
+
+        // persistent() takes no argument — passing false used to leave EVERY toast persistent.
+        expect($clean->getTitle())->toBe('Added 1 video to the Gallery')
+            ->and($clean->getDuration())->not->toBe('persistent')
+            ->and($withProblem->getTitle())->toBe('No new videos added')
+            ->and($withProblem->getDuration())->toBe('persistent');
     });
 
     it('adds nothing, and says so, when YouTube cannot be reached', function (): void {

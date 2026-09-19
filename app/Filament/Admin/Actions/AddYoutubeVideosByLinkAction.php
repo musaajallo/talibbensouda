@@ -116,10 +116,16 @@ class AddYoutubeVideosByLinkAction extends Action
 
         // "Already in the Gallery" is information, not a problem; only links that
         // couldn't be added turn it into a warning. Keep anything with a message
-        // on screen until it's dismissed — it names links the editor may need.
-        ($problems ? $notification->warning() : $notification->success())
-            ->persistent($lines !== [])
-            ->send();
+        // on screen until it's dismissed — it names links the editor may need — but
+        // let a plain "Added 5 videos" fade like any other toast. (persistent() takes
+        // no argument: passing false does NOT switch it off.)
+        $problems ? $notification->warning() : $notification->success();
+
+        if ($lines !== []) {
+            $notification->persistent();
+        }
+
+        $notification->send();
     }
 
     /**
