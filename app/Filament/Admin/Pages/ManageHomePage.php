@@ -154,7 +154,7 @@ class ManageHomePage extends SettingsPage
                     TextInput::make('videos_headline')->maxLength(160),
                     Textarea::make('videos_lead')->rows(2)->maxLength(400)->columnSpanFull(),
                     TextInput::make('videos_cta_label')->maxLength(60)->columnSpanFull()
-                        ->helperText('Videos come from the Gallery — publish or reorder them there. The section hides itself while none are published.'),
+                        ->helperText('Videos come from the Gallery — publish, reorder or feature them there. If any video is marked “Feature on home page”, only those show here; otherwise all published videos do. The section hides itself while none are published.'),
 
                     TextInput::make('recognition_eyebrow')->maxLength(120),
                     TextInput::make('recognition_headline')->maxLength(160),

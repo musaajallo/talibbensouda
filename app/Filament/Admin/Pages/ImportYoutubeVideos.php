@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
 
@@ -152,8 +153,14 @@ class ImportYoutubeVideos extends Page
                     ->label('Caption')
                     ->maxLength(255)
                     ->required(),
-                Toggle::make('published')
-                    ->default(true),
+                Grid::make(2)->schema([
+                    Toggle::make('published')
+                        ->default(true),
+                    Toggle::make('featured_on_home')
+                        ->label('Feature on home page')
+                        ->default(false)
+                        ->helperText('Once any video is featured, the home page shows only featured videos.'),
+                ]),
             ])
             ->fillForm(fn (array $arguments): array => [
                 'caption' => $arguments['title'] ?? '',
@@ -176,6 +183,7 @@ class ImportYoutubeVideos extends Page
                     'type' => GalleryPhoto::TYPE_VIDEO,
                     'youtube_video_id' => $videoId,
                     'published' => $data['published'],
+                    'featured_on_home' => $data['featured_on_home'] ?? false,
                     'sort_order' => 0,
                 ]);
 

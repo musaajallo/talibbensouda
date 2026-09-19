@@ -7,10 +7,9 @@
     $communityPhotos = \App\Models\CommunityPhoto::published()
         ->group(\App\Models\CommunityPhoto::GROUP_MUNICIPALITY)
         ->with('media')->orderBy('sort_order')->take(6)->get();
-    // Published YouTube videos from the Gallery, in the Gallery's own order.
-    $homeVideos = \App\Models\GalleryPhoto::published()
-        ->where('type', \App\Models\GalleryPhoto::TYPE_VIDEO)
-        ->orderBy('sort_order')->orderBy('id')->take(12)->get();
+    // Published Gallery videos — or only the ones marked "feature on home page",
+    // when there are any (see GalleryPhoto::forHomeSlider()).
+    $homeVideos = \App\Models\GalleryPhoto::forHomeSlider();
     $testimonials = \App\Models\Testimonial::published()->orderBy('sort_order')->take(6)->get();
     $milestones = \App\Models\Milestone::published()->orderByDesc('occurred_on')->take(4)->get();
     $eventsHidden = app(\App\Settings\EventsPageSettings::class)->hide_events_sections;
