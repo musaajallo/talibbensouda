@@ -11,6 +11,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
@@ -59,6 +60,16 @@ class GalleryPhotosTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                // Photos and YouTube videos share this table (see GalleryPhoto's docblock);
+                // this narrows to one kind. It combines with the category tabs and with
+                // the Published filter.
+                SelectFilter::make('type')
+                    ->label('Media type')
+                    ->options([
+                        GalleryPhoto::TYPE_PHOTO => 'Photos',
+                        GalleryPhoto::TYPE_VIDEO => 'YouTube videos',
+                    ])
+                    ->placeholder('All media'),
                 TernaryFilter::make('published'),
             ])
             ->recordActions([
