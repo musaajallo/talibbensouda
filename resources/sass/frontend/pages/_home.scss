@@ -692,13 +692,32 @@
 .video-slider {
     --slide-gap: #{$space-6};
     --slides-visible: 3;
+    --arrow: 46px;
+    // Room either side of the strip for the arrows; on phones there's no spare
+    // width, so they overlay the thumbnails' edges instead.
+    --gutter: 64px;
+    --arrow-inset: 0px;
 
     @media (max-width: $breakpoint-lg) { --slides-visible: 2; }
-    @media (max-width: $breakpoint-sm) { --slides-visible: 1.15; --slide-gap: #{$space-4}; }
+    @media (max-width: $breakpoint-sm) {
+        --slides-visible: 1.15;
+        --slide-gap: #{$space-4};
+        --arrow: 38px;
+        --gutter: 0px;
+        --arrow-inset: 6px;
+    }
+
+    // `container-type` lets the arrows below size themselves from the stage's
+    // width (cqw) — a `top` offset can't otherwise depend on a width.
+    &__stage {
+        position: relative;
+        container-type: inline-size;
+    }
 
     &__track {
         display: flex;
         gap: var(--slide-gap);
+        margin-inline: var(--gutter);
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-inline: 2px;
@@ -711,25 +730,19 @@
         &::-webkit-scrollbar { display: none; }
     }
 
-    &__controls {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: $space-4;
-        margin-top: $space-8;
-
-        @media (max-width: $breakpoint-sm) { justify-content: center; margin-top: $space-6; }
-    }
-
-    &__arrows {
-        display: flex;
-        gap: $space-3;
-    }
-
+    // Left and right of the strip, vertically centred on the THUMBNAILS (not
+    // the whole card — the caption hangs below them): the track's 6px top
+    // padding + half of a 16:9 thumbnail, whose width is a slide's width.
     &__arrow {
-        width: 46px;
-        height: 46px;
+        position: absolute;
+        z-index: 2;
+        top: calc(
+            6px
+            + (100cqw - 2 * var(--gutter) - (var(--slides-visible) - 1) * var(--slide-gap)) / var(--slides-visible) * 9 / 32
+            - var(--arrow) / 2
+        );
+        width: var(--arrow);
+        height: var(--arrow);
         border-radius: 50%;
         border: 1px solid rgba(255, 255, 255, 0.28);
         background: rgba(255, 255, 255, 0.06);
@@ -740,11 +753,25 @@
         cursor: pointer;
         transition: background 0.18s, border-color 0.18s, opacity 0.18s;
 
+        &--prev { left: var(--arrow-inset); }
+        &--next { right: var(--arrow-inset); }
+
         svg { width: 20px; height: 20px; }
 
         &:hover:not(:disabled) { background: $color-gold; border-color: $color-gold; color: $color-navy; }
         &:focus-visible { outline: 2px solid $color-gold-light; outline-offset: 2px; }
         &:disabled { opacity: 0.35; cursor: default; }
+
+        // Over a thumbnail on phones, so it needs its own backing to read.
+        @media (max-width: $breakpoint-sm) { background: rgba(11, 20, 46, 0.72); }
+    }
+
+    &__controls {
+        display: flex;
+        justify-content: center;
+        margin-top: $space-8;
+
+        @media (max-width: $breakpoint-sm) { margin-top: $space-6; }
     }
 }
 
@@ -754,6 +781,12 @@
     display: flex;
     flex-direction: column;
     text-align: left;
+
+    // Centre the slides when there are too few to fill the row. Auto margins
+    // (not `justify-content: center`) so that once they DO overflow the
+    // margins collapse to 0 and the strip still scrolls to both ends.
+    &:first-child { margin-left: auto; }
+    &:last-child { margin-right: auto; }
     padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: $radius-md;
