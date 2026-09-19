@@ -332,6 +332,10 @@ leaving it running invisibly).
   the Gallery is never duplicated, but if the paste asked to feature, the existing row is
   featured. Captions are the YouTube titles (editable afterwards); the videos belong to
   whoever's channel they're on.
+- **Admin Gallery list filters:** *Media type* (Photos / YouTube videos — `SelectFilter` on the
+  `type` column) and *Published*, in the funnel menu. Filament defers filters until **Apply
+  filters** is clicked. They combine with each other and with the category tabs; the *Type*
+  column badge shows each row's kind, and *Home page* marks featured videos.
 - **`youtube_video_id` is unique** on `gallery_photos` — re-adding an already-imported
   video is blocked both in the UI (`alreadyImported()` shows "Already in the Gallery"
   instead of the add button) and in the action itself (checked again before insert, so a
