@@ -318,6 +318,20 @@ leaving it running invisibly).
   "Browse All Videos" is the non-hover way to stop it (WCAG 2.2.2). The interval isn't a
   panel setting; change `interval` in the component. Tested with a headless-browser script
   (not in the suite) — its synthetic touch can't reproduce a real phone cancelling a swipe.
+- **Add by link** (`AddYoutubeVideosByLinkAction`, a header button on both the YouTube
+  Videos page and the Gallery list): paste YouTube links — one per line, or space/comma
+  separated, up to 20 — for videos that are **not on the campaign's channel** and so never
+  appear in the channel browser. Any link shape works (`watch?v=`, `youtu.be`, Shorts,
+  embed, live, or a bare ID — `App\Support\YouTube\YouTubeUrl`). Category, Published and
+  **Feature on home page** apply to the whole paste. Each video is checked and titled through
+  YouTube's public **oEmbed** endpoint (`YouTubeOEmbed`): no API key, no quota, and it only
+  answers for videos that are public *and* embeddable, so it doubles as validation — a
+  private/removed/non-embeddable link is skipped, not turned into a broken tile. **A made-up
+  ID gets a 400 from oEmbed, not a 404** (found against the live endpoint); 5xx/timeouts are
+  reported as "couldn't reach YouTube, try again", never as "no such video". A video already in
+  the Gallery is never duplicated, but if the paste asked to feature, the existing row is
+  featured. Captions are the YouTube titles (editable afterwards); the videos belong to
+  whoever's channel they're on.
 - **`youtube_video_id` is unique** on `gallery_photos` — re-adding an already-imported
   video is blocked both in the UI (`alreadyImported()` shows "Already in the Gallery"
   instead of the add button) and in the action itself (checked again before insert, so a

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\GalleryPhotos\Pages;
 
+use App\Filament\Admin\Actions\AddYoutubeVideosByLinkAction;
 use App\Filament\Admin\Resources\GalleryPhotos\GalleryPhotoResource;
 use App\Models\GalleryPhoto;
 use Filament\Actions\CreateAction;
@@ -16,6 +17,7 @@ class ListGalleryPhotos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            AddYoutubeVideosByLinkAction::make(),
             CreateAction::make(),
         ];
     }
