@@ -94,9 +94,11 @@ disk. Modelled on the sibling `umc` project.
   (openings, launches, elections, 2018–2026) that populates `Milestone` lives in
   `MilestoneSeeder`.
 - **Content seeding:** `ContentSeeder` (events, milestones, projects, gallery, community
-  photos, testimonials, giving-back programmes + `HeroSlidesSeeder`) runs on every deploy via
-  `.forge/deploy.sh`. All of them `firstOrCreate` on the key — a missing row is created,
-  an existing one is **never** touched, so panel edits survive re-deploys. `HeroSlidesSeeder`
+  photos, testimonials, giving-back programmes + `HeroSlidesSeeder`) is **run by hand**
+  (`php artisan db:seed --class=Database\\Seeders\\ContentSeeder --force`) — deliberately *not*
+  in the deploy script (see Release), because it re-creates any seeded row that's missing,
+  which would resurrect content deleted in the panel. All of them `firstOrCreate` on the key —
+  a missing row is created, an existing one is **never** touched, so panel edits survive re-runs. `HeroSlidesSeeder`
   copies `public/images/hero-*.webp` onto the media disk and fills `home_page.hero_slides`
   so the slider is editable in the panel; it no-ops once slides are configured.
   `docs/Talib Legacy - The People's Mayor.md` is the source content brief (KMC records +
@@ -198,11 +200,11 @@ php artisan make:filament-settings-page ManageThingPage "App\Settings\ThingPageS
 ## Images in production
 
 - Media disk is `public` (`MEDIA_DISK`), i.e. `storage/app/public` served through the
-  `public/storage` symlink. `.forge/deploy.sh` rebuilds that symlink each deploy.
+  `public/storage` symlink. the deploy script rebuilds that symlink each deploy.
 - **Optimiser binaries are required** or `spatie/laravel-image-optimizer` silently no-ops:
   `sudo apt install jpegoptim optipng pngquant gifsicle webp`.
 - Conversions / responsive images run on the **queue** — a `queue:work` worker must be
-  running (systemd or Supervisor). Deploy runs `queue:restart`.
+  running (systemd or Supervisor). The deploy restarts the workers (`$RESTART_QUEUES()`); if yours run under your own systemd/Supervisor rather than Forge's Queue tab, that macro won't reach them — use `artisan queue:restart` instead.
 - HTTPS: `AppServiceProvider::boot()` calls `URL::forceScheme('https')` and re-points
   `filesystems.disks.public.url` at `secure_asset('storage')` in production;
   `bootstrap/app.php` trusts all proxies. Model URL accessors additionally rebuild media
@@ -237,8 +239,8 @@ its collection, so a panel upload always wins and re-running it after adding mor
   rather than illustrated, because no genuine photo of any of them exists anywhere in the
   source set — don't invent one from an unrelated country's delegation photo.
 - **Still needs to run in production once this ships** — deliberately not wired into
-  `.forge/deploy.sh`; nobody's decided yet whether it should run on every deploy (like
-  `ContentSeeder`) or once by hand.
+  the deploy script; run it by hand, once (it's idempotent — it only attaches to rows with no
+  media yet).
 - **`docs/assets/gallery-video-2026-09-18.mp4`** (gitignored, staged 2026-09-18) — a
   local source clip, still not wired up. Superseded as the primary video path by
   YouTube import (below) — this one would need its own native-upload treatment if it's
@@ -364,7 +366,7 @@ leaving it running invisibly).
 
 ## Admin login
 
-`AdminUserSeeder` runs on every deploy but creates the account only on the **first** one
+`AdminUserSeeder` is **not** run by the deploy (see Release) — run it by hand on a fresh environment. It creates the account only on the **first** run
 (it no-ops once any user has the `admin`/`super-admin` role — a panel password change is
 never clobbered). Defaults: `admin@talibahmedbensouda.com` / `password` — override with
 `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` in the Forge env. Change the password from
@@ -393,7 +395,7 @@ TBT 4.7 s. Optimisation log:
 | 3 | Homepage feature video `preload="none"` (was `metadata`) | `welcome.blade.php` | ✅ done |
 | 4 | Drop `backdrop-filter: blur()` on the sticky header below `lg` (repaints every scroll frame); near-opaque `--header-bg-solid` instead | `_navbar.scss`, `_themes.scss` | ✅ done |
 | 5 | nginx: long cache headers for `/build/*` (1y immutable) + images/fonts/mp4 (30d) | Forge → site → nginx config | ✅ done |
-| 6 | Forge deploy script rewritten for the zero-downtime macro format; runs `artisan migrate` / `optimize` / the seeders — this is why TTFB was ~2 s and content was missing | `.forge/deploy.sh` + Forge UI | ✅ done |
+| 6 | Forge deploy script rewritten for the zero-downtime macro format; runs `artisan migrate` / `optimize` (the seeders are run by hand — see Release) | `.forge/deploy.sh` + Forge UI | ✅ done |
 | 7 | Responsive hero-image variants — 768w `-sm.webp` served to phones (`≤700px`), full ≤1600w above; media-scoped `<link rel=preload>` mirrors the JS pick so nothing double-loads | `public/images/hero-*`, `HeroSlidesSeeder`, `HomePageSettings::heroSlides`, `welcome.blade.php` | ✅ done |
 | 8 | Route-split CSS — `core.scss` (chrome + shared, ~4.5 KB gzip, everywhere) + one `pages-entry/<route>.scss` per page, loaded via the `styles` prop on `<x-app-layout>`. `/` went ~15 → ~7.4 KB gzip | `vite.config.js`, `core.scss`, `pages-entry/`, `AppLayout` | ✅ done |
 | 9 | `spatie/laravel-responsecache` — full-page cache for the public site (see **Caching** below) | `CachePublicPages`, `bootstrap/app.php`, `AppServiceProvider` | ✅ done |
@@ -416,17 +418,19 @@ a cached page would freeze the honeypot's encrypted timestamp and hide flash
 messages), the health and sitemap endpoints, and anything requested by a
 signed-in user.
 
-- **Cache keys carry a build fingerprint** (`CachePublicPages::useCacheNameSuffix()` →
-  hash of `public/build/manifest.json`). Incident (2026-09-19): production served `/` with
-  a stylesheet 404 — the cached home page named `home-<old hash>.css`, a file the current
-  build no longer had — so the page was unstyled for anyone whose browser hadn't already
-  cached the old file, typically a phone. Cause: the deploy ran `responsecache:clear`
-  *before* `$ACTIVATE_RELEASE()`; the old release, still serving, refilled the shared cache
-  with its own page, and the new release replayed it. Fixed twice: the fingerprint means a
-  release can only ever read its own entries, and `responsecache:clear` now runs *after*
-  activation in `.forge/deploy.sh` (**the Forge UI copy of the script must be updated by
-  hand**). If a page ever looks unstyled on production: fetch it and check its
-  `build/assets/*.css` links return 200, and compare with `/build/manifest.json`.
+- **Cache keys carry a per-deploy fingerprint** (`CachePublicPages::useCacheNameSuffix()` →
+  hash of the release directory + `public/build/manifest.json`). Incident (2026-09-19):
+  production served `/` with a stylesheet 404 — the cached home page named
+  `home-<old hash>.css`, a file the current build no longer had — so it was unstyled for
+  anyone whose browser hadn't already cached the old file, typically a phone. Cause: **the
+  deploy script never cleared the response cache** (see *Release*), so a page cached before a deploy kept being served for
+  up to 24 h with the old build's asset names; only `/` showed it because it was the only
+  page whose CSS hash changed. Fix: the fingerprint means a release only ever reads its own
+  entries — the release directory (unique per zero-downtime release) makes even a
+  Blade/PHP-only deploy start clean, the manifest hash covers a same-directory rebuild — so
+  no `responsecache:clear` is needed on deploy. If a page ever looks unstyled on production:
+  fetch it and check its `build/assets/*.css` links return 200, and compare with
+  `/build/manifest.json`.
 - **Middleware order matters.** `CacheResponse` is appended to the `web` group
   *before* `AddCspHeaders` (`bootstrap/app.php`), so a cache hit returns before
   the CSP middleware runs and the nonce baked into the cached HTML is replayed
@@ -435,8 +439,8 @@ signed-in user.
 - **Invalidation** is automatic: `AppServiceProvider::flushResponseCacheOnContentChange()`
   calls `ResponseCache::clear()` (best-effort — wrapped so a cache hiccup never fails
   the save) on any content-model `saved`/`deleted`, any `SettingsSaved`, and media
-  add/clear events. `.forge/deploy.sh` also runs `responsecache:clear` so template
-  changes ship immediately.
+  add/clear events. The deploy script doesn't clear it — the per-deploy fingerprint
+  above is what makes template changes ship immediately.
 - **Tests**: disabled globally via `RESPONSE_CACHE_ENABLED=false` in `phpunit.xml`;
   `tests/Feature/ResponseCacheTest.php` re-enables it against an `array` store.
 - **Toggle/inspect**: `RESPONSE_CACHE_ENABLED`, `RESPONSE_CACHE_LIFETIME` (default
@@ -593,4 +597,17 @@ on purpose, since it collects no email and doesn't fit that model's required-ema
 ## Release
 
 `main` is the deploy target; Forge auto-deploys on push. Open a PR into `main`, merge,
-Forge runs `.forge/deploy.sh`.
+Forge runs **the Deploy Script stored in Forge** (site → Deployments). `.forge/deploy.sh` is the
+tracked copy and was synced from it on 2026-09-19 — **keep the two identical** (Forge doesn't
+read the repo file). It is: `$CREATE_RELEASE()`, `composer install`, `npm ci || npm install`,
+`npm run build`, `artisan optimize`, `storage:link`, `migrate --force` (which also runs the
+`database/settings` migrations), `$ACTIVATE_RELEASE()`, `$RESTART_QUEUES()`.
+
+It **deliberately doesn't** run seeders, `shield:generate`, `filament:assets`,
+`responsecache:clear` or `migrate --graceful` (reasons are in the script's header). So:
+- new seed content reaches production only when you run the seeder by hand
+  (`php artisan db:seed --class=Database\\Seeders\\ContentSeeder --force`);
+- after adding a Filament resource, run `shield:generate --all --panel=admin` **and** the
+  `RolesAndPermissionsSeeder` on the server, or non-super-admin roles can't see it
+  (super-admin bypasses via `Gate::before`) — e.g. *Pop-up sign-ups* needed this;
+- the page cache needs no clearing: its keys carry a per-deploy fingerprint.

@@ -172,7 +172,18 @@ describe('asset-build fingerprint in the cache key', function (): void {
         expect(CachePublicPages::buildFingerprint())->not->toBe($a);
     });
 
-    it('falls back to a constant when there is no build at all', function (): void {
-        expect(CachePublicPages::buildFingerprint())->toBe('nobuild');
+    it('has no build to hash when there is no manifest, yet still tells releases apart', function (): void {
+        // Two release directories with no manifest are still different deploys.
+        expect(CachePublicPages::buildFingerprint('/srv/site/releases/20260919-1'))
+            ->not->toBe(CachePublicPages::buildFingerprint('/srv/site/releases/20260919-2'))
+            ->and(CachePublicPages::buildFingerprint('/srv/site/releases/20260919-1'))
+            ->toBe(CachePublicPages::buildFingerprint('/srv/site/releases/20260919-1'));
+    });
+
+    it('tells a Blade-only deploy apart: same assets, different release directory', function () use ($deploy): void {
+        $deploy('{"home.css":"assets/home-SAME.css"}'); // identical build output …
+
+        expect(CachePublicPages::buildFingerprint('/srv/site/releases/20260919-1'))
+            ->not->toBe(CachePublicPages::buildFingerprint('/srv/site/releases/20260919-2')); // … new release
     });
 });
