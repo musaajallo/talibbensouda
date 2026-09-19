@@ -416,6 +416,17 @@ a cached page would freeze the honeypot's encrypted timestamp and hide flash
 messages), the health and sitemap endpoints, and anything requested by a
 signed-in user.
 
+- **Cache keys carry a build fingerprint** (`CachePublicPages::useCacheNameSuffix()` →
+  hash of `public/build/manifest.json`). Incident (2026-09-19): production served `/` with
+  a stylesheet 404 — the cached home page named `home-<old hash>.css`, a file the current
+  build no longer had — so the page was unstyled for anyone whose browser hadn't already
+  cached the old file, typically a phone. Cause: the deploy ran `responsecache:clear`
+  *before* `$ACTIVATE_RELEASE()`; the old release, still serving, refilled the shared cache
+  with its own page, and the new release replayed it. Fixed twice: the fingerprint means a
+  release can only ever read its own entries, and `responsecache:clear` now runs *after*
+  activation in `.forge/deploy.sh` (**the Forge UI copy of the script must be updated by
+  hand**). If a page ever looks unstyled on production: fetch it and check its
+  `build/assets/*.css` links return 200, and compare with `/build/manifest.json`.
 - **Middleware order matters.** `CacheResponse` is appended to the `web` group
   *before* `AddCspHeaders` (`bootstrap/app.php`), so a cache hit returns before
   the CSP middleware runs and the nonce baked into the cached HTML is replayed

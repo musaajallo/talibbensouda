@@ -121,3 +121,58 @@ describe('flash data from the site-wide sign-up pop-up', function (): void {
         )])->get('/about')->assertOk()->assertHeaderMissing('X-Cache-Status');
     });
 });
+
+describe('asset-build fingerprint in the cache key', function (): void {
+    // Point public_path() at a scratch dir so a "deploy" is just rewriting the manifest.
+    beforeEach(function (): void {
+        $this->publicDir = sys_get_temp_dir().'/rc-build-'.uniqid();
+        mkdir($this->publicDir.'/build', 0777, true);
+        app()->usePublicPath($this->publicDir);
+    });
+
+    afterEach(function (): void {
+        app()->usePublicPath(base_path('public'));
+        @unlink($this->publicDir.'/build/manifest.json');
+        @rmdir($this->publicDir.'/build');
+        @rmdir($this->publicDir);
+    });
+
+    $deploy = fn (string $manifest) => file_put_contents(public_path('build/manifest.json'), $manifest);
+
+    it('never serves a page cached by an older build to a newer one', function () use ($deploy): void {
+        // Release N caches /about …
+        $deploy('{"home.css":"assets/home-OLDHASH.css"}');
+        get('/about')->assertHeader('X-Cache-Status', 'MISS');
+        get('/about')->assertHeader('X-Cache-Status', 'HIT');
+
+        // … release N+1 ships new hashed filenames. It must render its own page,
+        // not replay the old one (whose CSS/JS files no longer exist).
+        $deploy('{"home.css":"assets/home-NEWHASH.css"}');
+        get('/about')->assertHeader('X-Cache-Status', 'MISS');
+        get('/about')->assertHeader('X-Cache-Status', 'HIT');
+    });
+
+    it('keeps each build\'s entries apart, so a rollback finds its own again', function () use ($deploy): void {
+        $deploy('{"v":1}');
+        get('/about');
+        $deploy('{"v":2}');
+        get('/about');
+
+        $deploy('{"v":1}');
+
+        get('/about')->assertHeader('X-Cache-Status', 'HIT');
+    });
+
+    it('is stable while the build is unchanged and changes with it', function () use ($deploy): void {
+        $deploy('{"v":1}');
+        $a = CachePublicPages::buildFingerprint();
+        expect(CachePublicPages::buildFingerprint())->toBe($a);
+
+        $deploy('{"v":2}');
+        expect(CachePublicPages::buildFingerprint())->not->toBe($a);
+    });
+
+    it('falls back to a constant when there is no build at all', function (): void {
+        expect(CachePublicPages::buildFingerprint())->toBe('nobuild');
+    });
+});
