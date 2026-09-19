@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Actions\AddYoutubeVideosByLinkAction;
 use App\Filament\Admin\Resources\GalleryPhotos\GalleryPhotoResource;
 use App\Models\GalleryPhoto;
 use App\Support\YouTube\YouTubeChannelClient;
@@ -47,6 +48,14 @@ class ImportYoutubeVideos extends Page
     public function mount(): void
     {
         $this->loadVideos();
+    }
+
+    /** For videos that aren't on the campaign's own channel, so never appear in the list below. */
+    protected function getHeaderActions(): array
+    {
+        return [
+            AddYoutubeVideosByLinkAction::make(),
+        ];
     }
 
     public function updatedSearch(): void
