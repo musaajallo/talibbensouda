@@ -41,6 +41,15 @@ class GalleryPhotosTable
                 TextColumn::make('category')
                     ->badge()
                     ->sortable(),
+                // Only videos can be featured. State AND icon are both conditional:
+                // a badge with an icon set renders even when its text is empty, which
+                // put a star on every photo.
+                TextColumn::make('featured_on_home')
+                    ->label('Home page')
+                    ->badge()
+                    ->color('warning')
+                    ->state(fn (GalleryPhoto $record): ?string => $record->isVideo() && $record->featured_on_home ? 'Featured' : null)
+                    ->icon(fn (GalleryPhoto $record): ?string => $record->isVideo() && $record->featured_on_home ? 'heroicon-s-star' : null),
                 IconColumn::make('published')
                     ->boolean()
                     ->sortable(),

@@ -281,11 +281,17 @@ leaving it running invisibly).
   same reason. Photo rows, and the Create page, keep the uploader. Direct video *upload*
   is still not supported — Gallery video is YouTube-only.
 - **Home page video slider** (`<x-video-slider>`, `resources/views/components/video-slider.blade.php`,
-  directly below "Across the Municipality" in `welcome.blade.php`) shows the **published
-  YouTube videos from the Gallery** — same `type = video` + `published` rows, same order
-  (`sort_order`, then `id`; reorder them in the Gallery list), capped at 12. Nothing to
+  directly below "Across the Municipality" in `welcome.blade.php`) shows
+  **YouTube videos from the Gallery**, via `GalleryPhoto::forHomeSlider()` — same rows and
+  order (`sort_order`, then `id`; reorder them in the Gallery list), capped at 12. Nothing to
   curate separately: publish/unpublish/reorder in the Gallery and the strip follows (the
-  response cache is already flushed on any `GalleryPhoto` save). The whole section hides
+  response cache is already flushed on any `GalleryPhoto` save). **"Feature on home page"**
+  (`gallery_photos.featured_on_home`, a toggle beside *Published* in the import modal and on
+  a video's edit form; videos only, "Featured" badge in the Gallery list): once **any
+  published** video is featured, the section shows *only* those; with none featured it shows
+  every published video. A featured-but-unpublished video deliberately doesn't count — it
+  can't show, and letting it flip the section to "featured only" would leave it empty. The
+  public Gallery is unaffected. The whole section hides
   while there are none. It's a native scroll-snap strip (swipe / arrows / Tab), **no
   autoplay**, with the arrows in gutters either side of the strip, vertically centred on the
   *thumbnails* (a `cqw` calc — `top` can't reference a width otherwise; overlaid on the

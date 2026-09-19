@@ -49,6 +49,11 @@ class GalleryPhotoForm
                         ->required(),
                     Toggle::make('published')
                         ->default(true),
+                    // Videos only — a photo has no place in the home page's video section.
+                    Toggle::make('featured_on_home')
+                        ->label('Feature on home page')
+                        ->helperText('Once any video is featured, the home page shows only featured videos.')
+                        ->visible(fn (?GalleryPhoto $record): bool => $record?->isVideo() ?? false),
                     TextInput::make('sort_order')
                         ->numeric()
                         ->default(0)

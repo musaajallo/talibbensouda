@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\Media\ResolvesPublicMediaUrl;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -24,6 +25,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string|null $youtube_video_id
  * @property bool $wide
  * @property bool $published
+ * @property bool $featured_on_home
  * @property int $sort_order
  */
 class GalleryPhoto extends Model implements HasMedia
@@ -40,7 +42,7 @@ class GalleryPhoto extends Model implements HasMedia
     public const TYPE_VIDEO = 'video';
 
     protected $fillable = [
-        'caption', 'category', 'type', 'youtube_video_id', 'wide', 'published', 'sort_order',
+        'caption', 'category', 'type', 'youtube_video_id', 'wide', 'published', 'featured_on_home', 'sort_order',
     ];
 
     protected function casts(): array
@@ -48,6 +50,7 @@ class GalleryPhoto extends Model implements HasMedia
         return [
             'wide' => 'boolean',
             'published' => 'boolean',
+            'featured_on_home' => 'boolean',
             'sort_order' => 'integer',
         ];
     }
@@ -60,7 +63,7 @@ class GalleryPhoto extends Model implements HasMedia
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['caption', 'category', 'type', 'youtube_video_id', 'wide', 'published', 'sort_order'])
+            ->logOnly(['caption', 'category', 'type', 'youtube_video_id', 'wide', 'published', 'featured_on_home', 'sort_order'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges();
     }
@@ -68,6 +71,33 @@ class GalleryPhoto extends Model implements HasMedia
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('published', true);
+    }
+
+    public function scopeVideos(Builder $query): Builder
+    {
+        return $query->where('type', self::TYPE_VIDEO);
+    }
+
+    /**
+     * The videos for the home page's video slider, in the Gallery's own order.
+     *
+     * If any PUBLISHED video is marked "feature on home page", only those show.
+     * If none is, every published video does — so the section never goes empty
+     * just because nothing has been featured yet. (A featured video that's been
+     * unpublished doesn't count: it can't show, and it shouldn't silently switch
+     * the section to "featured only" with nothing in it.)
+     *
+     * @return Collection<int, static>
+     */
+    public static function forHomeSlider(int $limit = 12): Collection
+    {
+        $published = static::query()->published()->videos();
+
+        $query = (clone $published)->where('featured_on_home', true)->exists()
+            ? (clone $published)->where('featured_on_home', true)
+            : $published;
+
+        return $query->orderBy('sort_order')->orderBy('id')->take($limit)->get();
     }
 
     public function isVideo(): bool
