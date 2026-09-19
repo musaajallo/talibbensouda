@@ -700,7 +700,12 @@ body {
 .fi-page-content > .fi-wi,
 .fi-page-content .fi-wi-stats-overview-stat,
 .fi-page-content .fi-ta {
-    animation: fi-fade-up 360ms ease-out both;
+    /* `backwards`, NOT `both`/`forwards`: those keep the last keyframe applied for good,
+       so these elements would carry `transform: translateY(0)` forever — and any
+       transformed ancestor makes a `position: fixed` descendant (every Filament modal
+       opened from a table, section or widget) position itself against THAT box instead
+       of the window. It centred modals inside the table and pushed them off-screen. */
+    animation: fi-fade-up 360ms ease-out backwards;
 }
 
 .fi-page-content > *:nth-child(1) { animation-delay: 0ms; }

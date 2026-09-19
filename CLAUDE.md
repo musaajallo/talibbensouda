@@ -368,6 +368,15 @@ leaving it running invisibly).
   browsers (which prefer an SVG icon when both are present) show an identical tab icon in
   both places instead of a crisper one only on the public site. Keep both lists in sync if
   the favicon ever changes.
+- **A transform on any ancestor breaks every `position: fixed` descendant — including
+  Filament modals** (they render inside the table/section/widget that opened them). The admin
+  theme's page-load "fade up" once used `animation-fill-mode: both`, which keeps the last
+  keyframe (`transform: translateY(0)`, computed as an *identity matrix*) applied forever on
+  `.fi-ta` / sections / widgets. Modals then centred inside the table instead of the window
+  and sat partly below the fold on a laptop screen. It is `backwards` now (guarded by
+  `tests/Feature/Admin/AdminThemeCssTest.php`). Same trap as the public site's lightbox:
+  keep `data-reveal`/transform off any wrapper around a fixed overlay. To debug a misplaced
+  modal, walk its ancestors and look for `transform`, `filter`, `perspective` or `contain`.
 - **`composer run dev` (server + queue + pail + Vite via `concurrently --kill-others`) can
   crash entirely — server included — if Vite's file watcher hits the OS's file-watcher
   limit (`ENOSPC`).** This happened when a background agent's isolated git worktree (each
