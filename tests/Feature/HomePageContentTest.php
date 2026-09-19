@@ -271,6 +271,20 @@ describe('home video slider', function (): void {
             ->and($html)->not->toContain('video-slider__arrows');
     });
 
+    it('auto-advances every four seconds and offers a pause button', function (): void {
+        homeVideo('vid111', 'Rally in Bakau');
+
+        get('/')
+            ->assertOk()
+            ->assertSee('interval: 4000', false)
+            ->assertSee('video-slider__pause', false)
+            ->assertSee('Pause automatic slideshow', false)
+            // stops for a hovering mouse, keyboard focus and touch
+            ->assertSee('@pointerenter="hovering = $event.pointerType === \'mouse\'"', false)
+            ->assertSee('@focusin=', false)
+            ->assertSee('@touchstart.passive="touching = true; touchedAt = Date.now()"', false);
+    });
+
     it('sits directly below the community section', function (): void {
         homeVideo('vid111', 'Rally in Bakau');
         CommunityPhoto::create(['tag' => 'Library', 'caption' => 'Library opened 2024', 'published' => true, 'sort_order' => 1]);

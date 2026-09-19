@@ -768,10 +768,33 @@
 
     &__controls {
         display: flex;
+        align-items: center;
         justify-content: center;
+        gap: $space-4;
         margin-top: $space-8;
 
         @media (max-width: $breakpoint-sm) { margin-top: $space-6; }
+    }
+
+    // Same look as the arrows, but in the flow (beside the button), not overlaid.
+    &__pause {
+        flex: none;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.18s, border-color 0.18s;
+
+        svg { width: 18px; height: 18px; }
+
+        &:hover { background: $color-gold; border-color: $color-gold; color: $color-navy; }
+        &:focus-visible { outline: 2px solid $color-gold-light; outline-offset: 2px; }
     }
 }
 
