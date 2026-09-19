@@ -27,7 +27,7 @@
             lightboxOpen: false,
             current: 0,
             atStart: true,
-            atEnd: false,
+            atEnd: true, // arrows stay hidden until update() proves there's overflow
 
             init() {
                 this.$nextTick(() => this.update());
@@ -54,44 +54,49 @@
         @keydown.arrow-right.window="if (lightboxOpen) next()"
     >
         <div class="video-slider" data-reveal>
-            <div class="video-slider__track" x-ref="track" @scroll.passive="update()">
-                @foreach ($items as $i => $video)
-                    <button
-                        type="button"
-                        class="video-slide"
-                        @click="open({{ $i }})"
-                        aria-label="Play video: {{ $video['caption'] }}"
-                    >
-                        <span class="video-slide__thumb">
-                            @if ($video['thumb'])
-                                <img src="{{ $video['thumb'] }}" alt="" loading="lazy" width="480" height="360">
-                            @endif
-                            <span class="video-slide__play" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </span>
-                        </span>
-                        <span class="video-slide__meta">
-                            <span class="video-slide__tag">{{ $video['category'] }}</span>
-                            <span class="video-slide__title">{{ $video['caption'] }}</span>
-                        </span>
-                    </button>
-                @endforeach
-            </div>
+            <div class="video-slider__stage">
+                <button type="button" class="video-slider__arrow video-slider__arrow--prev"
+                        x-show="!(atStart && atEnd)" x-cloak
+                        @click="slide(-1)" :disabled="atStart" aria-label="Previous videos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
 
-            <div class="video-slider__controls">
-                <div class="video-slider__arrows">
-                    <button type="button" class="video-slider__arrow" @click="slide(-1)" :disabled="atStart" aria-label="Previous videos">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                    </button>
-                    <button type="button" class="video-slider__arrow" @click="slide(1)" :disabled="atEnd" aria-label="Next videos">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    </button>
+                <div class="video-slider__track" x-ref="track" @scroll.passive="update()">
+                    @foreach ($items as $i => $video)
+                        <button
+                            type="button"
+                            class="video-slide"
+                            @click="open({{ $i }})"
+                            aria-label="Play video: {{ $video['caption'] }}"
+                        >
+                            <span class="video-slide__thumb">
+                                @if ($video['thumb'])
+                                    <img src="{{ $video['thumb'] }}" alt="" loading="lazy" width="480" height="360">
+                                @endif
+                                <span class="video-slide__play" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                </span>
+                            </span>
+                            <span class="video-slide__meta">
+                                <span class="video-slide__tag">{{ $video['category'] }}</span>
+                                <span class="video-slide__title">{{ $video['caption'] }}</span>
+                            </span>
+                        </button>
+                    @endforeach
                 </div>
 
-                @if ($ctaLabel && $ctaUrl)
-                    <a href="{{ $ctaUrl }}" class="btn btn--gold">{{ $ctaLabel }}</a>
-                @endif
+                <button type="button" class="video-slider__arrow video-slider__arrow--next"
+                        x-show="!(atStart && atEnd)" x-cloak
+                        @click="slide(1)" :disabled="atEnd" aria-label="Next videos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
             </div>
+
+            @if ($ctaLabel && $ctaUrl)
+                <div class="video-slider__controls">
+                    <a href="{{ $ctaUrl }}" class="btn btn--gold">{{ $ctaLabel }}</a>
+                </div>
+            @endif
         </div>
 
         {{-- ── Lightbox ──────────────────────────────────────────────────────── --}}

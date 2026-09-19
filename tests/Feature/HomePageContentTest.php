@@ -252,6 +252,25 @@ describe('home video slider', function (): void {
             ->assertSee('/gallery?media=Videos', false);
     });
 
+    it('puts the arrows beside the strip and keeps only the button below it', function (): void {
+        homeVideo('vid111', 'Rally in Bakau');
+
+        $html = get('/')->assertOk()->getContent();
+
+        $stage = strpos($html, 'class="video-slider__stage"');
+        $prev = strpos($html, 'video-slider__arrow--prev');
+        $track = strpos($html, 'class="video-slider__track"');
+        $next = strpos($html, 'video-slider__arrow--next');
+        $controls = strpos($html, 'class="video-slider__controls"');
+
+        // stage > prev arrow, track, next arrow — then the controls row (button only).
+        expect($stage)->toBeLessThan($prev)
+            ->and($prev)->toBeLessThan($track)
+            ->and($track)->toBeLessThan($next)
+            ->and($next)->toBeLessThan($controls)
+            ->and($html)->not->toContain('video-slider__arrows');
+    });
+
     it('sits directly below the community section', function (): void {
         homeVideo('vid111', 'Rally in Bakau');
         CommunityPhoto::create(['tag' => 'Library', 'caption' => 'Library opened 2024', 'published' => true, 'sort_order' => 1]);

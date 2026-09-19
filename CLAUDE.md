@@ -287,7 +287,11 @@ leaving it running invisibly).
   curate separately: publish/unpublish/reorder in the Gallery and the strip follows (the
   response cache is already flushed on any `GalleryPhoto` save). The whole section hides
   while there are none. It's a native scroll-snap strip (swipe / arrows / Tab), **no
-  autoplay**, and a click opens the shared `.lightbox` with the `youtube-nocookie` embed
+  autoplay**, with the arrows in gutters either side of the strip, vertically centred on the
+  *thumbnails* (a `cqw` calc — `top` can't reference a width otherwise; overlaid on the
+  thumbnails on phones) and **hidden when everything already fits**, and with the slides
+  **centred** when there are too few to fill the row (auto margins on the first/last slide,
+  not `justify-content: center`, so a full strip still scrolls to both ends), and a click opens the shared `.lightbox` with the `youtube-nocookie` embed
   (`x-if`, so closing tears the iframe down). Two gotchas: keep `data-reveal` **off** the
   component's wrapper — a transformed ancestor breaks the lightbox's `position: fixed` —
   and `.lightbox__video` now lives in `components/_lightbox.scss` (it's shared between the
